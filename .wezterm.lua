@@ -18,6 +18,9 @@ config.color_scheme = 'AyuMirage (Gogh)'
 
 -- TX-02 = Berkeley Mono
 config.font = wezterm.font 'MonoLisa Nerd Font'
+-- Alternatives:
+-- config.font = wezterm.font 'Hack Nerd Font'       -- Recommended for Terminal
+-- config.font = wezterm.font 'FiraCode Nerd Font'   -- Recommended for IDEs
 -- Font Disable Ligatures
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
 

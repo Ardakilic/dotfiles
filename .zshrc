@@ -1,7 +1,7 @@
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/ardakilicdagi/.lmstudio/bin"
+export PATH="$HOME/.lmstudio/bin:$PATH"
 # End of LM Studio CLI section
 
 

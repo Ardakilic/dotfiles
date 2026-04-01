@@ -1,5 +1,6 @@
 {
     // Font
+    // Alternatives: "Hack Nerd Font", "FiraCode Nerd Font"
     "editor.fontFamily": "MonoLisa", // Or "'MonoLisa'"
     // When lineHeight is set to zero, VS Code will figure out the
     // the height automatically based on the font

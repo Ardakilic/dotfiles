@@ -38,11 +38,25 @@ Individual tools:
 
 ## Font
 
-
+### Primary Font
 - [MonoLisa Font](https://monolisa.dev/) (MonoLisa is a paid font)
 - [MonoLisa Nerd Font patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch)
 
 Needed for icons and prompt.
+
+### Alternative Fonts (Free)
+
+Hack is recommended for Terminal, FiraCode is recommended for IDEs.
+
+#### Install via Homebrew
+```sh
+brew install font-hack-nerd-font
+brew install font-firacode-nerd-font
+```
+
+#### Manual Download
+- [Hack Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases/download/latest/Hack.zip)
+- [FiraCode Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases/download/latest/FiraCode.zip)
 
 ---
 
@@ -88,4 +102,4 @@ source ~/.zshrc
 * `.wezterm.lua` includes a commented-out Ghostty alternative config at the bottom
 * Not portable without tweaks
 
-## TODOs
+## TODOs
