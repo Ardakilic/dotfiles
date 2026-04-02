@@ -20,25 +20,27 @@ Nothing fancy, just practical improvements.
 Install everything with one command:
 
 ```sh
-brew install --cask wezterm@nightly && brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions
+brew install --cask wezterm@nightly && brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
 ```
 
-Individual tools:
+### Individual tools:
 
 - [wezterm@nightly](https://formulae.brew.sh/cask/wezterm@nightly) — GPU-accelerated terminal emulator
 - [curl](https://curl.se/) — data transfer
 - [eza](https://eza.rocks/) — modern `ls` replacement
 - [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
 - [jaq](https://github.com/01mf02/jaq) — Rust reimplementation of `jq`
+
+### ZSH plugins:
 - [powerlevel10k](https://github.com/romkatv/powerlevel10k) — ZSH theme
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — fish-like highlighting
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions
-
----
+- [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) — fuzzy history search
 
 ## Font
 
 ### Primary Font
+
 - [MonoLisa Font](https://monolisa.dev/) (MonoLisa is a paid font)
 - [MonoLisa Nerd Font patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch)
 
@@ -46,7 +48,7 @@ Needed for icons and prompt.
 
 ### Alternative Fonts (Free)
 
-Hack is recommended for Terminal, FiraCode is recommended for IDEs.
+I recommend Hack for Terminal, and FiraCode for IDEs. Nerd Font patches are required for icons and prompt on Terminal usage.
 
 #### Install via Homebrew
 ```sh
@@ -61,6 +63,28 @@ brew install font-firacode-nerd-font
 ---
 
 ## Setup
+
+### Using Makefile (Recommended)
+
+Copy all config files with one command:
+
+```sh
+make copy-all
+```
+
+Individual targets:
+
+```sh
+make copy-zsh     # Copy .zshrc to ~/.zshrc
+make copy-wezterm # Copy .wezterm.lua to ~/.wezterm.lua
+make copy-vscode  # Copy vscode-settings.json to VS Code settings
+make copy-claude  # Copy .claude.json to ~/.claude.json
+make reload-zsh   # Reload zsh configuration
+```
+
+Run `make help` for all available targets.
+
+### Manual Setup
 
 Clone:
 
@@ -103,3 +127,5 @@ source ~/.zshrc
 * Not portable without tweaks
 
 ## TODOs
+
+- [ ] Add `make install` target to install dependencies

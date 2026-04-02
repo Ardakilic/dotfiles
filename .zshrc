@@ -104,18 +104,33 @@ if [[ $TERM_PROGRAM == "WezTerm" ]]; then
   zmodload zsh/complist
 
   # zsh-syntax-highlighting
-  # should be added last
+  # should be added (almost) last
   [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
   source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+  # zsh-history-substring-search
+  # Should be below zsh-syntax-highlighting
+  [[ -f /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]] && \
+  source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+  # up and down keys for history substring search, use "cat -v" to see the actual key codes
+  bindkey '^[[A' history-substring-search-up
+  bindkey '^[[B' history-substring-search-down
 fi
 
 # other options for ZSH
 setopt AUTO_CD # automatically cd for folder names
-setopt INC_APPEND_HISTORY # append to history directly without waiting session to end
-setopt HIST_FIND_NO_DUPS # skip duplicates
+setopt HIST_FIND_NO_DUPS # skip duplicates during history search
+# setops HIST_IGNORE_ALL_DUPS # removes all duplicates before inserting
 # setopt HIST_REDUCE_BLANKS # clean up whitespaces in commands
-setopt HIST_VERIFY # do not execute history command right after 
+setopt HIST_VERIFY # preview history expansion before running
 setopt SHARE_HISTORY # share history between tabs
+setopt INTERACTIVE_COMMENTS # allow # comments in interactive shell
+
+# history file and size constraints
+HISTFILE="$HOME/.cache/zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+
 # /Arda
 
 # Claude Code etc.

@@ -1,3 +1,6 @@
 # Kilo Code
 .kilo/node_modules/
 .kilo/plans/
+
+# LLM
+suggestions.md
