@@ -4,8 +4,6 @@ export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 export PATH="$HOME/.lmstudio/bin:$PATH"
 # End of LM Studio CLI section
 
-
-# Arda
 ## Aliases
 
 ### Navigation
@@ -96,12 +94,28 @@ if [[ $TERM_PROGRAM == "WezTerm" ]]; then
   compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-$ZSH_VERSION"
   ## compinit without cache
   ## autoload -Uz compinit && compinit
-  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+  # case insensitive tab completion
+  # Enable the following line if you only want
+  #### case-insensitive completion and not fuzzy matching
+  # zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+  # fuzzy matching
+  # it does not work with warp, so it's inside if block
+  # smarter path completion: case-insensitive + partial/fuzzy matching
+  zstyle ':completion:*' completer _complete _approximate
+  zstyle ':completion:*:approximate:*' max-errors 2 numeric
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+  setopt COMPLETE_IN_WORD  # complete even if cursor is mid-word
+  setopt ALWAYS_TO_END     # move cursor to end after completion
+  # / fuzzy matching
 
   # Nicer colors for completion, hover color on match
   zstyle ':completion:*' menu select
   [[ -n "$LS_COLORS" ]] && zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
   zmodload zsh/complist
+  ## Tab key for auto completion trigger, use "cat -v" to see the actual key codes
+  bindkey '^I' expand-or-complete
 
   # zsh-syntax-highlighting
   # should be added (almost) last
@@ -127,11 +141,9 @@ setopt SHARE_HISTORY # share history between tabs
 setopt INTERACTIVE_COMMENTS # allow # comments in interactive shell
 
 # history file and size constraints
-HISTFILE="$HOME/.cache/zsh_history"
+HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
-
-# /Arda
 
 # Claude Code etc.
 export PATH="$HOME/.local/bin:$PATH"
