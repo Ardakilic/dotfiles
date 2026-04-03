@@ -81,12 +81,13 @@ make copy-all
 Individual targets:
 
 ```sh
-make copy-zsh     # Copy .zshrc to ~/.zshrc
-make copy-wezterm # Copy .wezterm.lua to ~/.wezterm.lua
-make copy-vscode  # Copy vscode-settings.json to VS Code settings
-make copy-claude  # Copy .claude.json to ~/.claude.json
-make reload-zsh   # Reload zsh configuration
-make install-deps # Install all dependencies via Homebrew
+make copy-zsh              # Copy .zshrc to ~/.zshrc
+make copy-wezterm          # Copy .wezterm.lua to ~/.wezterm.lua
+make copy-vscode           # Copy vscode-settings.json to VS Code settings
+make copy-claude-mcp       # Copy .claude.json to ~/.claude.json
+make copy-claude-settings  # Copy .claude/settings.json to ~/.claude/settings.json
+make reload-zsh            # Reload zsh configuration
+make install-deps          # Install all dependencies via Homebrew
 ```
 
 Run `make help` for all available targets.
@@ -115,7 +116,8 @@ cp ~/.dotfiles/vscode-settings.json "$HOME/Library/Application Support/Code/User
 Copy Claude Code Settings:
 
 ```sh
-cp ~/.dotfiles/.claude.json ~/.claude.json
+cp ~/.dotfiles/.claude.json ~/.claude.json  # MCP servers
+cp ~/.dotfiles/.claude/settings.json ~/.claude/settings.json
 ```
 
 Reload:
