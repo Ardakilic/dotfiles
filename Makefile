@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude copy-all reload-zsh help
+.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude copy-all reload-zsh help install-deps
 
 all: help
 
@@ -15,6 +15,14 @@ help:
 	@echo "  copy-claude  - Copy .claude.json to ~/.claude.json"
 	@echo "  copy-all     - Copy all config files"
 	@echo "  reload-zsh   - Reload zsh configuration"
+	@echo "  install-deps - Install all dependencies via Homebrew"
+
+install-deps:
+	@echo "Installing Homebrew dependencies..."
+	@brew install --cask wezterm@nightly
+	@brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
+	@brew install font-hack-nerd-font font-firacode-nerd-font
+	@echo "All dependencies installed successfully!"
 
 copy-zsh:
 	@cp $(CURRENT_DIR)/.zshrc $(HOME)/.zshrc

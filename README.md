@@ -20,6 +20,12 @@ Nothing fancy, just practical improvements.
 Install everything with one command:
 
 ```sh
+make install-deps
+```
+
+Or install individually:
+
+```sh
 brew install --cask wezterm@nightly && brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
 ```
 
@@ -80,6 +86,7 @@ make copy-wezterm # Copy .wezterm.lua to ~/.wezterm.lua
 make copy-vscode  # Copy vscode-settings.json to VS Code settings
 make copy-claude  # Copy .claude.json to ~/.claude.json
 make reload-zsh   # Reload zsh configuration
+make install-deps # Install all dependencies via Homebrew
 ```
 
 Run `make help` for all available targets.
@@ -128,4 +135,6 @@ source ~/.zshrc
 
 ## TODOs
 
-- [ ] Add `make install` target to install dependencies
+- [x] Add `make install` target to install dependencies
+- [ ] Add `.gitconfig` support
+- [ ] Add `.gitignore_global` support
