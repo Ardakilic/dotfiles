@@ -58,8 +58,8 @@ I recommend Hack for Terminal, and FiraCode for IDEs. Nerd Font patches are requ
 
 #### Install via Homebrew
 ```sh
-brew install font-hack-nerd-font
-brew install font-firacode-nerd-font
+brew install --cask font-hack-nerd-font
+brew install --cask font-firacode-nerd-font
 ```
 
 #### Manual Download
