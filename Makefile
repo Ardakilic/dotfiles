@@ -22,7 +22,7 @@ install-deps:
 	@echo "Installing Homebrew dependencies..."
 	@brew install --cask wezterm@nightly
 	@brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
-	@brew install --cask font-hack-nerd-font font-firacode-nerd-font
+	@brew install --cask font-hack-nerd-font font-fira-code-nerd-font
 	@echo "All dependencies installed successfully!"
 
 copy-zsh:

@@ -13,7 +13,7 @@ Nothing fancy, just practical improvements.
 - [WezTerm](https://wezterm.org/) (nightly)
 - [Claude Code](https://claude.ai/)
 - [VS Code](https://code.visualstudio.com/)
-- [Kilo Code](https://www.kilocode.com/)
+- [Kilo Code](https://www.kilo.ai/)
 
 ## Requirements
 
@@ -59,7 +59,7 @@ I recommend Hack for Terminal, and FiraCode for IDEs. Nerd Font patches are requ
 #### Install via Homebrew
 ```sh
 brew install --cask font-hack-nerd-font
-brew install --cask font-firacode-nerd-font
+brew install --cask font-fira-code-nerd-font
 ```
 
 #### Manual Download
@@ -137,6 +137,7 @@ source ~/.zshrc
 
 ## TODOs
 
-- [x] Add `make install` target to install dependencies
+- [x] Add `make install-deps` target to install dependencies
 - [ ] Add `.gitconfig` support
 - [ ] Add `.gitignore_global` support
+- [ ] Add `opencode` support
