@@ -14,6 +14,7 @@ Nothing fancy, just practical improvements.
 - [Claude Code](https://claude.ai/)
 - [VS Code](https://code.visualstudio.com/)
 - [Kilo Code](https://www.kilo.ai/)
+- [OpenCode](https://opencode.ai/)
 
 ## Requirements
 
@@ -81,11 +82,12 @@ make copy-all
 Individual targets:
 
 ```sh
-make copy-zsh              # Copy .zshrc to ~/.zshrc
-make copy-wezterm          # Copy .wezterm.lua to ~/.wezterm.lua
-make copy-vscode           # Copy vscode-settings.json to VS Code settings
-make copy-claude-mcp       # Copy .claude.json to ~/.claude.json
-make copy-claude-settings  # Copy .claude/settings.json to ~/.claude/settings.json
+make copy-zsh              # Copy config/zsh/.zshrc to ~/.zshrc
+make copy-wezterm          # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
+make copy-vscode           # Copy config/vscode/settings.json to VS Code settings
+make copy-claude-mcp       # Copy config/claude-code/.claude.json to ~/.claude.json
+make copy-claude-settings  # Copy config/claude-code/settings.json to ~/.claude/settings.json
+make copy-opencode         # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
 make reload-zsh            # Reload zsh configuration
 make install-deps          # Install all dependencies via Homebrew
 ```
@@ -103,27 +105,53 @@ git clone https://github.com/Ardakilic/dotfiles ~/.dotfiles
 Copy config:
 
 ```sh
-cp ~/.dotfiles/.zshrc ~/.zshrc
-cp ~/.dotfiles/.wezterm.lua ~/.wezterm.lua
+cp ~/.dotfiles/config/zsh/.zshrc ~/.zshrc
+cp ~/.dotfiles/config/wezterm/.wezterm.lua ~/.wezterm.lua
 ```
 
 Copy VS Code settings:
 
 ```sh
-cp ~/.dotfiles/vscode-settings.json "$HOME/Library/Application Support/Code/User/settings.json"
+cp ~/.dotfiles/config/vscode/settings.json "$HOME/Library/Application Support/Code/User/settings.json"
 ```
 
 Copy Claude Code Settings:
 
 ```sh
-cp ~/.dotfiles/.claude.json ~/.claude.json  # MCP servers
-cp ~/.dotfiles/.claude/settings.json ~/.claude/settings.json
+cp ~/.dotfiles/config/claude-code/.claude.json ~/.claude.json  # MCP servers
+cp ~/.dotfiles/config/claude-code/settings.json ~/.claude/settings.json
+```
+
+Copy OpenCode Settings:
+
+```sh
+mkdir -p ~/.config/opencode
+cp ~/.dotfiles/config/opencode/opencode.json ~/.config/opencode/opencode.json
 ```
 
 Reload:
 
 ```sh
 source ~/.zshrc
+```
+
+---
+
+## Config Structure
+
+```
+config/
+├── claude-code/
+│   ├── .claude.json      # Claude Code MCP servers config
+│   └── settings.json     # Claude Code settings
+├── wezterm/
+│   └── .wezterm.lua      # WezTerm terminal config
+├── zsh/
+│   └── .zshrc            # ZSH shell config
+├── vscode/
+│   └── settings.json     # VS Code editor settings
+└── opencode/
+    └── opencode.json     # OpenCode AI config
 ```
 
 ---
@@ -138,6 +166,6 @@ source ~/.zshrc
 ## TODOs
 
 - [x] Add `make install-deps` target to install dependencies
+- [x] Add `opencode` support
 - [ ] Add `.gitconfig` support
 - [ ] Add `.gitignore_global` support
-- [ ] Add `opencode` support
