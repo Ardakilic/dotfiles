@@ -1,6 +1,8 @@
 # Kilo Code
-.kilo/node_modules/
-.kilo/plans/
+.kilo/
+.roo/
+.claude/
+
 
 # LLM
 suggestions.md
