@@ -1,4 +1,5 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-opencode copy-all reload-zsh help install-deps
+.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-opencode copy-all reload-zsh help install-deps git-config
+
 
 all: help
 
@@ -17,13 +18,25 @@ help:
 	@echo "  copy-all              - Copy all config files"
 	@echo "  reload-zsh            - Reload zsh configuration"
 	@echo "  install-deps          - Install all dependencies via Homebrew"
+	@echo "  git-config            - Configure git with delta and merge settings"
 
 install-deps:
 	@echo "Installing Homebrew dependencies..."
 	@brew install --cask wezterm@nightly
-	@brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
+	@brew install curl eza bat jaq git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
 	@brew install --cask font-hack-nerd-font font-fira-code-nerd-font
 	@echo "All dependencies installed successfully!"
+
+git-config:
+	@echo "Configuring git with delta and merge settings..."
+	@git config --global core.pager delta
+	@git config --global interactive.diffFilter "delta --color-only"
+	@git config --global delta.navigate true
+	@git config --global delta.dark true
+	@git config --global delta.line-numbers true
+	@git config --global delta.side-by-side true
+	@git config --global merge.conflictStyle zdiff3
+	@echo "Git configured successfully!"
 
 copy-zsh:
 	@cp $(CURRENT_DIR)/config/zsh/.zshrc $(HOME)/.zshrc
@@ -52,7 +65,7 @@ copy-opencode:
 	@cp $(CURRENT_DIR)/config/opencode/opencode.json "$(HOME)/.config/opencode/opencode.json"
 	@echo "Copied opencode.json to ~/.config/opencode/opencode.json"
 
-copy-all: copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-opencode
+copy-all: copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-opencode git-config
 
 reload-zsh:
 	@source $(HOME)/.zshrc

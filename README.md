@@ -4,17 +4,23 @@ Minimal dotfiles for my daily setup.
 
 Nothing fancy, just practical improvements.
 
-![screenshot](./screenshot.png)
+## Screenshots
+
+### Main Screen
+![main](./screenshots/main.png)
+
+### Git Diff (`git diff`)
+![git-diff](./screenshots/git-diff.png)
 
 ## My Environment
 
 - macOS
 - zsh
 - [WezTerm](https://wezterm.org/) (nightly)
+- [OpenCode](https://opencode.ai/)
 - [Claude Code](https://claude.ai/)
 - [VS Code](https://code.visualstudio.com/)
 - [Kilo Code](https://www.kilo.ai/)
-- [OpenCode](https://opencode.ai/)
 
 ## Requirements
 
@@ -27,7 +33,7 @@ make install-deps
 Or install individually:
 
 ```sh
-brew install --cask wezterm@nightly && brew install curl eza bat jaq powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
+brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
 ```
 
 ### Individual tools:
@@ -37,6 +43,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq powerlevel1
 - [eza](https://eza.rocks/) — modern `ls` replacement
 - [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
 - [jaq](https://github.com/01mf02/jaq) — Rust reimplementation of `jq`
+- [git-delta](https://github.com/dandavison/delta) — syntax-highlighting pager for git
 
 ### ZSH plugins:
 - [powerlevel10k](https://github.com/romkatv/powerlevel10k) — ZSH theme
@@ -88,6 +95,7 @@ make copy-vscode           # Copy config/vscode/settings.json to VS Code setting
 make copy-claude-mcp       # Copy config/claude-code/.claude.json to ~/.claude.json
 make copy-claude-settings  # Copy config/claude-code/settings.json to ~/.claude/settings.json
 make copy-opencode         # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
+make git-config            # Configure git with delta and merge settings
 make reload-zsh            # Reload zsh configuration
 make install-deps          # Install all dependencies via Homebrew
 ```
@@ -133,6 +141,26 @@ Reload:
 
 ```sh
 source ~/.zshrc
+```
+
+### Git Configuration
+
+Git is configured with delta as the diff pager and zdiff3 for merge conflicts:
+
+```sh
+make git-config
+```
+
+Or manually:
+
+```sh
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global delta.line-numbers true
+git config --global delta.side-by-side true
+git config --global merge.conflictStyle zdiff3
 ```
 
 ---
