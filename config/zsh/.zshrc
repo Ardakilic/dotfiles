@@ -70,6 +70,15 @@ alias ainfo='docker run --rm -v "$(pwd)":/audio ardakilic/sox_ng:latest --i'
 
 ## / Aliases
 
+## Remaps
+
+# Change Ctrl+U behaviour (that will be mapped on cmd+backspace on WezTerm)
+# Ctrl+U deletes the whole line by default
+# However, to set to delete everuthing before the cursor position, we need to use backward-kill-line
+bindkey "^U" backward-kill-line
+
+## / Remaps
+
 ## Shell init commands here will run in other terminals (iTerm2, Terminal.app, etc.)
 if [[ $TERM_PROGRAM == "WezTerm" ]]; then
   # zsh-autosuggestions
