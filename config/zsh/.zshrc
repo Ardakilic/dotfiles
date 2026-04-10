@@ -21,6 +21,10 @@ mkcd() {
   [[ -z "$1" ]] && { echo "usage: mkcd <dir>"; return 1; }
   mkdir -p -- "$1" && cd -- "$1"
 }
+
+function gccd() {
+  git clone --recurse-submodules "$@" && cd "$(basename "${@[-1]}" .git)"
+}
 ### / Navigation
 
 ### File operations
