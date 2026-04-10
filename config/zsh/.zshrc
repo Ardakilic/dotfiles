@@ -1,3 +1,4 @@
+# Homebrew
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
@@ -22,7 +23,8 @@ mkcd() {
   mkdir -p -- "$1" && cd -- "$1"
 }
 
-function gccd() {
+gccd() {
+  [[ -z "$1" ]] && { echo "usage: gccd <repo>"; return 1; }
   git clone --recurse-submodules "$@" && cd "$(basename "${@[-1]}" .git)"
 }
 ### / Navigation
@@ -158,5 +160,6 @@ HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
 
-# Claude Code etc.
+# Claude Code, OpenCode etc.
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.opencode/bin:$PATH"
