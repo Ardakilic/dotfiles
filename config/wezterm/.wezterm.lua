@@ -56,7 +56,10 @@ config.keys = {
     -- In .zshrc, we need to change Ctrl+U behaviour to delete everything before the cursor position
     -- echo 'bindkey "^U" backward-kill-line' >> ~./zshrc
     -- Otherwise, it deletes the whole line
-    { key = 'Backspace', mods = 'CMD', action = wezterm.action.SendKey { key = 'u', mods = 'CTRL' } }
+    { key = 'Backspace', mods = 'CMD', action = wezterm.action.SendKey { key = 'u', mods = 'CTRL' } },
+
+    -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
+    { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } }
 
 }
 
