@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-opencode copy-all reload-zsh help install-deps git-config
+.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
 
 
 all: help
@@ -12,9 +12,11 @@ help:
 	@echo "  copy-zsh              - Copy .zshrc to ~/.zshrc"
 	@echo "  copy-wezterm          - Copy .wezterm.lua to ~/.wezterm.lua"
 	@echo "  copy-vscode           - Copy config/vscode/settings.json to VS Code settings"
-	@echo "  copy-claude-mcp       - Copy .claude.json to ~/.claude.json"
-	@echo "  copy-claude-settings  - Copy .claude/settings.json to ~/.claude/settings.json"
-	@echo "  copy-opencode         - Copy opencode.json to ~/.config/opencode/opencode.json"
+	@echo "  copy-claude-mcp              - Copy .claude.json to ~/.claude.json"
+	@echo "  copy-claude-settings         - Copy .claude/settings.json to ~/.claude/settings.json"
+	@echo "  copy-claude-output-styles    - Copy output styles to ~/.claude/output-styles/"
+	@echo "  copy-opencode                - Copy opencode.json to ~/.config/opencode/opencode.json"
+	@echo "  copy-opencode-agents         - Copy opencode agents to ~/.config/opencode/agents/"
 	@echo "  copy-all              - Copy all config files"
 	@echo "  reload-zsh            - Reload zsh configuration"
 	@echo "  install-deps          - Install all dependencies via Homebrew"
@@ -65,7 +67,17 @@ copy-opencode:
 	@cp $(CURRENT_DIR)/config/opencode/opencode.json "$(HOME)/.config/opencode/opencode.json"
 	@echo "Copied opencode.json to ~/.config/opencode/opencode.json"
 
-copy-all: copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-opencode git-config
+copy-opencode-agents:
+	@mkdir -p "$(HOME)/.config/opencode/agents"
+	@cp $(CURRENT_DIR)/config/opencode/agents/*.md "$(HOME)/.config/opencode/agents/"
+	@echo "Copied opencode agents to ~/.config/opencode/agents/"
+
+copy-claude-output-styles:
+	@mkdir -p "$(HOME)/.claude/output-styles"
+	@cp $(CURRENT_DIR)/config/claude-code/output-styles/*.md "$(HOME)/.claude/output-styles/"
+	@echo "Copied output styles to ~/.claude/output-styles/"
+
+copy-all: copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
 
 reload-zsh:
 	@source $(HOME)/.zshrc

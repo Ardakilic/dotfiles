@@ -92,10 +92,12 @@ Individual targets:
 make copy-zsh              # Copy config/zsh/.zshrc to ~/.zshrc
 make copy-wezterm          # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
 make copy-vscode           # Copy config/vscode/settings.json to VS Code settings
-make copy-claude-mcp       # Copy config/claude-code/.claude.json to ~/.claude.json
-make copy-claude-settings  # Copy config/claude-code/settings.json to ~/.claude/settings.json
-make copy-opencode         # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
-make git-config            # Configure git with delta and merge settings
+make copy-claude-mcp            # Copy config/claude-code/.claude.json to ~/.claude.json
+make copy-claude-settings       # Copy config/claude-code/settings.json to ~/.claude/settings.json
+make copy-claude-output-styles  # Copy output styles to ~/.claude/output-styles/
+make copy-opencode              # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
+make copy-opencode-agents       # Copy opencode agents to ~/.config/opencode/agents/
+make git-config                 # Configure git with delta and merge settings
 make reload-zsh            # Reload zsh configuration
 make install-deps          # Install all dependencies via Homebrew
 ```
@@ -128,6 +130,8 @@ Copy Claude Code Settings:
 ```sh
 cp ~/.dotfiles/config/claude-code/.claude.json ~/.claude.json  # MCP servers
 cp ~/.dotfiles/config/claude-code/settings.json ~/.claude/settings.json
+mkdir -p ~/.claude/output-styles
+cp ~/.dotfiles/config/claude-code/output-styles/*.md ~/.claude/output-styles/
 ```
 
 Copy OpenCode Settings:
@@ -135,6 +139,8 @@ Copy OpenCode Settings:
 ```sh
 mkdir -p ~/.config/opencode
 cp ~/.dotfiles/config/opencode/opencode.json ~/.config/opencode/opencode.json
+mkdir -p ~/.config/opencode/agents
+cp ~/.dotfiles/config/opencode/agents/*.md ~/.config/opencode/agents/
 ```
 
 Reload:
@@ -170,16 +176,26 @@ git config --global merge.conflictStyle zdiff3
 ```
 config/
 ├── claude-code/
-│   ├── .claude.json      # Claude Code MCP servers config
-│   └── settings.json     # Claude Code settings
+│   ├── .claude.json           # Claude Code MCP servers config
+│   ├── settings.json          # Claude Code settings
+│   └── output-styles/         # Claude Code output styles
+│       ├── ask.md             # Advisory Q&A style
+│       ├── architect.md       # Planning and design style
+│       ├── review.md          # Code review style
+│       └── debug.md           # Systematic debugging style
 ├── wezterm/
-│   └── .wezterm.lua      # WezTerm terminal config
+│   └── .wezterm.lua           # WezTerm terminal config
 ├── zsh/
-│   └── .zshrc            # ZSH shell config
+│   └── .zshrc                 # ZSH shell config
 ├── vscode/
-│   └── settings.json     # VS Code editor settings
+│   └── settings.json          # VS Code editor settings
 └── opencode/
-    └── opencode.json     # OpenCode AI config
+    ├── opencode.json          # OpenCode AI config
+    └── agents/                # OpenCode custom agents
+        ├── ask.md             # Advisory Q&A agent
+        ├── architect.md       # Planning and design agent
+        ├── review.md          # Code review agent
+        └── debug.md           # Systematic debugging agent
 ```
 
 ---
