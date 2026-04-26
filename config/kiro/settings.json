@@ -9,6 +9,10 @@
     // ss01 for example, you could set "'ss01' on"
     "editor.fontLigatures": true,
     "editor.fontSize": 13,
+
+    // Theme
+    "workbench.colorTheme": "Dark+",
+
     // / Font
 
     // Disable Turkish characters being treated as unicode.
