@@ -89,17 +89,20 @@ make copy-all
 Individual targets:
 
 ```sh
-make copy-zsh              # Copy config/zsh/.zshrc to ~/.zshrc
-make copy-wezterm          # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
-make copy-vscode           # Copy config/vscode/settings.json to VS Code settings
-make copy-claude-mcp            # Copy config/claude-code/.claude.json to ~/.claude.json
-make copy-claude-settings       # Copy config/claude-code/settings.json to ~/.claude/settings.json
-make copy-claude-output-styles  # Copy output styles to ~/.claude/output-styles/
-make copy-opencode              # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
-make copy-opencode-agents       # Copy opencode agents to ~/.config/opencode/agents/
-make git-config                 # Configure git with delta and merge settings
-make reload-zsh            # Reload zsh configuration
-make install-deps          # Install all dependencies via Homebrew
+make copy-zsh                    # Copy config/zsh/.zshrc to ~/.zshrc
+make copy-wezterm                # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
+make copy-vscode-settings        # Copy config/vscode/settings.json to VS Code settings
+make copy-vscode-insiders-settings # Copy config/vscode-insiders/settings.json to VS Code Insiders settings
+make copy-kiro-settings          # Copy config/kiro/settings.json to Kiro settings
+make copy-kiro-agents            # Copy Kiro agents to ~/.kiro/agents/
+make copy-claude-mcp             # Copy config/claude-code/.claude.json to ~/.claude.json
+make copy-claude-settings        # Copy config/claude-code/settings.json to ~/.claude/settings.json
+make copy-claude-output-styles   # Copy output styles to ~/.claude/output-styles/
+make copy-opencode               # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
+make copy-opencode-agents        # Copy opencode agents to ~/.config/opencode/agents/
+make git-config                  # Configure git with delta and merge settings
+make reload-zsh                  # Reload zsh configuration
+make install-deps                # Install all dependencies via Homebrew
 ```
 
 Run `make help` for all available targets.
@@ -123,6 +126,18 @@ Copy VS Code settings:
 
 ```sh
 cp ~/.dotfiles/config/vscode/settings.json "$HOME/Library/Application Support/Code/User/settings.json"
+```
+
+Copy Kiro settings:
+
+```sh
+cp ~/.dotfiles/config/kiro/settings.json "$HOME/Library/Application Support/Kiro/User/settings.json"
+```
+
+Copy Kiro agents:
+
+```sh
+cp -r ~/.dotfiles/config/kiro/agents/*.md ~/.kiro/agents/
 ```
 
 Copy Claude Code Settings:
@@ -189,6 +204,15 @@ config/
 │   └── .zshrc                 # ZSH shell config
 ├── vscode/
 │   └── settings.json          # VS Code editor settings
+├── vscode-insiders/
+│   └── settings.json          # VS Code Insiders editor settings
+├── kiro/
+│   ├── settings.json          # Kiro settings
+│   └── agents/                # Kiro custom agents
+│       ├── ask.md             # Advisory Q&A agent
+│       ├── architect.md       # Planning and design agent
+│       ├── review.md          # Code review agent
+│       └── debug.md           # Systematic debugging agent
 └── opencode/
     ├── opencode.json          # OpenCode AI config
     └── agents/                # OpenCode custom agents

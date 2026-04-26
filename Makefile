@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode copy-vscode-insiders copy-kiro copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
+.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-kiro-settings copy-kiro-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
 
 
 all: help
@@ -9,20 +9,21 @@ help:
 	@echo "Arda Kılıçdağı's Dotfiles Makefile"
 	@echo ""
 	@echo "Targets:"
-	@echo "  copy-zsh              - Copy .zshrc to ~/.zshrc"
-	@echo "  copy-wezterm          - Copy .wezterm.lua to ~/.wezterm.lua"
-	@echo "  copy-vscode           - Copy config/vscode/settings.json to VS Code settings"
-	@echo "  copy-vscode-insiders  - Copy config/vscode-insiders/settings.json to VS Code Insiders settings"
-	@echo "  copy-kiro            - Copy config/kiro/settings.json to Kiro settings"
-	@echo "  copy-claude-mcp              - Copy .claude.json to ~/.claude.json"
-	@echo "  copy-claude-settings         - Copy .claude/settings.json to ~/.claude/settings.json"
-	@echo "  copy-claude-output-styles    - Copy output styles to ~/.claude/output-styles/"
-	@echo "  copy-opencode                - Copy opencode.json to ~/.config/opencode/opencode.json"
-	@echo "  copy-opencode-agents         - Copy opencode agents to ~/.config/opencode/agents/"
-	@echo "  copy-all              - Copy all config files"
-	@echo "  reload-zsh            - Reload zsh configuration"
-	@echo "  install-deps          - Install all dependencies via Homebrew"
-	@echo "  git-config            - Configure git with delta and merge settings"
+	@echo "  copy-zsh                    - Copy .zshrc to ~/.zshrc"
+	@echo "  copy-wezterm                - Copy .wezterm.lua to ~/.wezterm.lua"
+	@echo "  copy-vscode-settings        - Copy config/vscode/settings.json to VS Code settings"
+	@echo "  copy-vscode-insiders-settings - Copy config/vscode-insiders/settings.json to VS Code Insiders settings"
+	@echo "  copy-kiro-settings          - Copy config/kiro/settings.json to Kiro settings"
+	@echo "  copy-kiro-agents            - Copy Kiro agents to ~/.kiro/agents/"
+	@echo "  copy-claude-mcp             - Copy .claude.json to ~/.claude.json"
+	@echo "  copy-claude-settings        - Copy .claude/settings.json to ~/.claude/settings.json"
+	@echo "  copy-claude-output-styles   - Copy output styles to ~/.claude/output-styles/"
+	@echo "  copy-opencode               - Copy opencode.json to ~/.config/opencode/opencode.json"
+	@echo "  copy-opencode-agents        - Copy opencode agents to ~/.config/opencode/agents/"
+	@echo "  copy-all                    - Copy all config files"
+	@echo "  reload-zsh                  - Reload zsh configuration"
+	@echo "  install-deps                - Install all dependencies via Homebrew"
+	@echo "  git-config                  - Configure git with delta and merge settings"
 
 install-deps:
 	@echo "Installing Homebrew dependencies..."
@@ -50,20 +51,25 @@ copy-wezterm:
 	@cp $(CURRENT_DIR)/config/wezterm/.wezterm.lua $(HOME)/.wezterm.lua
 	@echo "Copied .wezterm.lua to ~/.wezterm.lua"
 
-copy-vscode:
+copy-vscode-settings:
 	@mkdir -p "$(HOME)/Library/Application Support/Code/User"
 	@cp $(CURRENT_DIR)/config/vscode/settings.json "$(HOME)/Library/Application Support/Code/User/settings.json"
 	@echo "Copied config/vscode/settings.json to VS Code settings"
 
-copy-vscode-insiders:
+copy-vscode-insiders-settings:
 	@mkdir -p "$(HOME)/Library/Application Support/Code - Insiders/User"
 	@cp $(CURRENT_DIR)/config/vscode-insiders/settings.json "$(HOME)/Library/Application Support/Code - Insiders/User/settings.json"
 	@echo "Copied config/vscode-insiders/settings.json to VS Code Insiders settings"
 
-copy-kiro:
+copy-kiro-settings:
 	@mkdir -p "$(HOME)/Library/Application Support/Kiro/User"
 	@cp $(CURRENT_DIR)/config/kiro/settings.json "$(HOME)/Library/Application Support/Kiro/User/settings.json"
 	@echo "Copied config/kiro/settings.json to Kiro settings"
+
+copy-kiro-agents:
+	@mkdir -p "$(HOME)/.kiro/agents"
+	@cp -r $(CURRENT_DIR)/config/kiro/agents/*.md "$(HOME)/.kiro/agents/"
+	@echo "Copied Kiro agents to ~/.kiro/agents/"
 
 copy-claude-mcp:
 	@cp $(CURRENT_DIR)/config/claude-code/.claude.json $(HOME)/.claude.json
@@ -89,7 +95,7 @@ copy-claude-output-styles:
 	@cp $(CURRENT_DIR)/config/claude-code/output-styles/*.md "$(HOME)/.claude/output-styles/"
 	@echo "Copied output styles to ~/.claude/output-styles/"
 
-copy-all: copy-zsh copy-wezterm copy-vscode copy-vscode-insiders copy-kiro copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
+copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-kiro-settings copy-kiro-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
 
 reload-zsh:
 	@source $(HOME)/.zshrc

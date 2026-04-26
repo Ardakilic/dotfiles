@@ -18,31 +18,5 @@
     // Disable Turkish characters being treated as unicode.
     "editor.unicodeHighlight.allowedLocales": {
         "tr": true
-    },
-
-    "terminal.integrated.commandsToSkipShell": [
-        "kilo-code.new.agentManagerOpen",
-        "kilo-code.new.agentManager.showTerminal"
-    ],
-
-    // Disable Github Copilot Autocomplte and Enable Kilo Code's autocomplete Agent
-    "github.copilot.enable": {
-        "*": false
-    },
-    "github.copilot.inlineSuggest.enable": false,
-    "github.copilot.editor.enableAutoCompletions": false,
-
-    // Autocomplete
-    // Disable VSCode's built-in IntelliSense word-based suggestions ─
-    // (optional — remove if you still want native snippets)
-    // "editor.inlineSuggest.suppressSuggestions": false,
-
-    // Let Kilo Code own inline completions
-    // Kilo Code registers as an inline completion provider.
-    // These make sure VSCode doesn't throttle external providers:
-    "editor.inlineSuggest.enabled": true,
-    "editor.suggest.preview": true,
-    "kilo-code.new.autocomplete.enableChatAutocomplete": true,
-    "kilo-code.new.autocomplete.enableSmartInlineTaskKeybinding": true
-    // / Autocomplete
+    }
 }
