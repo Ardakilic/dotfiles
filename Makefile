@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
+.PHONY: all copy-zsh copy-wezterm copy-vscode copy-vscode-insiders copy-kiro copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
 
 
 all: help
@@ -12,6 +12,8 @@ help:
 	@echo "  copy-zsh              - Copy .zshrc to ~/.zshrc"
 	@echo "  copy-wezterm          - Copy .wezterm.lua to ~/.wezterm.lua"
 	@echo "  copy-vscode           - Copy config/vscode/settings.json to VS Code settings"
+	@echo "  copy-vscode-insiders  - Copy config/vscode-insiders/settings.json to VS Code Insiders settings"
+	@echo "  copy-kiro            - Copy config/kiro/settings.json to Kiro settings"
 	@echo "  copy-claude-mcp              - Copy .claude.json to ~/.claude.json"
 	@echo "  copy-claude-settings         - Copy .claude/settings.json to ~/.claude/settings.json"
 	@echo "  copy-claude-output-styles    - Copy output styles to ~/.claude/output-styles/"
@@ -53,6 +55,16 @@ copy-vscode:
 	@cp $(CURRENT_DIR)/config/vscode/settings.json "$(HOME)/Library/Application Support/Code/User/settings.json"
 	@echo "Copied config/vscode/settings.json to VS Code settings"
 
+copy-vscode-insiders:
+	@mkdir -p "$(HOME)/Library/Application Support/Code - Insiders/User"
+	@cp $(CURRENT_DIR)/config/vscode-insiders/settings.json "$(HOME)/Library/Application Support/Code - Insiders/User/settings.json"
+	@echo "Copied config/vscode-insiders/settings.json to VS Code Insiders settings"
+
+copy-kiro:
+	@mkdir -p "$(HOME)/Library/Application Support/Kiro/User"
+	@cp $(CURRENT_DIR)/config/kiro/settings.json "$(HOME)/Library/Application Support/Kiro/User/settings.json"
+	@echo "Copied config/kiro/settings.json to Kiro settings"
+
 copy-claude-mcp:
 	@cp $(CURRENT_DIR)/config/claude-code/.claude.json $(HOME)/.claude.json
 	@echo "Copied .claude.json to ~/.claude.json"
@@ -77,7 +89,7 @@ copy-claude-output-styles:
 	@cp $(CURRENT_DIR)/config/claude-code/output-styles/*.md "$(HOME)/.claude/output-styles/"
 	@echo "Copied output styles to ~/.claude/output-styles/"
 
-copy-all: copy-zsh copy-wezterm copy-vscode copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
+copy-all: copy-zsh copy-wezterm copy-vscode copy-vscode-insiders copy-kiro copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
 
 reload-zsh:
 	@source $(HOME)/.zshrc

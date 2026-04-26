@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "config/vscode/settings.json": "jsonc"
+        "config/vscode/settings.json": "jsonc",
+        "config/vscode-insiders/settings.json": "jsonc",
+        "config/kiro/settings.json": "jsonc"
     }
 }

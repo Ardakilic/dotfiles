@@ -1,0 +1,44 @@
+{
+    // Font
+    // Alternatives: "Hack Nerd Font", "FiraCode Nerd Font"
+    "editor.fontFamily": "MonoLisa", // Or "'MonoLisa'"
+    // When lineHeight is set to zero, VS Code will figure out the
+    // the height automatically based on the font
+    "editor.lineHeight": 0,
+    // You can use standard CSS syntax here. To enable
+    // ss01 for example, you could set "'ss01' on"
+    "editor.fontLigatures": true,
+    "editor.fontSize": 13,
+    // / Font
+
+    // Disable Turkish characters being treated as unicode.
+    "editor.unicodeHighlight.allowedLocales": {
+        "tr": true
+    },
+
+    "terminal.integrated.commandsToSkipShell": [
+        "kilo-code.new.agentManagerOpen",
+        "kilo-code.new.agentManager.showTerminal"
+    ],
+
+    // Disable Github Copilot Autocomplte and Enable Kilo Code's autocomplete Agent
+    "github.copilot.enable": {
+        "*": false
+    },
+    "github.copilot.inlineSuggest.enable": false,
+    "github.copilot.editor.enableAutoCompletions": false,
+
+    // Autocomplete
+    // Disable VSCode's built-in IntelliSense word-based suggestions ─
+    // (optional — remove if you still want native snippets)
+    // "editor.inlineSuggest.suppressSuggestions": false,
+
+    // Let Kilo Code own inline completions
+    // Kilo Code registers as an inline completion provider.
+    // These make sure VSCode doesn't throttle external providers:
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggest.preview": true,
+    "kilo-code.new.autocomplete.enableChatAutocomplete": true,
+    "kilo-code.new.autocomplete.enableSmartInlineTaskKeybinding": true
+    // / Autocomplete
+}
