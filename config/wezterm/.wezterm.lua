@@ -1,5 +1,6 @@
 -- Pull in the wezterm API
 local wezterm = require 'wezterm'
+local act = wezterm.action
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
@@ -61,6 +62,22 @@ config.keys = {
     -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
     { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } }
 
+}
+
+config.mouse_bindings = {
+  -- Left click selects text normally
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'NONE',
+    action = act.CompleteSelection 'ClipboardAndPrimarySelection',
+  },
+
+  -- Cmd-click opens hyperlinks
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CMD',
+    action = act.OpenLinkAtMouseCursor,
+  },
 }
 
 config.scrollback_lines = 50000 -- Claude Code outputs a lot
