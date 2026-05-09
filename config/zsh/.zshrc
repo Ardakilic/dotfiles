@@ -40,6 +40,11 @@ jqc() {
   command jq "$@"
 }
 
+# Extract ALL zip files into current directory
+alias unzipallhere='for f in *.zip; do unzip -o "$f"; done'
+# Extract ALL zip files into separate folders
+alias unzipallfolders='for f in *.zip; do d="${f%.zip}"; mkdir -p "$d" && unzip -o "$f" -d "$d"; done'
+
 ### / File operations
 
 ### ports
@@ -163,3 +168,5 @@ SAVEHIST=50000
 # Claude Code, OpenCode etc.
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.opencode/bin:$PATH"
+# App-specific exports
+export OPENCODE_ENABLE_EXPERIMENTAL_MODELS=true
