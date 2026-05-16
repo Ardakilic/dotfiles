@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
+.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config
 
 
 all: help
@@ -13,6 +13,7 @@ help:
 	@echo "  copy-wezterm                - Copy .wezterm.lua to ~/.wezterm.lua"
 	@echo "  copy-vscode-settings          - Copy config/vscode/settings.json to VS Code settings"
 	@echo "  copy-vscode-insiders-settings  - Copy config/vscode-insiders/settings.json to VS Code Insiders settings"
+	@echo "  copy-vscodium-settings         - Copy config/vscodium/settings.json to VSCodium settings"
 	@echo "  copy-kiro-desktop-settings     - Copy config/kiro-desktop/settings.json to Kiro desktop settings"
 	@echo "  copy-kiro-desktop-agents       - Copy Kiro desktop agents to ~/.kiro/agents/"
 	@echo "  copy-kiro-cli-agents           - Copy Kiro CLI agents to ~/.kiro/agents/"
@@ -62,6 +63,11 @@ copy-vscode-insiders-settings:
 	@cp $(CURRENT_DIR)/config/vscode-insiders/settings.json "$(HOME)/Library/Application Support/Code - Insiders/User/settings.json"
 	@echo "Copied config/vscode-insiders/settings.json to VS Code Insiders settings"
 
+copy-vscodium-settings:
+	@mkdir -p "$(HOME)/Library/Application Support/VSCodium/User"
+	@cp $(CURRENT_DIR)/config/vscodium/settings.json "$(HOME)/Library/Application Support/VSCodium/User/settings.json"
+	@echo "Copied config/vscodium/settings.json to VSCodium settings"
+
 copy-kiro-desktop-settings:
 	@mkdir -p "$(HOME)/Library/Application Support/Kiro/User"
 	@cp $(CURRENT_DIR)/config/kiro-desktop/settings.json "$(HOME)/Library/Application Support/Kiro/User/settings.json"
@@ -101,7 +107,7 @@ copy-claude-output-styles:
 	@cp $(CURRENT_DIR)/config/claude-code/output-styles/*.md "$(HOME)/.claude/output-styles/"
 	@echo "Copied output styles to ~/.claude/output-styles/"
 
-copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
+copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents git-config
 
 reload-zsh:
 	@source $(HOME)/.zshrc

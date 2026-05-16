@@ -20,6 +20,7 @@ Nothing fancy, just practical improvements.
 - [OpenCode](https://opencode.ai/)
 - [Claude Code](https://claude.ai/)
 - [VS Code](https://code.visualstudio.com/)
+- [VSCodium](https://vscodium.com/)
 - [Kilo Code](https://www.kilo.ai/)
 
 ## Requirements
@@ -93,6 +94,7 @@ make copy-zsh                      # Copy config/zsh/.zshrc to ~/.zshrc
 make copy-wezterm                  # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
 make copy-vscode-settings          # Copy config/vscode/settings.json to VS Code settings
 make copy-vscode-insiders-settings # Copy config/vscode-insiders/settings.json to VS Code Insiders settings
+make copy-vscodium-settings        # Copy config/vscodium/settings.json to VSCodium settings
 make copy-kiro-desktop-settings    # Copy config/kiro-desktop/settings.json to Kiro desktop settings
 make copy-kiro-desktop-agents      # Copy Kiro desktop agents to ~/.kiro/agents/
 make copy-kiro-cli-agents          # Copy Kiro CLI agents to ~/.kiro/agents/
@@ -127,6 +129,13 @@ Copy VS Code settings:
 
 ```sh
 cp ~/.dotfiles/config/vscode/settings.json "$HOME/Library/Application Support/Code/User/settings.json"
+```
+
+Copy VSCodium settings:
+
+```sh
+mkdir -p "$HOME/Library/Application Support/VSCodium/User"
+cp ~/.dotfiles/config/vscodium/settings.json "$HOME/Library/Application Support/VSCodium/User/settings.json"
 ```
 
 Copy Kiro settings:
@@ -214,6 +223,8 @@ config/
 │   └── settings.json          # VS Code editor settings
 ├── vscode-insiders/
 │   └── settings.json          # VS Code Insiders editor settings
+├── vscodium/
+│   └── settings.json          # VSCodium editor settings
 ├── kiro-desktop/
 │   ├── settings.json          # Kiro desktop settings
 │   └── agents/                # Kiro desktop custom agents (markdown format)
