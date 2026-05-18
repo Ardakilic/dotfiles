@@ -60,7 +60,11 @@ config.keys = {
     { key = 'Backspace', mods = 'CMD', action = wezterm.action.SendKey { key = 'u', mods = 'CTRL' } },
 
     -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
-    { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } }
+    { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } },
+
+    -- Move the current tab left or right (keyboard replacement for drag-and-drop)
+    { key = 'LeftArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(-1) },
+    { key = 'RightArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(1) },
 
 }
 
