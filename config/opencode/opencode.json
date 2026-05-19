@@ -1,6 +1,36 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "lsp": true,
+  "permission": {
+    "read": {
+      "~/.ssh/**": "deny",
+      "~/.gnupg/**": "deny",
+      "~/.aws/**": "deny",
+      "~/.azure/**": "deny",
+      "~/.kube/**": "deny",
+      "~/.docker/**": "deny",
+      "~/.config/gcloud/**": "deny",
+      ".env*": "deny",
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.jks": "deny",
+      "*credentials*": "deny"
+    },
+    "edit": {
+      "~/.aws/**": "deny",
+      "~/.azure/**": "deny",
+      "~/.ssh/**": "deny",
+      "~/.gnupg/**": "deny",
+      "~/.kube/**": "deny",
+      "~/.docker/**": "deny",
+      "~/.config/gcloud/**": "deny"
+    },
+    "bash": {
+      "rm *credentials*": "deny",
+      "rm *.env*": "deny"
+    }
+  },
   "mcp": {
     "context7": {
       "type": "remote",
