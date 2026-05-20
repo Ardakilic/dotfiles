@@ -105,5 +105,13 @@ config.window_padding = { left = 8, right = 8, top = 6, bottom = 6 }
   })
 end) ]]
 
+-- Stderr discrimination: WezTerm (like all terminals) merges stdout & stderr
+-- into a single stream, so it can't color them differently at the terminal level.
+-- The workaround is a shell-level stderr colorizer in .zshrc (triggered by the
+-- env var below). It uses zsh process substitution to wrap stderr in ANSI red.
+config.set_environment_variables = {
+  WEZTERM_DISCRIMINATE_STDERR = '1',
+}
+
 -- Finally, return the configuration to wezterm:
 return config

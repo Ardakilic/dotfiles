@@ -85,7 +85,7 @@ alias ainfo='docker run --rm -v "$(pwd)":/audio ardakilic/sox_ng:latest --i'
 
 # Change Ctrl+U behaviour (that will be mapped on cmd+backspace on WezTerm)
 # Ctrl+U deletes the whole line by default
-# However, to set to delete everuthing before the cursor position, we need to use backward-kill-line
+# However, to set to delete everuthing before the cursor position, we need to use backward-kill-line
 bindkey "^U" backward-kill-line
 
 ## / Remaps
@@ -118,17 +118,17 @@ if [[ $TERM_PROGRAM == "WezTerm" ]]; then
   # case insensitive tab completion
   # Enable the following line if you only want
   #### case-insensitive completion and not fuzzy matching
-  # zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+  # zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
   # fuzzy matching
-  # it does not work with warp, so it's inside if block
+  # it does not work with warp, so it's inside if block
   # smarter path completion: case-insensitive + partial/fuzzy matching
   zstyle ':completion:*' completer _complete _approximate
   zstyle ':completion:*:approximate:*' max-errors 2 numeric
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
   setopt COMPLETE_IN_WORD  # complete even if cursor is mid-word
   setopt ALWAYS_TO_END     # move cursor to end after completion
-  # / fuzzy matching
+  # / fuzzy matching
 
   # Nicer colors for completion, hover color on match
   zstyle ':completion:*' menu select
@@ -143,10 +143,10 @@ if [[ $TERM_PROGRAM == "WezTerm" ]]; then
   source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
   # zsh-history-substring-search
-  # Should be below zsh-syntax-highlighting
+  # Should be below zsh-syntax-highlighting
   [[ -f /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]] && \
   source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-  # up and down keys for history substring search, use "cat -v" to see the actual key codes
+  # up and down keys for history substring search, use "cat -v" to see the actual key codes
   bindkey '^[[A' history-substring-search-up
   bindkey '^[[B' history-substring-search-down
 fi
@@ -154,7 +154,7 @@ fi
 # other options for ZSH
 setopt AUTO_CD # automatically cd for folder names
 setopt HIST_FIND_NO_DUPS # skip duplicates during history search
-# setops HIST_IGNORE_ALL_DUPS # removes all duplicates before inserting
+# setops HIST_IGNORE_ALL_DUPS # removes all duplicates before inserting
 # setopt HIST_REDUCE_BLANKS # clean up whitespaces in commands
 setopt HIST_VERIFY # preview history expansion before running
 setopt SHARE_HISTORY # share history between tabs
@@ -168,5 +168,18 @@ SAVEHIST=50000
 # Claude Code, OpenCode etc.
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.opencode/bin:$PATH"
+
 # App-specific exports
 export OPENCODE_ENABLE_EXPERIMENTAL_MODELS=true
+
+# Color stderr red in WezTerm
+# Uses preexec hook so it runs right before the first command executes,
+# after all plugins (p10k, zsh-syntax-highlighting) have fully settled.
+# Trade-off: background job control may behave differently.
+if [[ $TERM_PROGRAM == "WezTerm" && -n "$WEZTERM_DISCRIMINATE_STDERR" ]]; then
+  _wezterm_stderr_colorize() {
+    exec 2> >(while IFS= read -r line; do command printf '\033[91m%s\033[0m\n' "$line"; done)
+    preexec_functions=(${preexec_functions:#_wezterm_stderr_colorize})
+  }
+  preexec_functions+=(_wezterm_stderr_colorize)
+fi
