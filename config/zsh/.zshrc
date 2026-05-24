@@ -173,13 +173,34 @@ export PATH="$HOME/.opencode/bin:$PATH"
 export OPENCODE_ENABLE_EXPERIMENTAL_MODELS=true
 
 # Color stderr red in WezTerm
-# Uses preexec hook so it runs right before the first command executes,
-# after all plugins (p10k, zsh-syntax-highlighting) have fully settled.
-# Trade-off: background job control may behave differently.
+# Uses a per-command redirect with a completion marker so the pipe drains
+# before the next prompt is shown. This prevents stderr output from leaking
+# into/after the prompt line (a race with async process substitution).
 if [[ $TERM_PROGRAM == "WezTerm" && -n "$WEZTERM_DISCRIMINATE_STDERR" ]]; then
-  _wezterm_stderr_colorize() {
-    exec 2> >(while IFS= read -r line; do command printf '\033[91m%s\033[0m\n' "$line"; done)
-    preexec_functions=(${preexec_functions:#_wezterm_stderr_colorize})
+  _wezterm_stderr_enable() {
+    [[ -n $_WEZTERM_STDERR_MARKER ]] && command rm -f "$_WEZTERM_STDERR_MARKER"
+    _WEZTERM_STDERR_MARKER="/tmp/wezterm_stderr_done_$$_$RANDOM"
+    exec 2> >(
+      while IFS= read -r line; do
+        command printf '\033[91m%s\033[0m\n' "$line"
+      done
+      command touch "$_WEZTERM_STDERR_MARKER"
+    )
   }
-  preexec_functions+=(_wezterm_stderr_colorize)
+
+  _wezterm_stderr_disable() {
+    if [[ -n $_WEZTERM_STDERR_MARKER ]]; then
+      exec 2>/dev/tty
+      # Wait up to ~100ms for the stderr pipe to drain
+      local _i=0
+      while (( _i++ < 10 )) && [[ ! -f "$_WEZTERM_STDERR_MARKER" ]]; do
+        command sleep 0.01
+      done
+      command rm -f "$_WEZTERM_STDERR_MARKER"
+      _WEZTERM_STDERR_MARKER=
+    fi
+  }
+
+  preexec_functions+=(_wezterm_stderr_enable)
+  precmd_functions+=(_wezterm_stderr_disable)
 fi
