@@ -40,5 +40,46 @@
       },
       "enabled": false
     }
+  },
+  "provider": {
+    "hapuppy": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "hapuppy",
+      "options": {
+        "baseURL": "https://beta.hapuppy.com/v1"
+      },
+      "models": {
+        "deepseek-v4-pro": {
+          "name": "Deepseek V4 Pro"
+        },
+        "deepseek-v4-flash": {
+          "name": "Deepseek V4 Flash"
+        },
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6"
+        },
+        "claude-opus-4-7": {
+          "name": "Claude Opus 4.7"
+        },
+        "claude-haiku-4-5-20251001": {
+          "name": "Claude Haiku 4.5 20251001"
+        },
+        "gpt-5.5": {
+          "name": "GPT-5.5"
+        },
+        "gpt-oss-120b": {
+          "name": "GPT-OSS-120B"
+        },
+        "gemini-3.5-flash": {
+          "name": "Gemini 3.5 Flash"
+        },
+        "glm-5.1": {
+          "name": "GLM-5.1"
+        },
+        "kimi-k2.6": {
+          "name": "Kimi K2.6"
+        }
+      }
+    }
   }
 }
