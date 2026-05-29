@@ -10,6 +10,7 @@
       "~/.kube/**": "deny",
       "~/.docker/**": "deny",
       "~/.config/gcloud/**": "deny",
+      ".env.example": "allow",
       ".env*": "deny",
       "*.pem": "deny",
       "*.key": "deny",
