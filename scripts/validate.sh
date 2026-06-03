@@ -33,7 +33,6 @@ if [[ -n "$JSON_FILES" ]]; then
       # Standard jq doesn't support comments, so use jaq with relaxed parsing if available
       if [[ "$f" == *.jsonc ]] || grep -qE '^\s*//' "$f" 2>/dev/null; then
         if command -v jaq >/dev/null 2>&1; then
-          # Try relaxed parsing first; if that fails, it's truly invalid
           if ! jaq -R 'fromjson? | .' "$f" >/dev/null 2>&1; then
             error "Invalid JSON (with comments): $f"
           fi
@@ -148,8 +147,12 @@ fi
 # Summary
 # ─────────────────────────────────────────────
 echo ""
-if [[ $ERRORS -eq 0 && $WARNINGS -eq 0 ]]; then
-  info "All checks passed."
+if [[ $ERRORS -eq 0 ]]; then
+  if [[ $WARNINGS -eq 0 ]]; then
+    info "All checks passed."
+  else
+    echo -e "${YELLOW}Results: $ERRORS error(s), $WARNINGS warning(s)${NC}"
+  fi
   exit 0
 else
   echo -e "${YELLOW}Results: $ERRORS error(s), $WARNINGS warning(s)${NC}"

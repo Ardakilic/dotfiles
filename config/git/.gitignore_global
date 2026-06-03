@@ -10,6 +10,16 @@ Desktop.ini
 .vscode/
 .idea/
 
+# AI tool cache directories
+.kilo/
+.kilo-code/
+.roo/
+.claude/
+.kiro/
+
+# LLM suggestions
+suggestions.md
+
 # Temp directories
 *.tmp
 *.temp

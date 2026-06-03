@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary
 
-This plan captures **20 validated findings** across the dotfiles repository, broken into three priority tiers. Each finding has been cross-checked with official documentation (ZSH reference manual, Powerlevel10k README, WezTerm docs, Git config docs) via Context7 MCP and web fetch. The most severe issues are silent configuration bugs in `.zshrc`. Medium-priority items focus on idempotency, DRY violations, and cross-tool agent consistency. Low-priority items suggest quality-of-life improvements and repository hygiene.
+> **Retrospective**: This document captures the **20 validated findings** that were analyzed and addressed in this PR. It documents the pre-implementation state and the fixes applied.
 
 ---
 
@@ -58,12 +58,9 @@ This plan captures **20 validated findings** across the dotfiles repository, bro
 - **Impact**: Data loss of user-customized MCP configuration.
 - **Fix**: Add a backup step before overwrite, e.g. `cp $(HOME)/.claude.json $(HOME)/.claude.json.bak.$$(date +%s) 2>/dev/null || true`.
 
-#### H5. `.gitignore` Possibly Missing `.kilo-code/`
+#### H5. `.gitignore` — `.kilo-code/` Added
 - **Location**: `.gitignore`
-- **Current**: Lists `.kilo/`, `.roo/`, `.claude/`, `.kiro/`, `.vscode/`
-- **Question**: Kilo Code extension settings use the prefix `kilo-code.new.*`. The cache/config directory name may have changed. Need to verify if `.kilo/` is still current.
-- **Impact**: If Kilo Code now uses `~/.kilo-code/`, its generated files will be tracked by git.
-- **Fix**: Confirm current Kilo Code cache directory; add `.kilo-code/` if needed.
+- **Status**: ✅ Resolved — Added `.kilo-code/` to `.gitignore` in this PR alongside existing `.kilo/`, `.roo/`, `.claude/`, `.kiro/`, `.vscode/`. Also added `.kilo/`, `.kilo-code/`, `.roo/`, `.claude/`, `.kiro/`, and `suggestions.md` to `config/git/.gitignore_global`. Source of truth: `pr_description.md` (Kilo Code ignore update row).
 
 ---
 
@@ -103,13 +100,10 @@ This plan captures **20 validated findings** across the dotfiles repository, bro
   3. Verifies every `config/` subdirectory has a corresponding `copy-*` target in the Makefile.
   4. Flags agent description mismatches across tools.
 
-#### M6. `README.md` Stale TODOs + Misleading Ghostty Note
-- **Location**: `README.md:259–264`, line 256
-- **Current**:
-  - TODOs list `.gitconfig` and `.gitignore_global` as checked done (`[x]`), but neither file exists.
-  - README claims `.wezterm.lua` "includes a commented-out Ghostty alternative config at the bottom" — no such comment exists in the file.
-- **Impact**: Confusion for users.
-- **Fix**: Uncheck the TODOs or implement the features. Remove/update the Ghostty note.
+#### M6. `README.md` Stale TODOs + Misleading Ghostty Note — Resolved
+- **Location**: `README.md:259–264`
+- **Status**: ✅ Resolved — The PR added `config/git/.gitconfig` and `config/git/.gitignore_global` (confirmed in `pr_description.md`), so the TODOs listing `.gitconfig` and `.gitignore_global` as checked done (`[x]`) are accurate and the files now exist in the repo. The Ghostty note about `.wezterm.lua` was removed because no such commented-out config exists in the file.
+- **Impact**: None (documentation now matches repo state).
 
 ---
 
@@ -187,9 +181,11 @@ Below is the recommended execution order. Each task includes the file(s) to modi
 
 ---
 
-## 5. Agent Consistency Matrix (Post-Normalization Target)
+## 5. Agent Consistency Reference Specification (Future/Target)
 
-All agents should converge to this specification:
+> **Note**: This section is a **reference specification** for a future normalization effort, **not implemented** in this PR. The M3 normalization was cancelled because Kiro CLI/Kiro Desktop use different native tool names (`shell`, `@context7`) compared to OpenCode (`bash`). The matrix below defines the ideal target state if normalization is ever attempted. For now, each tool's config uses its own native tool names.
+
+All agents would converge to this specification in a future normalization:
 
 | Persona | Description | Canonical Tools |
 |---------|-------------|-----------------|
@@ -204,13 +200,15 @@ All agents should converge to this specification:
 - Kiro CLI: `shell` (maps to bash)
 - Claude Code: `Bash` (native tool, capitalize in docs only — actual tool name is case-insensitive)
 
-**Normalization rules:**
+**Reference rules (for future use if normalization is revisited):**
 1. Kiro Desktop markdown agents should list equivalent tools using Kiro's tool naming (`shell` for bash, `@context7` retained as bonus).
 2. Kiro CLI JSON agents should include the full tool array in both `tools` and `allowedTools`.
 3. Claude Code output styles should match OpenCode agent descriptions word-for-word.
 4. All `architect` agents must include the "never provide time estimates" clause and `todowrite` emphasis.
 5. All `review` agents must include the severity table and output format.
 6. All `debug` agents must include the "5-7 possible sources → 1-2 most likely → confirm before fixing" workflow.
+
+> **M3 Status**: Cancelled. See M3 note in Section 3 for rationale.
 
 ---
 

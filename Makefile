@@ -27,12 +27,17 @@ help:
 	@echo "  install-deps                   - Install all dependencies via Homebrew"
 	@echo "  git-config                     - Configure git with delta and merge settings"
 
-# Backup macro: backup file before overwriting
-BACKUP_SUFFIX = .bak.$(shell date +%s)
+# Backup macro: backup file or directory before overwriting
+BACKUP_SUFFIX := .bak.$(shell date +%s)
 define backup-file
-	@if [ -f $(1) ]; then \
-		cp $(1) $(1)$(BACKUP_SUFFIX); \
-		echo "Backed up $(1) to $(1)$(BACKUP_SUFFIX)"; \
+	@if [ -e $(1) ]; then \
+		if [ -d $(1) ]; then \
+			cp -r $(1) $(1)$(BACKUP_SUFFIX); \
+			echo "Backed up directory $(1) to $(1)$(BACKUP_SUFFIX)"; \
+		else \
+			cp $(1) $(1)$(BACKUP_SUFFIX); \
+			echo "Backed up $(1) to $(1)$(BACKUP_SUFFIX)"; \
+		fi; \
 	fi
 endef
 
@@ -58,12 +63,12 @@ git-config:
 	@echo "Configuring git with delta and merge settings..."
 	@git config --global --replace-all core.pager delta
 	@git config --global --replace-all interactive.diffFilter "delta --color-only"
-	@git config --global delta.navigate true
-	@git config --global delta.dark true
-	@git config --global delta.line-numbers true
-	@git config --global delta.side-by-side true
-	@git config --global merge.conflictStyle zdiff3
-	@git config --global core.excludesfile ~/.gitignore_global
+	@git config --global --replace-all delta.navigate true
+	@git config --global --replace-all delta.dark true
+	@git config --global --replace-all delta.line-numbers true
+	@git config --global --replace-all delta.side-by-side true
+	@git config --global --replace-all merge.conflictStyle zdiff3
+	@git config --global --replace-all core.excludesfile ~/.gitignore_global
 	@echo "Git configured successfully!"
 
 copy-zsh:

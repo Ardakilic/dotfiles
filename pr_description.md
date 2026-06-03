@@ -18,7 +18,7 @@ Fixed silent bugs in `.zshrc`, added idempotency and backup safety to Makefile, 
 | **p10k instant prompt position** | `config/zsh/.zshrc` | Moved Powerlevel10k instant prompt block from inside the `TERM_PROGRAM == "WezTerm"` conditional to the **absolute top** of the file. Per p10k docs, instant prompt must be "close to the top of `~/.zshrc`" and above any console output. Previous placement risked silent disablement. |
 | **Idempotent `git-config`** | `Makefile` | Replaced bare `git config --global` with `git config --global --replace-all`. Running `make git-config` twice no longer appends duplicate entries. Also sets `core.excludesfile` to `~/.gitignore_global`. |
 | **Destructive copy safety** | `Makefile` | Added `backup-file` macro with timestamped `.bak.<epoch>` backups. Applied to **all** `copy-*` targets. Prevents accidental overwrite of user-customized configs. |
-| **Kilo Code ignore update** | `.gitignore` | Added `.kilo-code/` alongside existing `.kilo/` to match current Kilo Code extension cache directory naming. `.kiro/` is for Kiro (different tool). |
+| **Kilo Code ignore update** | `.gitignore` | Added `.kilo-code/` alongside existing `.kilo/` to match current Kilo Code extension cache directory naming. `.kiro/` is for Kiro (different tool). Also added `.roo/`, `.claude/`, `.kiro/`, and `suggestions.md` to `.gitignore_global` for repo-level consistency. |
 
 ### 🔧 Quality & Consistency (Medium Priority)
 

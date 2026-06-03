@@ -18,6 +18,29 @@
     # Global gitignore
     excludesfile = ~/.gitignore_global
 
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    dark = true
+    line-numbers = true
+    side-by-side = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[mergetool "zdiff3"]
+    cmd = false
+    trustExitCode = true
+    keepBackup = false
+
 [init]
     defaultBranch = main
 
