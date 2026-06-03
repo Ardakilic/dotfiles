@@ -1,3 +1,12 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ $TERM_PROGRAM == "WezTerm" ]]; then
+  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+fi
+
 # Homebrew
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
@@ -96,13 +105,7 @@ if [[ $TERM_PROGRAM == "WezTerm" ]]; then
   [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-  # powerlevel10k
-  # # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-  # # Initialization code that may require console input (password prompts, [y/n]
-  # # confirmations, etc.) must go above this block; everything else may go below.
-  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-  fi
+  # powerlevel10k theme (instant prompt already loaded at top of file)
   [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]] && \
   source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -154,7 +157,7 @@ fi
 # other options for ZSH
 setopt AUTO_CD # automatically cd for folder names
 setopt HIST_FIND_NO_DUPS # skip duplicates during history search
-# setops HIST_IGNORE_ALL_DUPS # removes all duplicates before inserting
+# setopt HIST_IGNORE_ALL_DUPS # removes all duplicates before inserting
 # setopt HIST_REDUCE_BLANKS # clean up whitespaces in commands
 setopt HIST_VERIFY # preview history expansion before running
 setopt SHARE_HISTORY # share history between tabs
@@ -203,4 +206,18 @@ if [[ $TERM_PROGRAM == "WezTerm" && -n "$WEZTERM_DISCRIMINATE_STDERR" ]]; then
 
   preexec_functions+=(_wezterm_stderr_enable)
   precmd_functions+=(_wezterm_stderr_disable)
+fi
+
+# Modern navigation tools (work in any terminal)
+# zoxide — smarter cd (replaces cd entirely)
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh --cmd cd)"
+fi
+
+# fzf — fuzzy finder
+if [[ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]]; then
+  source /opt/homebrew/opt/fzf/shell/completion.zsh
+fi
+if [[ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]]; then
+  source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
 fi

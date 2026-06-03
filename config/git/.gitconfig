@@ -1,0 +1,54 @@
+[alias]
+    # Short log with graph
+    lg = log --oneline --graph --decorate
+    # Show last commit
+    last = log -1 HEAD
+    # Show all branches
+    branches = branch -a
+    # Show all tags
+    tags = tag -l
+    # Undo last commit (keep changes)
+    undo = reset --soft HEAD^1
+    # Amend last commit
+    amend = commit -a --amend
+    # Interactive rebase last n commits
+    rebase-last = "!f() { git rebase -i HEAD~$1; }; f"
+
+[core]
+    # Global gitignore
+    excludesfile = ~/.gitignore_global
+
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    dark = true
+    line-numbers = true
+    side-by-side = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[mergetool "zdiff3"]
+    cmd = false
+    trustExitCode = true
+    keepBackup = false
+
+[init]
+    defaultBranch = main
+
+[push]
+    default = simple
+
+[pull]
+    rebase = true
+
+[fetch]
+    prune = true

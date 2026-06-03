@@ -34,7 +34,7 @@ make install-deps
 Or install individually:
 
 ```sh
-brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search
+brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf zoxide
 ```
 
 ### Individual tools:
@@ -45,6 +45,8 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta p
 - [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
 - [jaq](https://github.com/01mf02/jaq) — Rust reimplementation of `jq`
 - [git-delta](https://github.com/dandavison/delta) — syntax-highlighting pager for git
+- [fzf](https://github.com/junegunn/fzf) — fuzzy finder
+- [zoxide](https://github.com/ajeetdsouza/zoxide) — smarter `cd` replacement
 
 ### ZSH plugins:
 - [powerlevel10k](https://github.com/romkatv/powerlevel10k) — ZSH theme
@@ -101,8 +103,11 @@ make copy-kiro-cli-agents          # Copy Kiro CLI agents to ~/.kiro/agents/
 make copy-claude-mcp               # Copy config/claude-code/.claude.json to ~/.claude.json
 make copy-claude-settings          # Copy config/claude-code/settings.json to ~/.claude/settings.json
 make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
+make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
 make copy-opencode                 # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
 make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/agents/
+make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
+make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
 make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration
 make install-deps                  # Install all dependencies via Homebrew
@@ -219,6 +224,9 @@ config/
 │   └── .wezterm.lua           # WezTerm terminal config
 ├── zsh/
 │   └── .zshrc                 # ZSH shell config
+├── git/
+│   ├── .gitconfig             # Git aliases, delta pager, zdiff3 merge
+│   └── .gitignore_global      # Global gitignore for OS/IDE files
 ├── vscode/
 │   └── settings.json          # VS Code editor settings
 ├── vscode-insiders/
@@ -252,13 +260,12 @@ config/
 ## Notes
 
 * Built for macOS (Homebrew paths)
-* Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm — see line 76 of `.zshrc`)
-* `.wezterm.lua` includes a commented-out Ghostty alternative config at the bottom
+* Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm)
 * Not portable without tweaks
 
 ## TODOs
 
 - [x] Add `make install-deps` target to install dependencies
 - [x] Add `opencode` support
-- [ ] Add `.gitconfig` support
-- [ ] Add `.gitignore_global` support
+- [x] Add `.gitconfig` support
+- [x] Add `.gitignore_global` support
