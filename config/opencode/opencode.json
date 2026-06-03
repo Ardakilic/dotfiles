@@ -1,5 +1,5 @@
 {
-  "$schema": "https://opencode.ai/config.json",
+  "# schema": "https://opencode.ai/config.json  --  unversioned remote URL; may break if upstream changes.",
   "lsp": true,
   "permission": {
     "read": {

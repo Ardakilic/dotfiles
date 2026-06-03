@@ -1,0 +1,31 @@
+[alias]
+    # Short log with graph
+    lg = log --oneline --graph --decorate
+    # Show last commit
+    last = log -1 HEAD
+    # Show all branches
+    branches = branch -a
+    # Show all tags
+    tags = tag -l
+    # Undo last commit (keep changes)
+    undo = reset --soft HEAD^1
+    # Amend last commit
+    amend = commit -a --amend
+    # Interactive rebase last n commits
+    rebase-last = "!f() { git rebase -i HEAD~$1; }; f"
+
+[core]
+    # Global gitignore
+    excludesfile = ~/.gitignore_global
+
+[init]
+    defaultBranch = main
+
+[push]
+    default = simple
+
+[pull]
+    rebase = true
+
+[fetch]
+    prune = true

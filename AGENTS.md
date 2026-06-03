@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (WezTerm), editors (VS Code, VS Code Insiders, VSCodium, Kiro Desktop), and AI coding tools (OpenCode, Claude Code, Kiro CLI/Desktop). Uses Homebrew for package management and a Makefile for setup orchestration.
+Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (WezTerm), editors (VS Code, VS Code Insiders, VSCodium, Kiro Desktop), version control (git), and AI coding tools (OpenCode, Claude Code, Kiro CLI/Desktop). Uses Homebrew for package management and a Makefile for setup orchestration.
 
 **Owner:** Arda Kılıçdağı  
 **License:** MIT  
@@ -18,11 +18,15 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
 ├── LICENSE                      # MIT
 ├── .gitignore                   # Ignores .kilo/, .roo/, .claude/, .kiro/, .vscode/, suggestions.md
 ├── screenshots/                 # Terminal/IDE screenshots (PNG)
+├── scripts/                     # Validation and utility scripts
 └── config/
     ├── zsh/
     │   └── .zshrc               # ZSH config: aliases, PATH, completions, WezTerm plugins, stderr coloring
     ├── wezterm/
     │   └── .wezterm.lua         # WezTerm terminal: colorscheme, keybindings, fonts, stderr injection
+    ├── git/
+    │   ├── .gitconfig           # Git aliases, defaults, excludesfile
+    │   └── .gitignore_global    # Global gitignore (OS, IDE files)
     ├── vscode/
     │   └── settings.json        # VS Code stable settings
     ├── vscode-insiders/
@@ -39,7 +43,7 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
     │   ├── settings.json        # Claude Code settings
     │   └── output-styles/       # Markdown output style templates (ask, architect, review, debug)
     └── opencode/
-        ├── opencode.json        # OpenCode config: LSP, permissions, MCP
+        ├── opencode.json        # OpenCode config: LSP, permissions, MCP, custom providers
         └── agents/              # Agent definitions (markdown, same 4 personas)
 ```
 
@@ -48,8 +52,8 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
 All operations are via `make`:
 
 ```sh
-make install-deps                  # Install all Homebrew dependencies
-make copy-all                      # Copy all config files + git config
+make install-deps                  # Install all Homebrew dependencies (idempotent)
+make copy-all                      # Copy all config files + git config (with backups)
 make copy-zsh                      # config/zsh/.zshrc  → ~/.zshrc
 make copy-wezterm                  # config/wezterm/.wezterm.lua → ~/.wezterm.lua
 make copy-vscode-settings          # → ~/Library/Application Support/Code/User/settings.json
@@ -63,12 +67,14 @@ make copy-claude-settings          # → ~/.claude/settings.json
 make copy-claude-output-styles     # → ~/.claude/output-styles/
 make copy-opencode                 # → ~/.config/opencode/opencode.json
 make copy-opencode-agents          # → ~/.config/opencode/agents/
-make git-config                    # git global config: delta pager + zdiff3 merge
+make copy-gitconfig                # config/git/.gitconfig → ~/.gitconfig
+make copy-gitignore-global         # config/git/.gitignore_global → ~/.gitignore_global
+make git-config                    # git global config: delta pager + zdiff3 merge + excludesfile
 make reload-zsh                    # source ~/.zshrc
 make help                          # List all targets
 ```
 
-There are no tests, linters, or type checkers. Validation is manual (sourcing, visual inspection).
+There are no tests, linters, or type checkers. Validation is via `scripts/validate.sh` (syntax checks, Makefile target alignment).
 
 ## Environment
 
@@ -77,6 +83,7 @@ There are no tests, linters, or type checkers. Validation is manual (sourcing, v
 - **Terminal:** WezTerm nightly (some `.zshrc` features gate on `$TERM_PROGRAM == "WezTerm"`)
 - **Font:** MonoLisa (paid, Nerd Font patched) — fallbacks: Hack Nerd Font, FiraCode Nerd Font
 - **Package Manager:** Homebrew only (no npm/pip/gem)
+- **Modern tools:** fzf (fuzzy finder), zoxide (smart cd)
 
 ## Conventions
 

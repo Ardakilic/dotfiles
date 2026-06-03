@@ -252,13 +252,12 @@ config/
 ## Notes
 
 * Built for macOS (Homebrew paths)
-* Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm — see line 76 of `.zshrc`)
-* `.wezterm.lua` includes a commented-out Ghostty alternative config at the bottom
+* Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm)
 * Not portable without tweaks
 
 ## TODOs
 
 - [x] Add `make install-deps` target to install dependencies
 - [x] Add `opencode` support
-- [ ] Add `.gitconfig` support
-- [ ] Add `.gitignore_global` support
+- [x] Add `.gitconfig` support
+- [x] Add `.gitignore_global` support
