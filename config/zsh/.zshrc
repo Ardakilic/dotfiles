@@ -207,9 +207,9 @@ if [[ $TERM_PROGRAM == "WezTerm" && -n "$WEZTERM_DISCRIMINATE_STDERR" ]]; then
 fi
 
 # Modern navigation tools (work in any terminal)
-# zoxide — smarter cd
+# zoxide — smarter cd (replaces cd entirely)
 if command -v zoxide &>/dev/null; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init zsh --cmd cd)"
 fi
 
 # fzf — fuzzy finder

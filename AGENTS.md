@@ -83,7 +83,7 @@ There are no tests, linters, or type checkers. Validation is via `scripts/valida
 - **Terminal:** WezTerm nightly (some `.zshrc` features gate on `$TERM_PROGRAM == "WezTerm"`)
 - **Font:** MonoLisa (paid, Nerd Font patched) — fallbacks: Hack Nerd Font, FiraCode Nerd Font
 - **Package Manager:** Homebrew only (no npm/pip/gem)
-- **Modern tools:** fzf (fuzzy finder), zoxide (smart cd)
+- **Modern tools:** fzf (fuzzy finder), zoxide (replaces cd with smart directory tracking)
 
 ## Conventions
 

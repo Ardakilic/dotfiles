@@ -33,7 +33,7 @@ Fixed silent bugs in `.zshrc`, added idempotency and backup safety to Makefile, 
 | Feature | File | Details |
 |---------|------|---------|
 | **Git config templates** | `config/git/.gitconfig`<br>`config/git/.gitignore_global` | Added tracked `.gitconfig` with aliases (`lg`, `last`, `undo`, `amend`), `excludesfile`, and defaults. Added `.gitignore_global` for OS and IDE files. Two new Makefile targets: `copy-gitconfig` and `copy-gitignore-global`. |
-| **Modern navigation tools** | `config/zsh/.zshrc`<br>`Makefile` | Added `fzf` (fuzzy finder) and `zoxide` (smart cd) to `make install-deps`. Initialized in `.zshrc` with completion and key-bindings from Homebrew paths. |
+| **Modern navigation tools** | `config/zsh/.zshrc`<br>`Makefile` | Added `fzf` (fuzzy finder) and `zoxide` (replaces `cd` with smart directory tracking) to `make install-deps`. Initialized in `.zshrc` with `--cmd cd` so `cd` uses zoxide intelligence. |
 | **Validation script** | `scripts/validate.sh` | New script checks: JSON syntax (with JSONC support via `jaq`), Lua syntax, Makefile target alignment, agent file existence, `.gitignore` coverage, and shell script syntax. Exits 0 on clean, 1 on failure. |
 | **Updated documentation** | `AGENTS.md`<br>`README.md` | Added `config/git/` and `scripts/` to diagrams. Listed new Makefile targets. Documented `fzf`/`zoxide` and validation script. |
 
@@ -97,7 +97,7 @@ The AGENTS.md table documents OpenCode's tool set as the **canonical reference**
 - [ ] Run `make copy-zsh` twice — confirm `~/.zshrc.bak.*` backup is created.
 - [ ] Run `./scripts/validate.sh` — should exit 0 with 0 errors.
 - [ ] Open WezTerm — p10k instant prompt should appear instantly.
-- [ ] Type `z <some dir>` — zoxide navigation should work.
+- [ ] Type `cd <some dir>` — zoxide replaces native cd with smart directory tracking.
 - [ ] Press `Ctrl+R` — fzf history search should activate.
 
 ---

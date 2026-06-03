@@ -124,10 +124,10 @@ This plan captures **20 validated findings** across the dotfiles repository, bro
 - **Integration**: Update `git-config` target to also copy `.gitconfig` and set `core.excludesfile`.
 
 #### L2. Add Modern Navigation Tools (`fzf`, `zoxide`)
-- **Rationale**: Your alias stack (eza, bat, jaq, delta) is modern. `zoxide` (smart `cd`) and `fzf` (fuzzy finder) are natural complements.
+- **Rationale**: Your alias stack (eza, bat, jaq, delta) is modern. `zoxide` (replaces `cd` with smart directory tracking) and `fzf` (fuzzy finder) are natural complements.
 - **Files to modify**:
   - `Makefile:33` — add `fzf zoxide` to `brew install`
-  - `config/zsh/.zshrc` — add `eval "$(zoxide init zsh)"` and `$(brew --prefix)/opt/fzf/shell/completion.zsh` / `key-bindings.zsh`
+  - `config/zsh/.zshrc` — add `eval "$(zoxide init zsh --cmd cd)"` (replaces cd) and `$(brew --prefix)/opt/fzf/shell/completion.zsh` / `key-bindings.zsh`
 
 #### L3. Document `hapuppy` Provider in README
 - **Rationale**: `opencode.json` includes a custom provider (`hapuppy`) with internal-only model names. If this is a private/self-hosted endpoint, other users of the repo will have broken configs.
@@ -179,7 +179,7 @@ Below is the recommended execution order. Each task includes the file(s) to modi
 | # | Task | File(s) | Validation |
 |---|------|---------|------------|
 | 12 | Add `.gitconfig` and `.gitignore_global` | `config/git/.gitconfig`, `config/git/.gitignore_global`, `Makefile` | `make copy-gitconfig` works; `git config --global --list` shows aliases |
-| 13 | Add `fzf` and `zoxide` to deps and `.zshrc` | `Makefile`, `config/zsh/.zshrc` | `z <dir>` navigates; `Ctrl+R` uses fzf history |
+| 13 | Add `fzf` and `zoxide` to deps and `.zshrc` | `Makefile`, `config/zsh/.zshrc` | `cd <dir>` uses zoxide intelligence; `Ctrl+R` uses fzf history |
 | 14 | Add validation script | `scripts/validate.sh` | Run `./scripts/validate.sh` from repo root; exits 0 on clean repo |
 | 15 | Add Makefile backup macro for all destructive ops | `Makefile` | Every `copy-*` target creates `.bak.<timestamp>` before overwrite |
 | 16 | Document `hapuppy` provider | `README.md` or `AGENTS.md` | Other users know to replace the endpoint |
