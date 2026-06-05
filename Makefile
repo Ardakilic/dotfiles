@@ -24,7 +24,7 @@ help:
 	@echo "  copy-opencode-agents           - Copy opencode agents to ~/.config/opencode/agents/"
 	@echo "  copy-all                       - Copy all config files"
 	@echo "  reload-zsh                     - Reload zsh configuration"
-	@echo "  install-deps                   - Install all dependencies via Homebrew"
+	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
 	@echo "  git-config                     - Configure git with delta and merge settings"
 
 # Backup macro: backup file or directory before overwriting
@@ -42,22 +42,22 @@ define backup-file
 endef
 
 install-deps:
-	@echo "Installing Homebrew dependencies..."
-	@brew list wezterm@nightly &>/dev/null || brew install --cask wezterm@nightly
-	@brew list curl &>/dev/null || brew install curl
-	@brew list eza &>/dev/null || brew install eza
-	@brew list bat &>/dev/null || brew install bat
-	@brew list jaq &>/dev/null || brew install jaq
-	@brew list git-delta &>/dev/null || brew install git-delta
-	@brew list powerlevel10k &>/dev/null || brew install powerlevel10k
-	@brew list zsh-syntax-highlighting &>/dev/null || brew install zsh-syntax-highlighting
-	@brew list zsh-autosuggestions &>/dev/null || brew install zsh-autosuggestions
-	@brew list zsh-history-substring-search &>/dev/null || brew install zsh-history-substring-search
-	@brew list fzf &>/dev/null || brew install fzf
-	@brew list zoxide &>/dev/null || brew install zoxide
-	@brew list font-hack-nerd-font &>/dev/null || brew install --cask font-hack-nerd-font
-	@brew list font-fira-code-nerd-font &>/dev/null || brew install --cask font-fira-code-nerd-font
-	@echo "All dependencies installed successfully!"
+	@echo "Trusting third-party taps..."
+	@brew trust --tap ardakilic/tap 2>/dev/null || true
+	@brew trust --tap wxtsky/tap   2>/dev/null || true
+	@if ! command -v mas >/dev/null 2>&1; then \
+		echo "Installing mas CLI (needed for App Store apps)..."; \
+		brew install mas; \
+	fi
+	@if ! mas list >/dev/null 2>&1; then \
+		echo ""; \
+		echo "ERROR: Not signed into the Mac App Store."; \
+		echo "App Store apps require sign-in. Open the App Store app,"; \
+		echo "sign in with your Apple ID, then re-run 'make install-deps'."; \
+		exit 1; \
+	fi
+	@echo "Installing formulae, casks, and App Store apps from Brewfile..."
+	@brew bundle install --no-upgrade --file=$(CURRENT_DIR)/config/brew/Brewfile
 
 git-config:
 	@echo "Configuring git with delta and merge settings..."

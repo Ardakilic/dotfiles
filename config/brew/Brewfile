@@ -1,0 +1,61 @@
+# config/brew/Brewfile
+# Hand-curated snapshot of the user's intended Homebrew installation.
+# Regenerate formulae/casks sections with:
+#   brew leaves --installed-on-request
+#   brew list --cask
+# Auto-installed dependency bottles MUST NOT be added to this file.
+# Taps and mas entries are hand-listed; review them deliberately.
+
+# Taps
+tap "wxtsky/tap"        # codeisland (cask)
+tap "ardakilic/tap"     # lilt (formula), rb-scrobbler (formula), feishin (cask)
+
+# Formulae (on-request only)
+brew "mas"              # Mac App Store CLI (needed for mas entries below)
+brew "lilt"             # ardakilic/tap
+brew "rb-scrobbler"     # ardakilic/tap
+brew "aria2"
+brew "bat"
+brew "curl"
+brew "deno"
+brew "eza"
+brew "fzf"
+brew "git"
+brew "git-delta"
+brew "htop"
+brew "jaq"
+brew "mole"
+brew "nano"
+brew "node@24"
+brew "powerlevel10k"
+brew "wget"
+brew "zoxide"
+brew "zsh-autosuggestions"
+brew "zsh-history-substring-search"
+brew "zsh-syntax-highlighting"
+
+# Casks
+cask "feishin"          # ardakilic/tap
+cask "alt-tab"
+cask "betterzip"
+cask "codeisland"       # wxtsky/tap
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "forklift"
+cask "helium-browser"
+cask "iina"
+cask "joplin"
+cask "kiro"
+cask "megasync"
+cask "openmtp"
+cask "orbstack"
+cask "raycast"
+cask "telegram"
+cask "vscodium"
+cask "wezterm@nightly"
+
+# Mac App Store apps (require sign-in to the Mac App Store on fresh machines)
+mas "VidHub",              id: 1659622164
+mas "WhatsApp",            id: 310633997
+mas "WireGuard",           id: 1451685025
+mas "Scrobbles for Last.fm", id: 1344679160

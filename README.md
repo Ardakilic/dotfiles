@@ -31,6 +31,16 @@ Install everything with one command:
 make install-deps
 ```
 
+This installs Homebrew formulae, casks, taps, and Mac App Store apps
+listed in [`config/brew/Brewfile`](./config/brew/Brewfile). It is
+idempotent and does not upgrade existing packages.
+
+**Note on a fresh machine:** the Mac App Store apps (VidHub, WhatsApp,
+WireGuard, Scrobbles for Last.fm) are installed via [`mas`](https://github.com/mas-cli/mas),
+which requires you to be signed into the Mac App Store app on the
+machine. On a fresh install, open the App Store app and sign in with
+your Apple ID before running `make install-deps`.
+
 Or install individually:
 
 ```sh
@@ -38,6 +48,10 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta p
 ```
 
 ### Individual tools:
+
+> The canonical list of formulae, casks, taps, and Mac App Store
+> apps lives in [`config/brew/Brewfile`](./config/brew/Brewfile).
+> The notes below are highlights; the Brewfile is the source of truth.
 
 - [wezterm@nightly](https://formulae.brew.sh/cask/wezterm@nightly) — GPU-accelerated terminal emulator
 - [curl](https://curl.se/) — data transfer
@@ -53,6 +67,39 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta p
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — fish-like highlighting
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions
 - [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) — fuzzy history search
+
+### Casks:
+> Cask apps installed via Homebrew. The full list (with versions) lives in [`config/brew/Brewfile`](./config/brew/Brewfile).
+
+- [alt-tab](https://github.com/lwouis/alt-tab) — Windows-style alt-tab task switcher
+- [betterzip](https://macitbetter.com/) — Archive manager
+- [codeisland](https://github.com/wxtsky/codeisland) — Floating code editor (from `wxtsky/tap`)
+- [forklift](https://binarynights.com/) — Dual-pane file manager
+- [helium-browser](https://helium.computer/) — Browser
+- [iina](https://iina.io/) — Modern video player
+- [joplin](https://joplinapp.org/) — Note-taking and to-do
+- [kiro](https://kiro.dev/) — AI-powered IDE
+- [megasync](https://mega.io/desktop) — MEGA cloud sync
+- [openmtp](https://openmtp.ganeshrvel.com/) — Android file transfer
+- [orbstack](https://orbstack.dev/) — Docker / Linux VM replacement
+- [raycast](https://www.raycast.com/) — Spotlight replacement / launcher
+- [telegram](https://telegram.org/) — Messaging
+- [vscodium](https://vscodium.com/) — Open-source VS Code build
+
+### Mac App Store apps:
+> Installed via [`mas`](https://github.com/mas-cli/mas) entries in the Brewfile. Requires the App Store app to be signed in on the machine.
+
+- **VidHub** — Video library manager and player
+- **WhatsApp** — Messenger
+- **WireGuard** — VPN client
+- **Scrobbles for Last.fm** — Last.fm scrobbler for Apple Music
+
+### Private tap packages:
+> Packages from [`ardakilic/tap`](https://github.com/ardakilic/homebrew-tap). Trust the tap before installing (handled in the Makefile).
+
+- **lilt** — CLI that converts Hi-Res FLAC/ALAC to 16-bit/44.1kHz or 48kHz
+- **rb-scrobbler** — Minimal Rockbox Last.fm scrobbler
+- **feishin** — Modern self-hosted music player
 
 ## Font
 
@@ -110,7 +157,7 @@ make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
 make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration
-make install-deps                  # Install all dependencies via Homebrew
+make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
 ```
 
 Run `make help` for all available targets.
@@ -212,6 +259,8 @@ git config --global merge.conflictStyle zdiff3
 
 ```
 config/
+├── brew/
+│   └── Brewfile              # Hand-curated Homebrew formulae, casks, taps, and App Store apps
 ├── claude-code/
 │   ├── .claude.json           # Claude Code MCP servers config
 │   ├── settings.json          # Claude Code settings
