@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps git-config copy-gitconfig copy-gitignore-global
+.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global
 
 
 all: help
@@ -25,7 +25,6 @@ help:
 	@echo "  copy-all                       - Copy all config files"
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
-	@echo "  git-config                     - Configure git with delta and merge settings"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -58,18 +57,6 @@ install-deps:
 	fi
 	@echo "Installing formulae, casks, and App Store apps from Brewfile..."
 	@brew bundle install --no-upgrade --file=$(CURRENT_DIR)/config/brew/Brewfile
-
-git-config:
-	@echo "Configuring git with delta and merge settings..."
-	@git config --global --replace-all core.pager delta
-	@git config --global --replace-all interactive.diffFilter "delta --color-only"
-	@git config --global --replace-all delta.navigate true
-	@git config --global --replace-all delta.dark true
-	@git config --global --replace-all delta.line-numbers true
-	@git config --global --replace-all delta.side-by-side true
-	@git config --global --replace-all merge.conflictStyle zdiff3
-	@git config --global --replace-all core.excludesfile ~/.gitignore_global
-	@echo "Git configured successfully!"
 
 copy-zsh:
 	$(call backup-file,$(HOME)/.zshrc)
@@ -156,7 +143,7 @@ copy-gitignore-global:
 	@cp $(CURRENT_DIR)/config/git/.gitignore_global $(HOME)/.gitignore_global
 	@echo "Copied .gitignore_global to ~/.gitignore_global"
 
-copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global git-config
+copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global
 
 reload-zsh:
 	@source $(HOME)/.zshrc

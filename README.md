@@ -44,7 +44,7 @@ your Apple ID before running `make install-deps`.
 Or install individually:
 
 ```sh
-brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf zoxide
+brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf zoxide
 ```
 
 ### Individual tools:
@@ -59,6 +59,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq git-delta p
 - [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
 - [jaq](https://github.com/01mf02/jaq) — Rust reimplementation of `jq`
 - [git-delta](https://github.com/dandavison/delta) — syntax-highlighting pager for git
+- [less](https://greenwoodsoftware.com/less/) — modern pager used by delta; required for proper mouse-wheel scrolling inside `git diff`
 - [fzf](https://github.com/junegunn/fzf) — fuzzy finder
 - [zoxide](https://github.com/ajeetdsouza/zoxide) — smarter `cd` replacement
 
@@ -235,23 +236,13 @@ source ~/.zshrc
 
 ### Git Configuration
 
-Git is configured with delta as the diff pager and zdiff3 for merge conflicts:
+Git is configured with `delta` for diff highlighting (side-by-side, dark, line-numbers) and `zdiff3` for merge conflicts. Delta is invoked as the pager via `[pager] diff = delta` but **`paging = never`** tells delta to print the full output to the terminal instead of running it through `less` — so the entire diff lands in WezTerm's scrollback, ready for native scrolling and search (`Ctrl+Shift+F` in WezTerm). The settings live in `config/git/.gitconfig` and are applied with:
 
 ```sh
-make git-config
+make copy-gitconfig
 ```
 
-Or manually:
-
-```sh
-git config --global core.pager delta
-git config --global interactive.diffFilter "delta --color-only"
-git config --global delta.navigate true
-git config --global delta.dark true
-git config --global delta.line-numbers true
-git config --global delta.side-by-side true
-git config --global merge.conflictStyle zdiff3
-```
+The `LESS='-R -F -X'` env var (set in `.zshrc`) is still exported for other tools (man pages, `git log` outside delta) that shell out to `less`.
 
 ---
 

@@ -214,6 +214,12 @@ if command -v zoxide &>/dev/null; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
 
+# less options consumed by git-delta's pager (and anything else that shells out to less)
+# -R : pass through ANSI color escapes
+# -F : quit automatically if the output fits on one screen
+# -X : don't switch to the alternate screen buffer, so the diff stays in WezTerm's scrollback after quitting
+export LESS='-R -F -X'
+
 # fzf — fuzzy finder
 if [[ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]]; then
   source /opt/homebrew/opt/fzf/shell/completion.zsh

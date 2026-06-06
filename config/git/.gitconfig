@@ -32,6 +32,7 @@
     dark = true
     line-numbers = true
     side-by-side = true
+    paging = never
 
 [merge]
     conflictStyle = zdiff3

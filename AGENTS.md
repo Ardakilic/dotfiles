@@ -71,7 +71,6 @@ make copy-opencode                 # → ~/.config/opencode/opencode.json
 make copy-opencode-agents          # → ~/.config/opencode/agents/
 make copy-gitconfig                # config/git/.gitconfig → ~/.gitconfig
 make copy-gitignore-global         # config/git/.gitignore_global → ~/.gitignore_global
-make git-config                    # git global config: delta pager + zdiff3 merge + excludesfile
 make reload-zsh                    # source ~/.zshrc
 make help                          # List all targets
 ```
@@ -86,6 +85,7 @@ There are no tests, linters, or type checkers. Validation is via `scripts/valida
 - **Font:** MonoLisa (paid, Nerd Font patched) — fallbacks: Hack Nerd Font, FiraCode Nerd Font
 - **Package Manager:** Homebrew only (no npm/pip/gem)
 - **Modern tools:** fzf (fuzzy finder), zoxide (replaces cd with smart directory tracking)
+- **Pager:** `delta.paging = never` — delta prints its full output (side-by-side) straight to the terminal, so the entire diff is in WezTerm's scrollback and searchable. `LESS='-R -F -X'` in `.zshrc` is still set for other tools (man pages, etc.) that invoke `less`.
 
 ## Conventions
 
