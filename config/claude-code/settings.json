@@ -1,3 +1,6 @@
 {
-  "showClearContextOnPlanAccept": true
+  "showClearContextOnPlanAccept": true,
+  "env": {
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  }
 }
