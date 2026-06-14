@@ -175,37 +175,77 @@ export PATH="$HOME/.opencode/bin:$PATH"
 # App-specific exports
 export OPENCODE_ENABLE_EXPERIMENTAL_MODELS=true
 
-# Color stderr red in WezTerm
-# Uses a per-command redirect with a completion marker so the pipe drains
-# before the next prompt is shown. This prevents stderr output from leaking
-# into/after the prompt line (a race with async process substitution).
+# Color stderr red in WezTerm.
+# WezTerm cannot distinguish stdout from stderr at the terminal level, so we
+# capture stderr to a temp file while a command runs and replay it in red
+# synchronously before the next prompt is drawn. This avoids the cursor-
+# disappearing race caused by the previous process-substitution approach.
 if [[ $TERM_PROGRAM == "WezTerm" && -n "$WEZTERM_DISCRIMINATE_STDERR" ]]; then
-  _wezterm_stderr_enable() {
-    [[ -n $_WEZTERM_STDERR_MARKER ]] && command rm -f "$_WEZTERM_STDERR_MARKER"
-    _WEZTERM_STDERR_MARKER="/tmp/wezterm_stderr_done_$$_$RANDOM"
-    exec 2> >(
-      while IFS= read -r line; do
-        command printf '\033[91m%s\033[0m\n' "$line"
-      done
-      command touch "$_WEZTERM_STDERR_MARKER"
-    )
+  # Secure temp file for captured stderr.
+  _wezterm_stderr_file=$(command mktemp "${TMPDIR:-/tmp}/wezterm_stderr.XXXXXX")
+  command chmod 600 "$_wezterm_stderr_file"
+
+  # Save the shell's original stderr fd so we can always restore it.
+  exec {_wezterm_stderr_orig}>&2
+
+  _wezterm_stderr_preexec() {
+    local cmd="$1"
+    local first="${cmd%% *}"
+    first="${first##*/}"  # basename of first word
+
+    # Skip background jobs: the shell returns immediately, so we would race
+    # with the still-running job writing to the temp file.
+    local trimmed="${cmd%"${cmd##*[![:space:]]}"}"
+    [[ "${trimmed: -1}" == "&" ]] && { _wezterm_stderr_skip=1; return; }
+
+    # Skip commands that need direct stderr/terminal access, replace the
+    # shell, or detach/redirect stderr themselves.
+    # Extend this list as needed for your workflow.
+    case "$first" in
+      sudo|su|doas|nohup|ssh|scp|sftp|rsync|\
+      vim|nvim|vi|emacs|nano|micro|\
+      less|more|most|man|tailf|watch|\
+      htop|top|btm|glances|tmux|screen|\
+      fzf|zsh|bash|exec)
+        _wezterm_stderr_skip=1
+        return
+        ;;
+    esac
+
+    _wezterm_stderr_skip=0
+    : >| "$_wezterm_stderr_file"
+    exec 2>"$_wezterm_stderr_file"
   }
 
-  _wezterm_stderr_disable() {
-    if [[ -n $_WEZTERM_STDERR_MARKER ]]; then
-      exec 2>/dev/tty
-      # Wait up to ~100ms for the stderr pipe to drain
-      local _i=0
-      while (( _i++ < 10 )) && [[ ! -f "$_WEZTERM_STDERR_MARKER" ]]; do
-        command sleep 0.01
-      done
-      command rm -f "$_WEZTERM_STDERR_MARKER"
-      _WEZTERM_STDERR_MARKER=
+  _wezterm_stderr_precmd() {
+    # If the last command was skipped, stderr is already on the terminal.
+    (( _wezterm_stderr_skip )) && { _wezterm_stderr_skip=0; return; }
+
+    # Restore stderr BEFORE replaying, so output goes to the right place.
+    exec 2>&${_wezterm_stderr_orig}
+
+    if [[ -s "$_wezterm_stderr_file" ]]; then
+      local line
+      while IFS= read -r line || [[ -n "$line" ]]; do
+        command printf '\033[91m%s\033[0m\n' "$line"
+      done < "$_wezterm_stderr_file"
+      : >| "$_wezterm_stderr_file"
+
+      # Safety net: ensure the cursor is visible if stderr carried a
+      # cursor-hide escape sequence. Kept inside this block so it does not
+      # emit output when there is no stderr; an unconditional printf here
+      # triggers Powerlevel10k's instant-prompt warning on the first prompt.
+      command printf '\033[?25h'
     fi
   }
 
-  preexec_functions+=(_wezterm_stderr_enable)
-  precmd_functions+=(_wezterm_stderr_disable)
+  _wezterm_stderr_zshexit() {
+    [[ -n "$_wezterm_stderr_file" ]] && command rm -f "$_wezterm_stderr_file"
+  }
+
+  preexec_functions+=(_wezterm_stderr_preexec)
+  precmd_functions+=(_wezterm_stderr_precmd)
+  zshexit_functions+=(_wezterm_stderr_zshexit)
 fi
 
 # Modern navigation tools (work in any terminal)

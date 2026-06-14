@@ -146,5 +146,5 @@ copy-gitignore-global:
 copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global
 
 reload-zsh:
-	@source $(HOME)/.zshrc
-	@echo "Reloaded zsh configuration"
+	@zsh -c "source $(HOME)/.zshrc"
+	@echo "Reloaded zsh configuration (in a subshell; run 'source ~/.zshrc' in your current shell to apply live)"

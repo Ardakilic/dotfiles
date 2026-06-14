@@ -107,8 +107,10 @@ end) ]]
 
 -- Stderr discrimination: WezTerm (like all terminals) merges stdout & stderr
 -- into a single stream, so it can't color them differently at the terminal level.
--- The workaround is a shell-level stderr colorizer in .zshrc (triggered by the
--- env var below). It uses zsh process substitution to wrap stderr in ANSI red.
+-- The workaround is a shell-level stderr capture in .zshrc (triggered by the
+-- env var below). stderr is captured to a temp file and replayed in red
+-- synchronously before the next prompt, avoiding the cursor race caused by
+-- process substitution.
 config.set_environment_variables = {
   WEZTERM_DISCRIMINATE_STDERR = '1',
 }
