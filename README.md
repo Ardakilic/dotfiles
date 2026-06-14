@@ -157,7 +157,7 @@ make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/
 make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
 make git-config                    # Configure git with delta and merge settings
-make reload-zsh                    # Reload zsh configuration
+make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
 ```
 
@@ -302,6 +302,7 @@ config/
 * Built for macOS (Homebrew paths)
 * Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm)
 * Not portable without tweaks
+* In WezTerm, stderr is captured and replayed in red before the next prompt so errors stand out. Interactive programs (sudo, vim, less, tmux, etc.) are skipped automatically.
 
 ## TODOs
 

@@ -21,9 +21,9 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
 ├── scripts/                     # Validation and utility scripts
 └── config/
     ├── zsh/
-    │   └── .zshrc               # ZSH config: aliases, PATH, completions, WezTerm plugins, stderr coloring
+    │   └── .zshrc               # ZSH config: aliases, PATH, completions, WezTerm plugins, stderr capture
     ├── wezterm/
-    │   └── .wezterm.lua         # WezTerm terminal: colorscheme, keybindings, fonts, stderr injection
+    │   └── .wezterm.lua         # WezTerm terminal: colorscheme, keybindings, fonts, stderr capture toggle
     ├── git/
     │   ├── .gitconfig           # Git aliases, defaults, excludesfile
     │   └── .gitignore_global    # Global gitignore (OS, IDE files)
@@ -71,7 +71,7 @@ make copy-opencode                 # → ~/.config/opencode/opencode.json
 make copy-opencode-agents          # → ~/.config/opencode/agents/
 make copy-gitconfig                # config/git/.gitconfig → ~/.gitconfig
 make copy-gitignore-global         # config/git/.gitignore_global → ~/.gitignore_global
-make reload-zsh                    # source ~/.zshrc
+make reload-zsh                    # source ~/.zshrc in a subshell
 make help                          # List all targets
 ```
 
