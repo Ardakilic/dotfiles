@@ -193,14 +193,20 @@ if [[ $TERM_PROGRAM == "WezTerm" && -n "$WEZTERM_DISCRIMINATE_STDERR" ]]; then
     local first="${cmd%% *}"
     first="${first##*/}"  # basename of first word
 
-    # Skip commands that need direct stderr/terminal access.
+    # Skip background jobs: the shell returns immediately, so we would race
+    # with the still-running job writing to the temp file.
+    local trimmed="${cmd%"${cmd##*[![:space:]]}"}"
+    [[ "${trimmed: -1}" == "&" ]] && { _wezterm_stderr_skip=1; return; }
+
+    # Skip commands that need direct stderr/terminal access, replace the
+    # shell, or detach/redirect stderr themselves.
     # Extend this list as needed for your workflow.
     case "$first" in
-      sudo|su|doas|ssh|scp|sftp|rsync|\
+      sudo|su|doas|nohup|ssh|scp|sftp|rsync|\
       vim|nvim|vi|emacs|nano|micro|\
       less|more|most|man|tailf|watch|\
       htop|top|btm|glances|tmux|screen|\
-      fzf|zsh|bash)
+      fzf|zsh|bash|exec)
         _wezterm_stderr_skip=1
         return
         ;;
