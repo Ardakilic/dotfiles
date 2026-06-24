@@ -20,7 +20,7 @@ function scheme_for_appearance(appearance)
 end
 config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
 
-config.font = wezterm.font 'MonoLisa Nerd Font'
+config.font = wezterm.font 'MonoLisaCode Nerd Font'
 -- Alternatives:
 -- config.font = wezterm.font 'Hack Nerd Font'       -- Recommended for Terminal
 -- config.font = wezterm.font 'FiraCode Nerd Font'   -- Recommended for IDEs
@@ -104,16 +104,6 @@ config.window_padding = { left = 8, right = 8, top = 6, bottom = 6 }
     { Text = ' ' .. battery .. wezterm.strftime('%H:%M') .. ' ' },
   })
 end) ]]
-
--- Stderr discrimination: WezTerm (like all terminals) merges stdout & stderr
--- into a single stream, so it can't color them differently at the terminal level.
--- The workaround is a shell-level stderr capture in .zshrc (triggered by the
--- env var below). stderr is captured to a temp file and replayed in red
--- synchronously before the next prompt, avoiding the cursor race caused by
--- process substitution.
-config.set_environment_variables = {
-  WEZTERM_DISCRIMINATE_STDERR = '1',
-}
 
 -- Finally, return the configuration to wezterm:
 return config

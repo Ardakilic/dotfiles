@@ -21,9 +21,9 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
 ├── scripts/                     # Validation and utility scripts
 └── config/
     ├── zsh/
-    │   └── .zshrc               # ZSH config: aliases, PATH, completions, WezTerm plugins, stderr capture
+    │   └── .zshrc               # ZSH config: aliases, PATH, completions, WezTerm plugins
     ├── wezterm/
-    │   └── .wezterm.lua         # WezTerm terminal: colorscheme, keybindings, fonts, stderr capture toggle
+    │   └── .wezterm.lua         # WezTerm terminal: colorscheme, keybindings, fonts
     ├── git/
     │   ├── .gitconfig           # Git aliases, defaults, excludesfile
     │   └── .gitignore_global    # Global gitignore (OS, IDE files)
@@ -82,7 +82,7 @@ There are no tests, linters, or type checkers. Validation is via `scripts/valida
 - **OS:** macOS (Darwin) — Homebrew paths (`/opt/homebrew/...`), macOS app support dirs
 - **Shell:** zsh (with powerlevel10k theme)
 - **Terminal:** WezTerm nightly (some `.zshrc` features gate on `$TERM_PROGRAM == "WezTerm"`)
-- **Font:** MonoLisa (paid, Nerd Font patched) — fallbacks: Hack Nerd Font, FiraCode Nerd Font
+- **Font:** MonoLisaCode (paid, Nerd Font patched) — Nerd Font variant: "MonoLisaCode Nerd Font". Fallbacks: Hack Nerd Font, FiraCode Nerd Font
 - **Package Manager:** Homebrew only (no npm/pip/gem)
 - **Modern tools:** fzf (fuzzy finder), zoxide (replaces cd with smart directory tracking)
 - **Pager:** `delta.paging = never` — delta prints its full output (side-by-side) straight to the terminal, so the entire diff is in WezTerm's scrollback and searchable. `LESS='-R -F -X'` in `.zshrc` is still set for other tools (man pages, etc.) that invoke `less`.

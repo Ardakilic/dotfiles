@@ -106,8 +106,8 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 
 ### Primary Font
 
-- [MonoLisa Font](https://monolisa.dev/) (MonoLisa is a paid font)
-- [MonoLisa Nerd Font patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch)
+- [MonoLisa Font](https://monolisa.dev/) (MonoLisa is a paid font; v3 renames the family to `MonoLisaCode`)
+- [MonoLisa Nerd Font patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch) (`MonoLisaCode Nerd Font`)
 
 Needed for icons and prompt.
 
@@ -302,7 +302,7 @@ config/
 * Built for macOS (Homebrew paths)
 * Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm)
 * Not portable without tweaks
-* In WezTerm, stderr is captured and replayed in red before the next prompt so errors stand out. Interactive programs (sudo, vim, less, tmux, etc.) are skipped automatically.
+* **Retired — WezTerm stderr coloring.** Previously, stderr was captured to a temp file (`exec 2>"$file"` in `preexec`) and replayed in red before the next prompt. Abandoned because capturing fd 2 forces `isatty(2)=false` for every child process, which breaks docker prompts/progress bars, buffers streaming stderr until exit, and suppresses programs' own native stderr colors. The only race-free, streaming-safe alternative (`stderred` via `DYLD_INSERT_LIBRARIES`) is stripped by SIP on macOS system binaries and isn't in Homebrew core — not worth maintaining. Removing the colorizer also eliminated the cursor-disappearing race it caused. See `openspec/changes/retire-stderr-colorizer/` for the full analysis.
 
 ## TODOs
 
