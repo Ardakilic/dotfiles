@@ -40,7 +40,8 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
     │   └── agents/              # Agent definitions (JSON format)
     ├── claude-code/
     │   ├── .claude.json         # Claude Code MCP server config (Context7)
-    │   ├── settings.json        # Claude Code settings
+    │   ├── settings.json        # Claude Code settings (incl. statusLine command)
+    │   ├── statusline-command.sh # Status line script: model + effort, context %, 5h/7d usage bars
     │   └── output-styles/       # Markdown output style templates (ask, architect, review, debug)
     ├── opencode/
     │   ├── opencode.json        # OpenCode config: LSP, permissions, MCP, custom providers
@@ -65,7 +66,7 @@ make copy-kiro-desktop-settings    # → ~/Library/Application Support/Kiro/User
 make copy-kiro-desktop-agents      # → ~/.kiro/agents/ (markdown)
 make copy-kiro-cli-agents          # → ~/.kiro/agents/ (JSON)
 make copy-claude-mcp               # config/claude-code/.claude.json → ~/.claude.json
-make copy-claude-settings          # → ~/.claude/settings.json
+make copy-claude-settings          # → ~/.claude/settings.json + ~/.claude/statusline-command.sh
 make copy-claude-output-styles     # → ~/.claude/output-styles/
 make copy-opencode                 # → ~/.config/opencode/opencode.json
 make copy-opencode-agents          # → ~/.config/opencode/agents/

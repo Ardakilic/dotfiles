@@ -149,8 +149,7 @@ make copy-kiro-desktop-settings    # Copy config/kiro-desktop/settings.json to K
 make copy-kiro-desktop-agents      # Copy Kiro desktop agents to ~/.kiro/agents/
 make copy-kiro-cli-agents          # Copy Kiro CLI agents to ~/.kiro/agents/
 make copy-claude-mcp               # Copy config/claude-code/.claude.json to ~/.claude.json
-make copy-claude-settings          # Copy config/claude-code/settings.json to ~/.claude/settings.json
-make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
+make copy-claude-settings          # Copy config/claude-code/settings.json + statusline-command.sh to ~/.claude/
 make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
 make copy-opencode                 # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
 make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/agents/

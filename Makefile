@@ -18,7 +18,7 @@ help:
 	@echo "  copy-kiro-desktop-agents       - Copy Kiro desktop agents to ~/.kiro/agents/"
 	@echo "  copy-kiro-cli-agents           - Copy Kiro CLI agents to ~/.kiro/agents/"
 	@echo "  copy-claude-mcp                - Copy .claude.json to ~/.claude.json"
-	@echo "  copy-claude-settings           - Copy .claude/settings.json to ~/.claude/settings.json"
+	@echo "  copy-claude-settings           - Copy .claude/settings.json + statusline-command.sh to ~/.claude/"
 	@echo "  copy-claude-output-styles      - Copy output styles to ~/.claude/output-styles/"
 	@echo "  copy-opencode                  - Copy opencode.json to ~/.config/opencode/opencode.json"
 	@echo "  copy-opencode-agents           - Copy opencode agents to ~/.config/opencode/agents/"
@@ -114,6 +114,10 @@ copy-claude-settings:
 	$(call backup-file,$(HOME)/.claude/settings.json)
 	@cp $(CURRENT_DIR)/config/claude-code/settings.json "$(HOME)/.claude/settings.json"
 	@echo "Copied .claude/settings.json to ~/.claude/settings.json"
+	$(call backup-file,$(HOME)/.claude/statusline-command.sh)
+	@cp $(CURRENT_DIR)/config/claude-code/statusline-command.sh "$(HOME)/.claude/statusline-command.sh"
+	@chmod +x "$(HOME)/.claude/statusline-command.sh"
+	@echo "Copied .claude/statusline-command.sh to ~/.claude/statusline-command.sh"
 
 copy-opencode:
 	@mkdir -p "$(HOME)/.config/opencode"
