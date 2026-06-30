@@ -1,3 +1,23 @@
+[user]
+    name = Arda Kilicdagi
+    email = ardakilicdagi@gmail.com
+    # Path to public key; private key (or ssh-agent) signs. Git expands ~ itself.
+    signingkey = ~/.ssh/arda.pub
+
+# SSH commit/tag signing (replaces GPG). See ~/.ssh/allowed_signers for trusted keys.
+[gpg]
+    format = ssh
+
+[gpg "ssh"]
+    # Quoted subsection form of gpg.ssh.allowedSignersFile. Git expands ~ itself.
+    allowedSignersFile = ~/.ssh/allowed_signers
+
+[commit]
+    gpgsign = true
+
+[tag]
+    gpgsign = true
+
 [alias]
     # Short log with graph
     lg = log --oneline --graph --decorate

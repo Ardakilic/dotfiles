@@ -155,6 +155,7 @@ make copy-opencode                 # Copy config/opencode/opencode.json to ~/.co
 make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/agents/
 make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
+make copy-git-allowed-signers      # Rebuild ~/.ssh/allowed_signers from ~/.ssh/arda.pub (no key committed)
 make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
@@ -243,6 +244,22 @@ make copy-gitconfig
 
 The `LESS='-R -F -X'` env var (set in `.zshrc`) is still exported for other tools (man pages, `git log` outside delta) that shell out to `less`.
 
+### SSH commit & tag signing
+
+Commits and tags are signed with an **SSH key** (not GPG). The `.gitconfig` sets:
+
+- `user.signingkey = ~/.ssh/arda.pub` — path to the public key; the matching private key (or `ssh-agent`) does the signing. Git expands `~` itself, so this ports across machines as long as the key lives at `~/.ssh/arda` everywhere.
+- `gpg.format = ssh` and `gpg.ssh.allowedSignersFile = ~/.ssh/allowed_signers` — the `allowed_signers` file lists trusted public keys used to **verify** signatures.
+- `commit.gpgsign = true` / `tag.gpgsign = true` — sign by default.
+
+The public key itself is **not committed to this repo** — only the path reference. The `allowed_signers` file is regenerated from the key already on disk at `~/.ssh/arda.pub`:
+
+```sh
+make copy-git-allowed-signers
+```
+
+This reads `~/.ssh/arda.pub`, extracts the key type and blob, and writes `<email> <type> <blob>` to `~/.ssh/allowed_signers` (mode 600). Re-run it whenever you rotate keys.
+
 ---
 
 ## Config Structure
@@ -264,7 +281,7 @@ config/
 ├── zsh/
 │   └── .zshrc                 # ZSH shell config
 ├── git/
-│   ├── .gitconfig             # Git aliases, delta pager, zdiff3 merge
+│   ├── .gitconfig             # Git user, SSH signing, aliases, delta pager, zdiff3 merge
 │   └── .gitignore_global      # Global gitignore for OS/IDE files
 ├── vscode/
 │   └── settings.json          # VS Code editor settings
@@ -309,3 +326,4 @@ config/
 - [x] Add `opencode` support
 - [x] Add `.gitconfig` support
 - [x] Add `.gitignore_global` support
+- [x] Add SSH commit/tag signing (`copy-git-allowed-signers`)

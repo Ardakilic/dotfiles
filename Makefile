@@ -1,9 +1,12 @@
-.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global
+.PHONY: all copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
 
 CURRENT_DIR := $(shell pwd)
+
+# Email matching [user] in config/git/.gitconfig — used as the allowed_signers principal.
+GIT_USER_EMAIL := ardakilicdagi@gmail.com
 
 help:
 	@echo "Arda Kılıçdağı's Dotfiles Makefile"
@@ -22,6 +25,9 @@ help:
 	@echo "  copy-claude-output-styles      - Copy output styles to ~/.claude/output-styles/"
 	@echo "  copy-opencode                  - Copy opencode.json to ~/.config/opencode/opencode.json"
 	@echo "  copy-opencode-agents           - Copy opencode agents to ~/.config/opencode/agents/"
+	@echo "  copy-gitconfig                 - Copy config/git/.gitconfig to ~/.gitconfig"
+	@echo "  copy-gitignore-global          - Copy config/git/.gitignore_global to ~/.gitignore_global"
+	@echo "  copy-git-allowed-signers        - Rebuild ~/.ssh/allowed_signers from ~/.ssh/arda.pub (no key committed to repo)"
 	@echo "  copy-all                       - Copy all config files"
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
@@ -147,7 +153,22 @@ copy-gitignore-global:
 	@cp $(CURRENT_DIR)/config/git/.gitignore_global $(HOME)/.gitignore_global
 	@echo "Copied .gitignore_global to ~/.gitignore_global"
 
-copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global
+# Rebuild ~/.ssh/allowed_signers from the existing ~/.ssh/arda.pub on disk.
+# The public key is NOT committed to the repo — only this generator is.
+# Format: <email> <pubkey-type> <pubkey-blob>  (one line, trusted for SSH signing verification)
+copy-git-allowed-signers:
+	@if [ ! -f "$(HOME)/.ssh/arda.pub" ]; then \
+		echo "ERROR: $(HOME)/.ssh/arda.pub not found. Place your SSH public key there first."; \
+		exit 1; \
+	fi
+	@mkdir -p "$(HOME)/.ssh"
+	@chmod 700 "$(HOME)/.ssh"
+	$(call backup-file,$(HOME)/.ssh/allowed_signers)
+	@echo "$(GIT_USER_EMAIL) $$(awk '{print $$1, $$2}' $(HOME)/.ssh/arda.pub)" > "$(HOME)/.ssh/allowed_signers"
+	@chmod 600 "$(HOME)/.ssh/allowed_signers"
+	@echo "Rebuilt ~/.ssh/allowed_signers from ~/.ssh/arda.pub (key not committed to repo)"
+
+copy-all: copy-zsh copy-wezterm copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 reload-zsh:
 	@zsh -c "source $(HOME)/.zshrc"
