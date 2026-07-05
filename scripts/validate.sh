@@ -57,23 +57,55 @@ fi
 # ─────────────────────────────────────────────
 info "Checking Lua files..."
 if [[ -f "config/wezterm/.wezterm.lua" ]]; then
+  # Try local lua/luac first, then fall back to docker (alpine + lua).
   if command -v lua >/dev/null 2>&1; then
-    if ! lua -c "config/wezterm/.wezterm.lua" >/dev/null 2>&1; then
-      # lua -c not standard; try luac -p
-      if command -v luac >/dev/null 2>&1; then
-        if ! luac -p "config/wezterm/.wezterm.lua" >/dev/null 2>&1; then
-          error "Lua syntax error in config/wezterm/.wezterm.lua"
-        fi
-      else
-        warn "Neither lua nor luac installed — skipping Lua validation"
-      fi
+    if ! lua -e "assert(loadfile('config/wezterm/.wezterm.lua'))" >/dev/null 2>&1; then
+      error "Lua syntax error in config/wezterm/.wezterm.lua"
     fi
   elif command -v luac >/dev/null 2>&1; then
     if ! luac -p "config/wezterm/.wezterm.lua" >/dev/null 2>&1; then
       error "Lua syntax error in config/wezterm/.wezterm.lua"
     fi
+  elif command -v docker >/dev/null 2>&1; then
+    # Use docker with alpine (no local Lua install needed). Alpine's apk lua
+    # package installs luac with a version suffix (e.g. luac5.5); detect it.
+    if ! docker run --rm -v "$REPO_ROOT":/work -w /work alpine:latest sh -c \
+      "apk add --no-cache lua >/dev/null 2>&1 && LUAC=\$(ls /usr/bin/luac* 2>/dev/null | head -1) && \"\$LUAC\" -p config/wezterm/.wezterm.lua" >/dev/null 2>&1; then
+      error "Lua syntax error in config/wezterm/.wezterm.lua"
+    fi
   else
-    warn "Neither lua nor luac installed — skipping Lua validation"
+    warn "Neither lua, luac, nor docker installed — skipping Lua validation"
+  fi
+fi
+
+# ─────────────────────────────────────────────
+# 2b. Ghostty config validation
+# ─────────────────────────────────────────────
+info "Checking Ghostty config..."
+if [[ -f "config/ghostty/config.ghostty" ]]; then
+  # Find the ghostty binary: either on PATH, or bundled in the .app (Homebrew cask install)
+  GHOSTTY_BIN=""
+  if command -v ghostty >/dev/null 2>&1; then
+    GHOSTTY_BIN="ghostty"
+  elif [[ -x "/Applications/Ghostty.app/Contents/MacOS/ghostty" ]]; then
+    GHOSTTY_BIN="/Applications/Ghostty.app/Contents/MacOS/ghostty"
+  fi
+  if [[ -n "$GHOSTTY_BIN" ]]; then
+    # Validate the repo file in isolation (not the installed ~/.config/ghostty/config.ghostty).
+    # --config-default-files=false prevents loading the user's installed config;
+    # --config-file=PATH loads only the repo file.
+    # Note: on Ghostty 1.3.1, +validate-config exits 1 even for valid configs (and emits no
+    # output for either valid or invalid configs in headless mode), so the exit code alone is
+    # not a reliable signal. We capture stderr+stdout and only treat it as an error if there
+    # is actual diagnostic output mentioning "error". A clean exit (no output) is treated as
+    # passing.
+    GHOSTTY_OUT="$("$GHOSTTY_BIN" +validate-config --config-default-files=false --config-file="$REPO_ROOT/config/ghostty/config.ghostty" 2>&1 || true)"
+    if echo "$GHOSTTY_OUT" | grep -qi "error"; then
+      error "Ghostty config validation failed for config/ghostty/config.ghostty"
+      echo "$GHOSTTY_OUT" | head -20
+    fi
+  else
+    warn "ghostty binary not installed — skipping Ghostty config validation"
   fi
 fi
 
@@ -83,7 +115,7 @@ fi
 info "Checking Makefile target alignment..."
 
 # Every config/ subdirectory should have a copy-* target
-EXPECTED_DIRS=(zsh wezterm git vscode vscode-insiders vscodium kiro-desktop kiro-cli claude-code opencode)
+EXPECTED_DIRS=(zsh wezterm ghostty git vscode vscode-insiders vscodium kiro-desktop kiro-cli claude-code opencode)
 for dir in "${EXPECTED_DIRS[@]}"; do
   if [[ ! -d "config/$dir" ]]; then
     error "Missing config directory: config/$dir"

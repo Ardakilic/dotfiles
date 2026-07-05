@@ -78,31 +78,34 @@ buttons present. This is the Ghostty equivalent of WezTerm's
   `config/ghostty/config.ghostty`
 - **THEN** the value is `tabs`
 
-### Requirement: macOS Option key — right is Alt, left is composed
+### Requirement: macOS Option key — left is Alt, right is composed
 
-The Ghostty config MUST set `macos-option-as-alt = right` so the
-RIGHT Option key acts as Alt (enabling native shell word-jump via
+The Ghostty config MUST set `macos-option-as-alt = left` so the LEFT
+Option key acts as Alt (enabling native shell word-jump via
 Alt+b/Alt+f and the explicit `opt+left`/`opt+right` keybindings) and
-the LEFT Option key produces composed characters (é, ∑). This is
-the inverse-polarity behavioral match to WezTerm's
-`send_composed_key_when_left_alt_is_pressed = true`.
+the RIGHT Option key produces composed characters (é, ∑). This is the
+owner's chosen mapping; note that Ghostty's `macos-option-as-alt` is
+a blunt per-key toggle (which physical option key is Alt), unlike
+WezTerm's `send_composed_key_when_left_alt_is_pressed` which
+intercepts at the keybinding layer, so no Ghostty value perfectly
+replicates WezTerm's "both options do both" behavior.
 
-#### Scenario: macos-option-as-alt is right
+#### Scenario: macos-option-as-alt is left
 
 - **WHEN** a developer reads the `macos-option-as-alt` line in
   `config/ghostty/config.ghostty`
-- **THEN** the value is `right`
+- **THEN** the value is `left`
 
-#### Scenario: right Option sends Alt sequences to the shell
+#### Scenario: left Option sends Alt sequences to the shell
 
-- **WHEN** a user presses RightOption+Left in a Ghostty-hosted zsh
+- **WHEN** a user presses LeftOption+Left in a Ghostty-hosted zsh
   session
 - **THEN** the shell receives Alt+b (or the `esc:b` sequence from
   the keybinding) and moves the cursor one word backward
 
-#### Scenario: left Option produces composed characters
+#### Scenario: right Option produces composed characters
 
-- **WHEN** a user presses LeftOption+e in a Ghostty-hosted zsh
+- **WHEN** a user presses RightOption+e in a Ghostty-hosted zsh
   session on a U.S. layout
 - **THEN** the composed character é is produced (not Alt+e)
 
@@ -116,27 +119,28 @@ Modifiers: `shift`, `ctrl`, `alt` (aliases `opt`, `option`), `super`
 
 | WezTerm binding | Ghostty keybind | Behavior |
 |-----------------|-----------------|----------|
-| Ctrl+Shift+F case-insensitive search | `keybind = ctrl+shift+f=start_search` | Open search UI (case-insensitive is default) |
+| Ctrl+Shift+F case-insensitive search | `keybind = ctrl+shift+f=start_search` | Open search UI |
 | Cmd+Shift+D SplitVertical (top/bottom) | `keybind = cmd+shift+d=new_split:down` | New split below |
 | Cmd+D SplitHorizontal (side-by-side) | `keybind = cmd+d=new_split:right` | New split to the right |
 | Cmd+K ClearScrollback | `keybind = cmd+k=clear_screen` | Clear screen + scrollback |
 | Cmd+Left → Home | `keybind = cmd+left=csi:H` | Send ESC[H (Home) |
 | Cmd+Right → End | `keybind = cmd+right=csi:F` | Send ESC[F (End) |
 | Cmd+Shift+P command palette | `keybind = cmd+shift+p=toggle_command_palette` | Toggle command palette |
-| Opt+Left → word back | `keybind = opt+left=esc:b` | Send ESC+b (fires on right Option; see Option-key requirement) |
-| Opt+Right → word forward | `keybind = opt+right=esc:f` | Send ESC+f (fires on right Option) |
-| Cmd+Backspace → Ctrl+U | `keybind = cmd+backspace=text:\x15` | Send Ctrl-U (backward-kill-line, paired with `.zshrc` `bindkey "^U" backward-kill-line`) |
+| Opt+Left → word back | `keybind = opt+left=esc:b` | Send ESC+b (fires on left Option; see Option-key requirement) |
+| Opt+Right → word forward | `keybind = opt+right=esc:f` | Send ESC+f (fires on left Option) |
+| Cmd+Backspace → ESC+Ctrl+U | `keybind = cmd+backspace=text:\x1b\x15` | Send ESC+Ctrl-U (backward-kill-line; paired with `.zshrc` `bindkey $'\x1b\x15' backward-kill-line`) |
+| Ctrl+Shift+K → ESC+Ctrl+K | `keybind = ctrl+shift+k=text:\x1b\x0b` | Send ESC+Ctrl-K (kill-buffer; paired with `.zshrc` `bindkey $'\x1b\x0b' kill-buffer`) |
 | Shift+Enter → Alt+Enter | `keybind = shift+enter=text:\x1b\r` | Send ESC+CR (multiline REPL input) |
 
 The config MUST NOT define keybindings for Cmd+W (close pane),
 Cmd+Shift+W (close tab), or Cmd+Shift+Left/Right (move tab) —
 Ghostty's built-in defaults for these are accepted.
 
-#### Scenario: all nine ported keybindings present
+#### Scenario: all twelve keybindings present
 
 - **WHEN** a developer greps `config/ghostty/config.ghostty` for
   `keybind =`
-- **THEN** the lines for all nine bindings above are present with
+- **THEN** the lines for all twelve bindings above are present with
   the exact triggers and actions shown
 
 #### Scenario: Ctrl+Shift+F opens search
@@ -166,9 +170,11 @@ Ghostty's built-in defaults for these are accepted.
 #### Scenario: Cmd+Backspace triggers backward-kill-line
 
 - **WHEN** a user presses Cmd+Backspace in a Ghostty-hosted zsh
-  session with the `.zshrc` `bindkey "^U" backward-kill-line` active
+  session with the cursor mid-line
 - **THEN** the text from the cursor back to the start of the line is
   deleted (not the whole line)
+- **AND** the terminal sends `\x1b\x15` (ESC+Ctrl+U), distinct from
+  plain `Ctrl+U` which zsh binds to `kill-whole-line`
 
 #### Scenario: Shift+Enter sends Alt+Enter
 
@@ -176,6 +182,14 @@ Ghostty's built-in defaults for these are accepted.
   accepts multiline input
 - **THEN** the REPL receives ESC+CR and begins a new line without
   submitting
+
+#### Scenario: Ctrl+Shift+K kills the entire input buffer
+
+- **WHEN** a user presses Ctrl+Shift+K in a Ghostty-hosted zsh
+  session with text typed on the input line (possibly multiline)
+- **THEN** the entire input buffer is cleared (kill-buffer)
+- **AND** the terminal sends `\x1b\x0b` (ESC+Ctrl+K), distinct from
+  plain `Ctrl+K` which zsh binds to `kill-line` (kill to end of line)
 
 #### Scenario: tab close and move bindings are NOT overridden
 

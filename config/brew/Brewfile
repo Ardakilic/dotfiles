@@ -52,6 +52,7 @@ cask "orbstack"
 cask "raycast"
 cask "telegram"
 cask "vscodium"
+cask "ghostty"
 cask "wezterm@nightly"
 
 # Mac App Store apps (require sign-in to the Mac App Store on fresh machines)

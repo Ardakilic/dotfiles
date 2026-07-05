@@ -17,6 +17,7 @@ Nothing fancy, just practical improvements.
 - macOS
 - zsh
 - [WezTerm](https://wezterm.org/) (nightly)
+- [Ghostty](https://ghostty.org/)
 - [OpenCode](https://opencode.ai/)
 - [Claude Code](https://claude.ai/)
 - [VS Code](https://code.visualstudio.com/)
@@ -54,6 +55,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 > The notes below are highlights; the Brewfile is the source of truth.
 
 - [wezterm@nightly](https://formulae.brew.sh/cask/wezterm@nightly) — GPU-accelerated terminal emulator
+- [ghostty](https://ghostty.org/) — terminal emulator
 - [curl](https://curl.se/) — data transfer
 - [eza](https://eza.rocks/) — modern `ls` replacement
 - [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
@@ -86,6 +88,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 - [raycast](https://www.raycast.com/) — Spotlight replacement / launcher
 - [telegram](https://telegram.org/) — Messaging
 - [vscodium](https://vscodium.com/) — Open-source VS Code build
+- [ghostty](https://ghostty.org/) — terminal emulator
 
 ### Mac App Store apps:
 > Installed via [`mas`](https://github.com/mas-cli/mas) entries in the Brewfile. Requires the App Store app to be signed in on the machine.
@@ -142,6 +145,7 @@ Individual targets:
 ```sh
 make copy-zsh                      # Copy config/zsh/.zshrc to ~/.zshrc
 make copy-wezterm                  # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
+make copy-ghostty                  # Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty
 make copy-vscode-settings          # Copy config/vscode/settings.json to VS Code settings
 make copy-vscode-insiders-settings # Copy config/vscode-insiders/settings.json to VS Code Insiders settings
 make copy-vscodium-settings        # Copy config/vscodium/settings.json to VSCodium settings
@@ -236,13 +240,13 @@ source ~/.zshrc
 
 ### Git Configuration
 
-Git is configured with `delta` for diff highlighting (side-by-side, dark, line-numbers) and `zdiff3` for merge conflicts. Delta is invoked as the pager via `[pager] diff = delta` but **`paging = never`** tells delta to print the full output to the terminal instead of running it through `less` — so the entire diff lands in WezTerm's scrollback, ready for native scrolling and search (`Ctrl+Shift+F` in WezTerm). The settings live in `config/git/.gitconfig` and are applied with:
+Git is configured with `delta` for diff highlighting (side-by-side, dark, line-numbers) and `zdiff3` for merge conflicts. Delta is invoked as the pager via `[pager] diff = delta`. The settings live in `config/git/.gitconfig` and are applied with:
 
 ```sh
 make copy-gitconfig
 ```
 
-The `LESS='-R -F -X'` env var (set in `.zshrc`) is still exported for other tools (man pages, `git log` outside delta) that shell out to `less`.
+Delta uses its default paging behavior (running the diff through `less`). Use `q` to quit the pager and return to the terminal.
 
 ### SSH commit & tag signing
 
@@ -278,6 +282,8 @@ config/
 │       └── debug.md           # Systematic debugging style
 ├── wezterm/
 │   └── .wezterm.lua           # WezTerm terminal config
+├── ghostty/
+│   └── config.ghostty        # Ghostty terminal config
 ├── zsh/
 │   └── .zshrc                 # ZSH shell config
 ├── git/
@@ -316,7 +322,7 @@ config/
 ## Notes
 
 * Built for macOS (Homebrew paths)
-* Some parts assume WezTerm (`.zshrc` conditionally loads plugins only inside WezTerm)
+* Some `.zshrc` blocks (powerlevel10k, autosuggestions, syntax-highlighting, fuzzy completion, history-substring-search) are gated on `$TERM_PROGRAM` and load in both WezTerm (`WezTerm`) and Ghostty (`ghostty`). Other terminals (Terminal.app, iTerm2, Warp) get a minimal shell.
 * Not portable without tweaks
 * **Retired — WezTerm stderr coloring.** Previously, stderr was captured to a temp file (`exec 2>"$file"` in `preexec`) and replayed in red before the next prompt. Abandoned because capturing fd 2 forces `isatty(2)=false` for every child process, which breaks docker prompts/progress bars, buffers streaming stderr until exit, and suppresses programs' own native stderr colors. The only race-free, streaming-safe alternative (`stderred` via `DYLD_INSERT_LIBRARIES`) is stripped by SIP on macOS system binaries and isn't in Homebrew core — not worth maintaining. Removing the colorizer also eliminated the cursor-disappearing race it caused. See `openspec/changes/retire-stderr-colorizer/` for the full analysis.
 

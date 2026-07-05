@@ -33,17 +33,26 @@ Ghostty's config is plain-text `key = value` (snake_case, case-sensitive), loade
 
 ### The three real tensions
 
-**Tension 1 — Option key polarity inversion.** WezTerm's `send_composed_key_when_left_alt_is_pressed = true` means LEFT Option produces composed chars (é, ∑) and RIGHT Option is the default (Alt/ESC). Ghostty's `macos-option-as-alt` has the *inverse* polarity: `true` = both Options are Alt, `false` = both produce composed, `right` = RIGHT is Alt + LEFT is composed, `left` = LEFT is Alt + RIGHT is composed. The exact behavioral match to WezTerm is therefore `macos-option-as-alt = right`.
+**Tension 1 — Option key behavior differs in mechanism, not just polarity.** WezTerm's `send_composed_key_when_left_alt_is_pressed = true` intercepts at the **keybinding layer**: keybindings with `mods = 'OPT'` (like `opt+left=SendString \x1bb`) fire on **BOTH** option keys *before* the composed-char logic runs. For keys *without* a binding, LEFT → composed (é) and RIGHT → Alt+e. **Net: in WezTerm, both option keys do word-jump; LEFT additionally produces composed chars on unbound keys.**
+
+Ghostty's `macos-option-as-alt` is a **blunt per-key toggle**, not a per-keybinding intercept. It chooses which physical option key acts as Alt:
+- `true` = both Alt (word-jump on both, but **no composed chars at all** — loses é, ∑)
+- `false` = both composed (no word-jump from option at all)
+- `left` = LEFT is Alt (word-jump on LEFT), RIGHT = composed
+- `right` = RIGHT is Alt (word-jump on RIGHT), LEFT = composed
+
+**None of these values perfectly replicates WezTerm's "both options do both" behavior**, because Ghostty can't intercept at the keybinding layer the way WezTerm does. The owner chose `left` (word-jump on LEFT Option, composed chars on RIGHT Option).
 
 ```
-  WezTerm (current)                Ghostty (chosen)
-  ───────────────                  ────────────────
-  LEFT  Option → composed (é)      LEFT  Option → composed (é)   ✓
-  RIGHT Option → Alt (ESC+b/f)     RIGHT Option → Alt (native)  ✓
-                                    = macos-option-as-alt = right
+  WezTerm (current)                Ghostty (chosen: left)
+  ───────────────                  ─────────────────────
+  LEFT  Option → word-jump AND     LEFT  Option → Alt (word-jump)   ✓
+              composed (unbound)         (no composed chars)
+  RIGHT Option → word-jump         RIGHT Option → composed (é, ∑)  ✓
+                                     = macos-option-as-alt = left
 ```
 
-Side effect: with LEFT Option = composed, the `opt+left=esc:b` / `opt+right=esc:f` keybindings only fire reliably on the RIGHT Option key. LEFT Option + arrow produces a composed char (or nothing if no mapping), not a word-jump. This matches WezTerm's behavior (WezTerm's `opt+left` SendString also only worked on the left alt *because* of `send_composed_key_when_left_alt_is_pressed`; the right alt sent ESC natively). The explicit `esc:b`/`esc:f` bindings are a belt-and-suspenders fallback for the right Option key; native Alt+b/Alt+f from the shell also works.
+Side effect: with `macos-option-as-alt = left`, only the LEFT Option key reliably fires `opt+left=esc:b` / `opt+right=esc:f` and native Alt+b/Alt+f. The RIGHT Option key produces composed chars. The explicit `esc:b`/`esc:f` bindings are a belt-and-suspenders fallback for the left Option key; native Alt+b/Alt+f from the shell also works.
 
 **Tension 2 — `.zshrc` gate.** Eight blocks are gated on `$TERM_PROGRAM == "WezTerm"`. Ghostty sets `TERM_PROGRAM=ghostty` (lowercase — confirmed from `src/termio/Exec.zig`). As-is, all eight blocks skip under Ghostty.
 
@@ -86,15 +95,16 @@ The widening is a two-character-per-site edit (`|| $TERM_PROGRAM == ghostty`). T
 
 ## Decisions
 
-### D1: `macos-option-as-alt = right` (inverse-polarity match)
+### D1: `macos-option-as-alt = left` (owner's choice)
 
-**Decision:** Set `macos-option-as-alt = right` in the Ghostty config.
+**Decision:** Set `macos-option-as-alt = left` in the Ghostty config.
 
-**Rationale:** This is the exact behavioral match to WezTerm's `send_composed_key_when_left_alt_is_pressed = true` (LEFT=composed, RIGHT=Alt). The polarity of Ghostty's key is the *inverse* of WezTerm's: WezTerm's key asks "should left alt send composed?" (yes), Ghostty's key asks "should option act as alt?" (right only). `right` is the only value that reproduces the left-composed/right-alt split.
+**Rationale:** Ghostty's `macos-option-as-alt` is a blunt per-key toggle (which physical option key acts as Alt), unlike WezTerm's `send_composed_key_when_left_alt_is_pressed` which intercepts at the keybinding layer. In WezTerm, `mods = 'OPT'` keybindings fire on **both** option keys before composed-char logic, so both options do word-jump while LEFT additionally does composed chars on unbound keys. Ghostty cannot replicate this "both options do both" behavior with any single value. The owner chose `left`: LEFT Option = Alt (word-jump via Alt+b/Alt+f and the explicit `opt+left`/`opt+right` keybindings), RIGHT Option = composed chars (é, ∑).
 
 **Alternatives considered:**
-- `macos-option-as-alt = true` (both Alt) — rejected: loses composed chars (é, ∑) from the LEFT Option key, which the owner uses.
-- `macos-option-as-alt = false` (both composed) — rejected: `opt+left=esc:b` / `opt+right=esc:f` word-jump bindings may not fire reliably when Option produces composed chars.
+- `macos-option-as-alt = true` (both Alt) — rejected: loses composed chars (é, ∑) entirely, which the owner uses.
+- `macos-option-as-alt = false` (both composed) — rejected: `opt+left=esc:b` / `opt+right=esc:f` word-jump bindings won't fire reliably when Option produces composed chars.
+- `macos-option-as-alt = right` — a valid alternative (word-jump on RIGHT, composed on LEFT); the owner tested both and preferred `left`.
 - Leave unset (layout-dependent default) — rejected: non-reproducible across machines/layouts.
 
 ### D2: Widen the `.zshrc` gate with `|| $TERM_PROGRAM == ghostty`, do not remove it
@@ -189,7 +199,7 @@ Do NOT port: `cmd+w` close pane, `cmd+shift+w` close tab, `cmd+shift+left/right`
 ## Risks / Trade-offs
 
 - **[macos-icon = custom-style is experimental]** → Accepted by owner. If Ghostty removes or breaks `custom-style`, the dock icon reverts to default. Fallback to `macos-icon = official` is a one-line change. Low blast radius (cosmetic only).
-- **[Option-key word-jump only on RIGHT Option]** → Accepted. With `macos-option-as-alt = right`, only the RIGHT Option key reliably fires `opt+left=esc:b` / `opt+right=esc:f` and native Alt+b/Alt+f. The LEFT Option key produces composed chars. This matches WezTerm's behavior (where `send_composed_key_when_left_alt_is_pressed = true` meant the left opt sent composed, and the right opt was the default Alt). Users who previously used LEFT Option for word-jump in WezTerm were not actually getting word-jump from the SendString binding — they were getting composed chars — so there is no real regression.
+- **[Option-key word-jump only on LEFT Option]** → Accepted. With `macos-option-as-alt = left`, only the LEFT Option key reliably fires `opt+left=esc:b` / `opt+right=esc:f` and native Alt+b/Alt+f. The RIGHT Option key produces composed chars. This is a behavioral difference from WezTerm (where both options did word-jump), accepted by the owner as a Ghostty limitation — Ghostty's `macos-option-as-alt` is a blunt per-key toggle, not a per-keybinding intercept, so no value perfectly replicates WezTerm.
 - **[No dynamic theme switching]** → Accepted. WezTerm auto-switches Ayu light/dark with system appearance. Ghostty config omits `theme`, so it uses Ghostty's default (which does NOT auto-switch). If the owner wants Ayu light/dark later, `theme = light:Ayu Light,dark:Ayu Mirage` is a one-line addition (both are built-in themes).
 - **[Ghostty config not live-reloaded on save]** → Accepted. Unlike WezTerm (live reload on save), Ghostty requires `cmd+shift+,` to reload. Some keys (macos-titlebar-style, window-padding, scrollback-limit) apply only to new windows/surfaces. This is a workflow difference, not a bug. The README notes will mention `cmd+shift+,`.
 - **[Two terminals in the Brewfile]** → Accepted. `wezterm@nightly` and `ghostty` coexist; `make install-deps` installs both. The owner explicitly chose to keep WezTerm. No conflict (different cask names, different apps).

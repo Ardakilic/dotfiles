@@ -1,7 +1,7 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ $TERM_PROGRAM == "WezTerm" ]]; then
+if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
@@ -92,15 +92,23 @@ alias ainfo='docker run --rm -v "$(pwd)":/audio ardakilic/sox_ng:latest --i'
 
 ## Remaps
 
-# Change Ctrl+U behaviour (that will be mapped on cmd+backspace on WezTerm)
-# Ctrl+U deletes the whole line by default
-# However, to set to delete everuthing before the cursor position, we need to use backward-kill-line
-bindkey "^U" backward-kill-line
+# Ctrl+U — kill the whole line (zsh default), regardless of cursor position.
+bindkey "^U" kill-whole-line
+
+# Cmd+Backspace → backward-kill-line (delete from cursor back to start of line).
+# Both WezTerm and Ghostty send ESC+Ctrl+U (\x1b\x15) for Cmd+Backspace,
+# which is a separate key from plain Ctrl+U above.
+bindkey $'\x1b\x15' backward-kill-line
+
+# Ctrl+Shift+K — kill the entire input buffer (everything typed, including
+# multiline). Both WezTerm and Ghostty send ESC+Ctrl+K (\x1b\x0b) for this
+# key, which is distinct from plain Ctrl+K (kill-to-end-of-line).
+bindkey $'\x1b\x0b' kill-buffer
 
 ## / Remaps
 
 ## Shell init commands here will run in other terminals (iTerm2, Terminal.app, etc.)
-if [[ $TERM_PROGRAM == "WezTerm" ]]; then
+if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   # zsh-autosuggestions
   [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -180,12 +188,6 @@ export OPENCODE_ENABLE_EXPERIMENTAL_MODELS=true
 if command -v zoxide &>/dev/null; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
-
-# less options consumed by git-delta's pager (and anything else that shells out to less)
-# -R : pass through ANSI color escapes
-# -F : quit automatically if the output fits on one screen
-# -X : don't switch to the alternate screen buffer, so the diff stays in WezTerm's scrollback after quitting
-export LESS='-R -F -X'
 
 # fzf — fuzzy finder
 if [[ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]]; then

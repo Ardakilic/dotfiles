@@ -73,53 +73,64 @@ original casing and quoting.
 - **AND** the shell starts in the minimal-shell mode the owner
   originally intended for non-WezTerm/Ghostty terminals
 
-### Requirement: No other .zshrc changes
+### Requirement: Input-line editing keybindings
 
-The gate widening MUST be the only change to `config/zsh/.zshrc` in
-this change. The `bindkey "^U" backward-kill-line` line (which pairs
-with both WezTerm's and Ghostty's Cmd+Backspace mapping) MUST remain
-unconditional and unchanged. The `LESS='-R -F -X'` export, the
-aliases, the `zoxide` init, the `fzf` sources, the history settings,
-the `setopt` lines, and all other non-gated content MUST remain
-byte-for-byte unchanged.
+The `.zshrc` MUST define three input-line editing keybindings that
+work in both WezTerm and Ghostty:
 
-#### Scenario: bindkey ^U is unchanged and unconditional
+1. `Ctrl+U` → `kill-whole-line` — kills the entire line regardless
+   of cursor position (the zsh default, restored).
+2. `Cmd+Backspace` (sent as `ESC+Ctrl+U` / `\x1b\x15` by both
+   terminals) → `backward-kill-line` — deletes from the cursor back
+   to the start of the line. Both terminals send `\x1b\x15` (not plain
+   `\x15`) so this is distinguishable from plain `Ctrl+U`.
+3. `Ctrl+Shift+K` (sent as `ESC+Ctrl+K` / `\x1b\x0b` by both
+   terminals) → `kill-buffer` — kills the entire input buffer
+   (everything typed, including multiline input).
 
-- **WHEN** a developer reads the `bindkey "^U" backward-kill-line`
-  line in `config/zsh/.zshrc`
-- **THEN** the line is present, unconditional (not inside any `if`),
-  and unchanged from before this change
+These keybindings MUST be unconditional (not inside the
+`$TERM_PROGRAM` gate) and MUST use the escape-prefixed byte sequences
+(`$'\x1b\x15'` and `$'\x1b\x0b'`) so the terminal-sent sequences are
+distinguishable from plain `Ctrl+U` / `Ctrl+K`.
 
-#### Scenario: no other gated blocks added or removed
+**Reason**: The owner wants `Ctrl+U` to kill the whole line (zsh
+default) while preserving `Cmd+Backspace` as backward-kill-line. Since
+both terminals previously sent plain `Ctrl+U` for `Cmd+Backspace`, the
+two were indistinguishable. The fix: terminals send `ESC+Ctrl+U` for
+`Cmd+Backspace`, and zsh binds that separately. The same pattern is
+used for `Ctrl+Shift+K` → `kill-buffer`.
 
-- **WHEN** a developer diffs `config/zsh/.zshrc` before and after
-  this change
-- **THEN** the only changes are the two gate predicate widening
-  edits (adding `|| $TERM_PROGRAM == ghostty`)
-- **AND** no other lines are added, removed, or reordered
+**Migration**: Replaces the prior `bindkey "^U" backward-kill-line`
+with `bindkey "^U" kill-whole-line`, adds `bindkey $'\x1b\x15'
+backward-kill-line` and `bindkey $'\x1b\x0b' kill-buffer`, and
+removes the `export LESS='-R -F -X'` line (delta paging defaults
+restored in `.gitconfig`).
 
-### Requirement: backward-kill-line pairs with Ghostty Cmd+Backspace
+#### Scenario: Ctrl+U kills the whole line
 
-The `bindkey "^U" backward-kill-line` line in `.zshrc` (which changes
-Ctrl+U from its zsh default of killing the whole line to killing
-only back to the cursor) MUST remain in place so that Ghostty's
-`cmd+backspace=text:\x15` keybinding (which sends Ctrl+U) produces
-backward-kill-line behavior, matching WezTerm's
-`Cmd+Backspace → SendKey Ctrl+U` behavior. This line is
-terminal-agnostic and is NOT part of the `$TERM_PROGRAM` gate.
+- **WHEN** a developer reads the `bindkey "^U"` line in
+  `config/zsh/.zshrc`
+- **THEN** the bound widget is `kill-whole-line`
 
-#### Scenario: Cmd+Backspace kills to start of line under Ghostty
+#### Scenario: Cmd+Backspace binds to backward-kill-line via escape sequence
 
-- **WHEN** a user presses Cmd+Backspace in a Ghostty-hosted zsh
-  session with the cursor mid-line
-- **THEN** the text from the cursor back to the start of the line is
-  deleted (not the whole line)
-- **AND** the text after the cursor remains
+- **WHEN** a developer reads the `bindkey $'\x1b\x15'` line in
+  `config/zsh/.zshrc`
+- **THEN** the bound widget is `backward-kill-line`
 
-#### Scenario: Cmd+Backspace behavior matches WezTerm
+#### Scenario: Ctrl+Shift+K binds to kill-buffer via escape sequence
 
-- **WHEN** a user presses Cmd+Backspace in a WezTerm-hosted zsh
-  session with the cursor mid-line
-- **THEN** the behavior is identical to the Ghostty case (backward
-  kill to start of line), because both terminals send Ctrl+U and
-  `.zshrc` binds Ctrl+U to `backward-kill-line`
+- **WHEN** a developer reads the `bindkey $'\x1b\x0b'` line in
+  `config/zsh/.zshrc`
+- **THEN** the bound widget is `kill-buffer`
+
+#### Scenario: LESS env var is not set
+
+- **WHEN** a developer greps `config/zsh/.zshrc` for `LESS`
+- **THEN** no `export LESS=` line is found
+
+#### Scenario: keybindings are unconditional
+
+- **WHEN** a developer reads the three `bindkey` lines in
+  `config/zsh/.zshrc`
+- **THEN** none are inside the `$TERM_PROGRAM` gate block

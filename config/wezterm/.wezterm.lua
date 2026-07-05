@@ -53,11 +53,17 @@ config.keys = {
     -- works already, so commented out to prevent override
     -- { key = 'Backspace', mods = 'OPT', action = wezterm.action{SendString = '\x1b\x7f'} },
 
-    -- Delete whole line (Cmd+Backspace / Ctrl+Backspace)
-    -- In .zshrc, we need to change Ctrl+U behaviour to delete everything before the cursor position
-    -- echo 'bindkey "^U" backward-kill-line' >> ~./zshrc
-    -- Otherwise, it deletes the whole line
-    { key = 'Backspace', mods = 'CMD', action = wezterm.action.SendKey { key = 'u', mods = 'CTRL' } },
+    -- Delete whole line (Cmd+Backspace)
+    -- Sends ESC+Ctrl+U (\x1b\x15) so Cmd+Backspace is distinguishable from
+    -- plain Ctrl+U (which zsh binds to kill-whole-line).
+    -- .zshrc binds ESC+Ctrl+U to backward-kill-line (delete back to cursor).
+    { key = 'Backspace', mods = 'CMD', action = wezterm.action{SendString = '\x1b\x15'} },
+
+    -- Kill entire input buffer (Ctrl+Shift+K)
+    -- Sends ESC+Ctrl+K (\x1b\x0b) so Ctrl+Shift+K is distinguishable from
+    -- plain Ctrl+K (which zsh binds to kill-to-end-of-line).
+    -- .zshrc binds ESC+Ctrl+K to kill-buffer (wipe everything typed, including multiline).
+    { key = 'K', mods = 'CTRL|SHIFT', action = wezterm.action{SendString = '\x1b\x0b'} },
 
     -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
     { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } },

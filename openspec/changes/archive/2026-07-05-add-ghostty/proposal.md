@@ -28,7 +28,7 @@ The following WezTerm features are **not** carried over to the Ghostty config, p
 
 - Font: `MonoLisaCode Nerd Font` at size 13.
 - `macos-titlebar-style = tabs` (the `INTEGRATED_BUTTONS | RESIZE` equivalent — tab bar merged into titlebar with traffic-light buttons).
-- `macos-option-as-alt = right` (RIGHT Option = Alt for native word-jump, LEFT Option = composed chars like é — the inverse-polarity match to WezTerm's `send_composed_key_when_left_alt_is_pressed = true`).
+- `macos-option-as-alt = left` (LEFT Option = Alt for native word-jump, RIGHT Option = composed chars like é — owner's preference; note that Ghostty's `macos-option-as-alt` is a blunt per-key toggle, unlike WezTerm's `send_composed_key_when_left_alt_is_pressed` which intercepts at the keybinding layer, so no Ghostty value perfectly replicates WezTerm's "both options do both" behavior).
 - Nine keybindings: `Ctrl+Shift+F` search, `Cmd+Shift+D` vertical split (down), `Cmd+D` horizontal split (right), `Cmd+K` clear scrollback, `Cmd+Left/Right` Home/End, `Cmd+Shift+P` command palette, `Opt+Left/Right` word-jump (`esc:b`/`esc:f`), `Cmd+Backspace` backward-kill-line (`text:\x15`), `Shift+Enter` multiline (`text:\x1b\r`).
 - `copy-on-select = clipboard` (left-click selection copies — mirrors WezTerm's `CompleteSelection`).
 - `link-url = true` (Cmd-click opens links — explicit even though it's Ghostty's default).

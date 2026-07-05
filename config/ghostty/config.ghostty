@@ -1,0 +1,79 @@
+# Ghostty terminal configuration
+# Mirrors the relevant subset of ../wezterm/.wezterm.lua plus Ghostty-only extras.
+# Installed to ~/.config/ghostty/config.ghostty by `make copy-ghostty`.
+# Reload after editing with cmd+shift+, (some keys apply only to new windows).
+
+# ── Font ───────────────────────────────────────────────────────────
+# Nerd Font variant for powerlevel10k glyph rendering (matches WezTerm).
+font-family = "MonoLisaCode Nerd Font"
+font-size = 13
+
+# ── macOS titlebar ─────────────────────────────────────────────────
+# Integrate the tab bar into the titlebar with traffic-light buttons.
+# Equivalent to WezTerm's INTEGRATED_BUTTONS | RESIZE.
+macos-titlebar-style = tabs
+
+# ── macOS Option key ───────────────────────────────────────────────
+# LEFT Option = Alt (native word-jump via Alt+b/Alt+f and the opt+arrow
+# keybindings below). RIGHT Option = composed chars (é, ∑).
+# Note: Ghostty's macos-option-as-alt is a blunt per-key toggle, unlike
+# WezTerm's send_composed_key_when_left_alt_is_pressed which intercepts
+# at the keybinding layer. Neither left/right/true perfectly replicates
+# WezTerm's "both options do both" behavior; `left` is the owner's choice.
+macos-option-as-alt = left
+
+# ── Mouse ──────────────────────────────────────────────────────────
+# Selection copies to system clipboard (mirrors WezTerm left-click-copies).
+copy-on-select = clipboard
+# Cmd-click opens links (explicit even though it's the Ghostty default).
+link-url = true
+# Hide mouse cursor while typing.
+mouse-hide-while-typing = true
+
+# ── Safety ─────────────────────────────────────────────────────────
+# Prompt before closing a surface with active processes.
+confirm-close-surface = true
+
+# ── macOS dock icon (custom-style, experimental) ───────────────────
+macos-icon = custom-style
+macos-icon-frame = aluminum
+macos-icon-ghost-color = #ffffff
+macos-icon-screen-color = #1a1b26,#000000
+
+# ── Keybindings (ported from WezTerm) ──────────────────────────────
+# Syntax: keybind = trigger=action. Modifiers: shift, ctrl, alt (=opt),
+# super (=cmd). Ghostty defaults are accepted for close-pane, close-tab,
+# and move-tab (not re-bound here).
+
+# Case-insensitive search (case-insensitive is Ghostty's default).
+keybind = ctrl+shift+f=start_search
+
+# Splits. WezTerm SplitVertical = top/bottom = new_split:down.
+# WezTerm SplitHorizontal = side-by-side = new_split:right.
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+d=new_split:right
+
+# Clear screen + scrollback (matches WezTerm ClearScrollback 'ScrollbackAndViewport').
+keybind = cmd+k=clear_screen
+
+# Home / End. csi:H sends ESC[H (CUP to row 1 col 1). csi:F sends ESC[F (CPL).
+keybind = cmd+left=csi:H
+keybind = cmd+right=csi:F
+
+# Command palette.
+keybind = cmd+shift+p=toggle_command_palette
+
+# Word-jump (fires reliably on RIGHT Option; LEFT Option produces composed chars).
+keybind = opt+left=esc:b
+keybind = opt+right=esc:f
+
+# Backward-kill-line: send ESC+Ctrl-U. Pairs with .zshrc `bindkey $'\x1b\x15' backward-kill-line`.
+# Using ESC+Ctrl-U (not plain Ctrl+U) so Cmd+Backspace is distinguishable from Ctrl+U (kill-whole-line).
+keybind = cmd+backspace=text:\x1b\x15
+
+# Kill entire input buffer: send ESC+Ctrl+K. Pairs with .zshrc `bindkey $'\x1b\x0b' kill-buffer`.
+# Using ESC+Ctrl+K (not plain Ctrl+K) so Ctrl+Shift+K is distinguishable from Ctrl+K (kill-to-end-of-line).
+keybind = ctrl+shift+k=text:\x1b\x0b
+
+# Multiline REPL input: send Alt+Enter (ESC + CR). \x1b = ESC, \r = CR.
+keybind = shift+enter=text:\x1b\r
