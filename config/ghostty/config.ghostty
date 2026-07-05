@@ -11,7 +11,7 @@ font-size = 13
 # ── macOS titlebar ─────────────────────────────────────────────────
 # Integrate the tab bar into the titlebar with traffic-light buttons.
 # Equivalent to WezTerm's INTEGRATED_BUTTONS | RESIZE.
-macos-titlebar-style = tabs
+# macos-titlebar-style = tabs
 
 # ── macOS Option key ───────────────────────────────────────────────
 # LEFT Option = Alt (native word-jump via Alt+b/Alt+f and the opt+arrow

@@ -1,4 +1,4 @@
-# Kilo Code
+# IDEs
 .kilo/
 .kilo-code/
 .roo/
@@ -9,3 +9,4 @@
 
 # LLM
 suggestions.md
+pr_description.md

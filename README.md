@@ -4,14 +4,6 @@ Minimal dotfiles for my daily setup.
 
 Nothing fancy, just practical improvements.
 
-## Screenshots
-
-### Main Screen
-![main](./screenshots/main.png)
-
-### Git Diff (`git diff`)
-![git-diff](./screenshots/git-diff.png)
-
 ## My Environment
 
 - macOS

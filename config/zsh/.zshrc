@@ -183,6 +183,13 @@ export PATH="$HOME/.opencode/bin:$PATH"
 # App-specific exports
 export OPENCODE_ENABLE_EXPERIMENTAL_MODELS=true
 
+# Pager — make `git diff` (delta → less) scrollable with the mouse wheel.
+# `less --mouse` enables mouse reporting so wheel-scroll works inside the
+# alternate screen buffer, matching vim's set mouse=a behavior. Scoped to
+# delta via DELTA_PAGER (delta's own env var) so it doesn't affect plain
+# `less` invocations or override PAGER globally. Requires less >= 530.
+export DELTA_PAGER="less --mouse --wheel-lines=3"
+
 # Modern navigation tools (work in any terminal)
 # zoxide — smarter cd (replaces cd entirely)
 if command -v zoxide &>/dev/null; then

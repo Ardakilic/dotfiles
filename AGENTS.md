@@ -12,13 +12,16 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
 
 ```
 /
-├── AGENTS.md                    # This file — agent instructions
+├── AGENTS.md                    # This file — agent instructions (authoritative reference)
+├── CLAUDE.md                    # Thin shim: `@AGENTS.md` import + Claude-specific notes
 ├── Makefile                     # Setup automation (copy configs, install deps, git config)
 ├── README.md                    # User-facing docs with setup guide and screenshots
 ├── LICENSE                      # MIT
 ├── .gitignore                   # Ignores .kilo/, .roo/, .claude/, .kiro/, .vscode/, suggestions.md
 ├── screenshots/                 # Terminal/IDE screenshots (PNG)
-├── scripts/                     # Validation and utility scripts
+├── scripts/                     # Validation and utility scripts (validate.sh is the only gate)
+├── openspec/                    # Spec-driven change tracking (changes/, changes/archive/, specs/, config.yaml)
+├── .opencode/                   # OpenCode commands (opsx-*) and skills (openspec workflow tooling)
 └── config/
     ├── zsh/
     │   └── .zshrc               # ZSH config: aliases, PATH, completions, WezTerm plugins
@@ -80,7 +83,7 @@ make reload-zsh                    # source ~/.zshrc in a subshell
 make help                          # List all targets
 ```
 
-There are no tests, linters, or type checkers. Validation is via `scripts/validate.sh` (syntax checks, Makefile target alignment).
+There are no tests, linters, or type checkers. Validation is via `scripts/validate.sh` — the only gate. It runs JSON/Lua syntax checks, verifies Makefile↔`config/` target alignment (warns if a `config/` dir has no `copy-*` target), and enforces the 4-persona completeness invariant: it fails if any of `ask`/`architect`/`review`/`debug` is missing from any of the four agent platforms. `EXPECTED_DIRS` in `validate.sh` is the canonical list of `config/` subdirectories that must each have a Makefile target.
 
 ## Environment
 
@@ -154,13 +157,18 @@ When adding new tools or config paths, ensure no sensitive paths are exposed.
 - Commits are direct to the main branch (no PR workflow)
 - Do not commit unless explicitly asked
 
+## OpenSpec Workflow
+
+This repo uses spec-driven change tracking under `openspec/` (`schema: spec-driven`), driven by the `opsx-*` commands in `.opencode/commands/`. Proposals live in `openspec/changes/` and are moved to `openspec/changes/archive/` once applied; finalized specs live in `openspec/specs/`. The `openspec-*` skills in `.opencode/skills/` implement the propose/apply/sync/archive/explore workflows.
+
 
 When adding a new tool configuration:
 1. Create the config file under the appropriate `config/<tool>/` directory
 2. Add a `copy-*` target to the Makefile
-3. Update README.md (structure diagram, setup section, dependencies, screenshots)
-4. Update AGENTS.md (project structure, setup commands, environment, conventions)
-5. If the tool has agent capabilities, follow the existing agent persona pattern
-6. If the tool accesses sensitive paths, add deny rules to OpenCode's `opencode.json`
+3. Add the dir to `EXPECTED_DIRS` in `scripts/validate.sh` (this is the canonical list `validate.sh` iterates — a missing entry means the dir won't be checked for target alignment)
+4. Update README.md (structure diagram, setup section, dependencies, screenshots)
+5. Update AGENTS.md (project structure, setup commands, environment, conventions)
+6. If the tool has agent capabilities, follow the existing 4-persona pattern (`ask`/`architect`/`review`/`debug`) across all four platforms — `validate.sh` fails if any persona is missing from any platform
+7. If the tool accesses sensitive paths, add deny rules to OpenCode's `opencode.json`
 
 When refactoring an existing tool's config or structure, update README.md and AGENTS.md to reflect the changes.
