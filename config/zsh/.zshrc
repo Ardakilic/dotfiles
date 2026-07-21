@@ -20,8 +20,8 @@ export PATH="$HOME/.lmstudio/bin:$PATH"
 alias ls='eza --icons=auto'
 alias l='eza -1'
 alias la='eza -a'
-alias ll='eza -lah --git'
-alias lt='eza --tree --level=2'
+alias ll='eza -lah --icons=auto --git'
+alias lt='eza --tree --icons-auto --level=2'
 
 alias ..='cd ..'
 alias ...='cd ../..'
