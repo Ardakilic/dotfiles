@@ -17,7 +17,7 @@ export PATH="$HOME/.lmstudio/bin:$PATH"
 ## Aliases
 
 ### Navigation
-alias ls='eza --icons'
+alias ls='eza --icons=auto'
 alias l='eza -1'
 alias la='eza -a'
 alias ll='eza -lah --git'
@@ -123,6 +123,12 @@ if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   ## compinit with cache
   autoload -Uz compinit
   compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-$ZSH_VERSION"
+  # zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump-$ZSH_VERSION"
+  # # Rebuild completion cache daily to avoid stale references (e.g. uninstalled apps)
+  # if [[ -f "$zcompdump" && -n "$(find "$zcompdump" -mtime +0 2>/dev/null)" ]]; then
+  #   rm -f "$zcompdump"
+  # fi
+  # compinit -d "$zcompdump"
   ## compinit without cache
   ## autoload -Uz compinit && compinit
 
