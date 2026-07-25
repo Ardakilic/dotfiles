@@ -115,7 +115,7 @@ fi
 info "Checking Makefile target alignment..."
 
 # Every config/ subdirectory should have a copy-* target
-EXPECTED_DIRS=(zsh wezterm ghostty git vscode vscode-insiders vscodium kiro-desktop kiro-cli claude-code opencode)
+EXPECTED_DIRS=(zsh wezterm ghostty ssh git vscode vscode-insiders vscodium kiro-desktop kiro-cli claude-code opencode)
 for dir in "${EXPECTED_DIRS[@]}"; do
   if [[ ! -d "config/$dir" ]]; then
     error "Missing config directory: config/$dir"

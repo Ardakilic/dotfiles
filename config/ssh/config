@@ -1,0 +1,10 @@
+# SSH client configuration
+# Installed to ~/.ssh/config by `make copy-ssh`.
+#
+# Ghostty sets TERM=xterm-ghostty, which is not available on most
+# remote servers. Falling back to xterm-256color ensures ncurses-based
+# tools (htop, vim, etc.) work over SSH without terminfo errors.
+# Requires OpenSSH ≥8.7 (ships with modern macOS).
+
+Host *
+  SetEnv TERM=xterm-256color

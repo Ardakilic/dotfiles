@@ -138,6 +138,7 @@ Individual targets:
 make copy-zsh                      # Copy config/zsh/.zshrc to ~/.zshrc
 make copy-wezterm                  # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
 make copy-ghostty                  # Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty
+make copy-ssh                     # Copy config/ssh/config to ~/.ssh/config
 make copy-vscode-settings          # Copy config/vscode/settings.json to VS Code settings
 make copy-vscode-insiders-settings # Copy config/vscode-insiders/settings.json to VS Code Insiders settings
 make copy-vscodium-settings        # Copy config/vscodium/settings.json to VSCodium settings
@@ -152,12 +153,23 @@ make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/
 make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
 make copy-git-allowed-signers      # Rebuild ~/.ssh/allowed_signers from ~/.ssh/arda.pub (no key committed)
+make copy-ssh                      # Copy config/ssh/config to ~/.ssh/config
 make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
 ```
 
 Run `make help` for all available targets.
+
+### SSH Configuration
+
+Ghostty sets `TERM=xterm-ghostty`, which is not available on most remote servers. The SSH config at `config/ssh/config` sets `TERM=xterm-256color` for all SSH connections via `SetEnv` (requires OpenSSH ≥8.7). This prevents ncurses errors (e.g., "Error opening terminal: xterm-ghostty") from tools like `htop`, `vim`, and `tmux` on servers that lack the Ghostty terminfo entry.
+
+Apply with:
+
+```sh
+make copy-ssh
+```
 
 ### Manual Setup
 
@@ -224,6 +236,12 @@ mkdir -p ~/.config/opencode/agents
 cp ~/.dotfiles/config/opencode/agents/*.md ~/.config/opencode/agents/
 ```
 
+Copy SSH config:
+
+```sh
+cp ~/.dotfiles/config/ssh/config ~/.ssh/config
+```
+
 Reload:
 
 ```sh
@@ -276,6 +294,8 @@ config/
 │   └── .wezterm.lua           # WezTerm terminal config
 ├── ghostty/
 │   └── config.ghostty        # Ghostty terminal config
+├── ssh/
+│   └── config                # SSH client config (TERM fallback for remote servers)
 ├── zsh/
 │   └── .zshrc                 # ZSH shell config
 ├── git/

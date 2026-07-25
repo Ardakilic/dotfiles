@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
@@ -14,6 +14,7 @@ help:
 	@echo "Targets:"
 	@echo "  copy-zsh                    - Copy .zshrc to ~/.zshrc"
 	@echo "  copy-wezterm                - Copy .wezterm.lua to ~/.wezterm.lua"
+	@echo "  copy-ssh                     - Copy config/ssh/config to ~/.ssh/config"
 	@echo "  copy-ghostty                - Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty"
 	@echo "  copy-vscode-settings          - Copy config/vscode/settings.json to VS Code settings"
 	@echo "  copy-vscode-insiders-settings  - Copy config/vscode-insiders/settings.json to VS Code Insiders settings"
@@ -80,6 +81,14 @@ copy-ghostty:
 	$(call backup-file,$(HOME)/.config/ghostty/config.ghostty)
 	@cp $(CURRENT_DIR)/config/ghostty/config.ghostty "$(HOME)/.config/ghostty/config.ghostty"
 	@echo "Copied config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty"
+
+copy-ssh:
+	@mkdir -p "$(HOME)/.ssh"
+	@chmod 700 "$(HOME)/.ssh"
+	$(call backup-file,$(HOME)/.ssh/config)
+	@cp $(CURRENT_DIR)/config/ssh/config "$(HOME)/.ssh/config"
+	@chmod 600 "$(HOME)/.ssh/config"
+	@echo "Copied config/ssh/config to ~/.ssh/config"
 
 copy-vscode-settings:
 	@mkdir -p "$(HOME)/Library/Application Support/Code/User"
@@ -175,7 +184,7 @@ copy-git-allowed-signers:
 	@chmod 600 "$(HOME)/.ssh/allowed_signers"
 	@echo "Rebuilt ~/.ssh/allowed_signers from ~/.ssh/arda.pub (key not committed to repo)"
 
-copy-all: copy-zsh copy-wezterm copy-ghostty copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+copy-all: copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 reload-zsh:
 	@zsh -c "source $(HOME)/.zshrc"
