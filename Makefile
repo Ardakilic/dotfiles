@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
@@ -27,6 +27,8 @@ help:
 	@echo "  copy-claude-output-styles      - Copy output styles to ~/.claude/output-styles/"
 	@echo "  copy-opencode                  - Copy opencode.jsonc to ~/.config/opencode/opencode.jsonc"
 	@echo "  copy-opencode-agents           - Copy opencode agents to ~/.config/opencode/agents/"
+	@echo "  copy-opencode-skills           - Copy opencode skills to ~/.config/opencode/skills/"
+	@echo "  copy-opencode-commands         - Copy opencode commands to ~/.config/opencode/commands/"
 	@echo "  copy-gitconfig                 - Copy config/git/.gitconfig to ~/.gitconfig"
 	@echo "  copy-gitignore-global          - Copy config/git/.gitignore_global to ~/.gitignore_global"
 	@echo "  copy-git-allowed-signers        - Rebuild ~/.ssh/allowed_signers from ~/.ssh/arda.pub (no key committed to repo)"
@@ -165,6 +167,18 @@ copy-opencode-agents:
 	@cp $(CURRENT_DIR)/config/opencode/agents/*.md "$(HOME)/.config/opencode/agents/"
 	@echo "Copied opencode agents to ~/.config/opencode/agents/"
 
+copy-opencode-skills:
+	@mkdir -p "$(HOME)/.config/opencode/skills"
+	$(call backup-file,$(HOME)/.config/opencode/skills)
+	@cp -r $(CURRENT_DIR)/config/opencode/skills/*/ "$(HOME)/.config/opencode/skills/"
+	@echo "Copied opencode skills to ~/.config/opencode/skills/"
+
+copy-opencode-commands:
+	@mkdir -p "$(HOME)/.config/opencode/commands"
+	$(call backup-file,$(HOME)/.config/opencode/commands)
+	@cp $(CURRENT_DIR)/config/opencode/commands/*.md "$(HOME)/.config/opencode/commands/"
+	@echo "Copied opencode commands to ~/.config/opencode/commands/"
+
 copy-claude-output-styles:
 	@mkdir -p "$(HOME)/.claude/output-styles"
 	$(call backup-file,$(HOME)/.claude/output-styles)
@@ -196,7 +210,7 @@ copy-git-allowed-signers:
 	@chmod 600 "$(HOME)/.ssh/allowed_signers"
 	@echo "Rebuilt ~/.ssh/allowed_signers from ~/.ssh/arda.pub (key not committed to repo)"
 
-copy-all: copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+copy-all: copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 reload-zsh:
 	@zsh -c "source $(HOME)/.zshrc"

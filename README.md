@@ -150,6 +150,8 @@ make copy-claude-settings          # Copy config/claude-code/settings.json + sta
 make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
 make copy-opencode                 # Copy config/opencode/opencode.jsonc to ~/.config/opencode/opencode.jsonc
 make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/agents/
+make copy-opencode-skills          # Copy opencode skills to ~/.config/opencode/skills/
+make copy-opencode-commands        # Copy opencode commands to ~/.config/opencode/commands/
 make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
 make copy-git-allowed-signers      # Rebuild ~/.ssh/allowed_signers from ~/.ssh/arda.pub (no key committed)
@@ -235,6 +237,10 @@ mkdir -p ~/.config/opencode
 cp ~/.dotfiles/config/opencode/opencode.jsonc ~/.config/opencode/opencode.jsonc
 mkdir -p ~/.config/opencode/agents
 cp ~/.dotfiles/config/opencode/agents/*.md ~/.config/opencode/agents/
+mkdir -p ~/.config/opencode/skills
+cp -r ~/.dotfiles/config/opencode/skills/*/ ~/.config/opencode/skills/
+mkdir -p ~/.config/opencode/commands
+cp ~/.dotfiles/config/opencode/commands/*.md ~/.config/opencode/commands/
 ```
 
 Install OpenCode plugins (installs npm packages listed in `plugin` array):
@@ -331,11 +337,16 @@ config/
 │       └── debug.json         # Systematic debugging agent
 └── opencode/
     ├── opencode.jsonc         # OpenCode AI config
-    └── agents/                # OpenCode custom agents
-        ├── ask.md             # Advisory Q&A agent
-        ├── architect.md       # Planning and design agent
-        ├── review.md          # Code review agent
-        └── debug.md           # Systematic debugging agent
+    ├── agents/                # OpenCode custom agents
+    │   ├── ask.md             # Advisory Q&A agent
+    │   ├── architect.md       # Planning and design agent
+    │   ├── review.md          # Code review agent
+    │   └── debug.md           # Systematic debugging agent
+    ├── skills/                # OpenCode skills (global)
+    │   └── matt-review/       # Two-axis code review (from mattpocock/skills)
+    │       └── SKILL.md
+    └── commands/              # OpenCode commands (global)
+        └── matt-review.md     # /matt-review command
 ```
 
 ---
@@ -343,6 +354,7 @@ config/
 ## Notes
 
 * Built for macOS (Homebrew paths)
+* The `/matt-review` OpenCode skill is sourced from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). It runs a two-axis code review (Standards + Spec) as parallel sub-agents. Install globally with `make copy-opencode-skills copy-opencode-commands`.
 * Some `.zshrc` blocks (powerlevel10k, autosuggestions, syntax-highlighting, fuzzy completion, history-substring-search) are gated on `$TERM_PROGRAM` and load in both WezTerm (`WezTerm`) and Ghostty (`ghostty`). Other terminals (Terminal.app, iTerm2, Warp) get a minimal shell.
 * Not portable without tweaks
 * **Retired — WezTerm stderr coloring.** Previously, stderr was captured to a temp file (`exec 2>"$file"` in `preexec`) and replayed in red before the next prompt. Abandoned because capturing fd 2 forces `isatty(2)=false` for every child process, which breaks docker prompts/progress bars, buffers streaming stderr until exit, and suppresses programs' own native stderr colors. The only race-free, streaming-safe alternative (`stderred` via `DYLD_INSERT_LIBRARIES`) is stripped by SIP on macOS system binaries and isn't in Homebrew core — not worth maintaining. Removing the colorizer also eliminated the cursor-disappearing race it caused. See `openspec/changes/retire-stderr-colorizer/` for the full analysis.
