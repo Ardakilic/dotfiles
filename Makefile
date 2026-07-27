@@ -25,7 +25,7 @@ help:
 	@echo "  copy-claude-mcp                - Copy .claude.json to ~/.claude.json"
 	@echo "  copy-claude-settings           - Copy .claude/settings.json + statusline-command.sh to ~/.claude/"
 	@echo "  copy-claude-output-styles      - Copy output styles to ~/.claude/output-styles/"
-	@echo "  copy-opencode                  - Copy opencode.json to ~/.config/opencode/opencode.json"
+	@echo "  copy-opencode                  - Copy opencode.jsonc to ~/.config/opencode/opencode.jsonc"
 	@echo "  copy-opencode-agents           - Copy opencode agents to ~/.config/opencode/agents/"
 	@echo "  copy-gitconfig                 - Copy config/git/.gitconfig to ~/.gitconfig"
 	@echo "  copy-gitignore-global          - Copy config/git/.gitignore_global to ~/.gitignore_global"
@@ -33,7 +33,7 @@ help:
 	@echo "  copy-all                       - Copy all config files"
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
-	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.json via 'opencode plugin --global'"
+	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.jsonc via 'opencode plugin --global'"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -144,16 +144,16 @@ copy-claude-settings:
 
 copy-opencode:
 	@mkdir -p "$(HOME)/.config/opencode"
-	$(call backup-file,$(HOME)/.config/opencode/opencode.json)
-	@cp $(CURRENT_DIR)/config/opencode/opencode.json "$(HOME)/.config/opencode/opencode.json"
-	@echo "Copied opencode.json to ~/.config/opencode/opencode.json"
+	$(call backup-file,$(HOME)/.config/opencode/opencode.jsonc)
+	@cp $(CURRENT_DIR)/config/opencode/opencode.jsonc "$(HOME)/.config/opencode/opencode.jsonc"
+	@echo "Copied opencode.jsonc to ~/.config/opencode/opencode.jsonc"
 
 list-opencode-plugins:
-	@jaq '.plugin // []' "$(HOME)/.config/opencode/opencode.json"
+	@jaq '.plugin // []' "$(HOME)/.config/opencode/opencode.jsonc"
 
 install-opencode-plugins:
 	@echo "Installing OpenCode plugins..."
-	@for plugin in $$(jaq -r '.plugin // [] | .[]' "$(HOME)/.config/opencode/opencode.json"); do \
+	@for plugin in $$(jaq -r '.plugin // [] | .[]' "$(HOME)/.config/opencode/opencode.jsonc"); do \
 		echo "  opencode plugin $$plugin --global"; \
 		opencode plugin "$$plugin" --global; \
 	done

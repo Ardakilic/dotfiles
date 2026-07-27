@@ -8,6 +8,7 @@
 
 
 .opencode/opencode.json
+.opencode/opencode.jsonc
 
 # LLM
 suggestions.md

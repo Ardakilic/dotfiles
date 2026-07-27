@@ -148,7 +148,7 @@ make copy-kiro-cli-agents          # Copy Kiro CLI agents to ~/.kiro/agents/
 make copy-claude-mcp               # Copy config/claude-code/.claude.json to ~/.claude.json
 make copy-claude-settings          # Copy config/claude-code/settings.json + statusline-command.sh to ~/.claude/
 make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
-make copy-opencode                 # Copy config/opencode/opencode.json to ~/.config/opencode/opencode.json
+make copy-opencode                 # Copy config/opencode/opencode.jsonc to ~/.config/opencode/opencode.jsonc
 make copy-opencode-agents          # Copy opencode agents to ~/.config/opencode/agents/
 make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
@@ -157,7 +157,7 @@ make copy-ssh                      # Copy config/ssh/config to ~/.ssh/config
 make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
-make install-opencode-plugins      # Install OpenCode plugins listed in opencode.json
+make install-opencode-plugins      # Install OpenCode plugins listed in opencode.jsonc
 ```
 
 Run `make help` for all available targets.
@@ -232,7 +232,7 @@ Copy OpenCode Settings:
 
 ```sh
 mkdir -p ~/.config/opencode
-cp ~/.dotfiles/config/opencode/opencode.json ~/.config/opencode/opencode.json
+cp ~/.dotfiles/config/opencode/opencode.jsonc ~/.config/opencode/opencode.jsonc
 mkdir -p ~/.config/opencode/agents
 cp ~/.dotfiles/config/opencode/agents/*.md ~/.config/opencode/agents/
 ```
@@ -330,7 +330,7 @@ config/
 │       ├── review.json        # Code review agent
 │       └── debug.json         # Systematic debugging agent
 └── opencode/
-    ├── opencode.json          # OpenCode AI config
+    ├── opencode.jsonc         # OpenCode AI config
     └── agents/                # OpenCode custom agents
         ├── ask.md             # Advisory Q&A agent
         ├── architect.md       # Planning and design agent

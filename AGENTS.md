@@ -51,7 +51,7 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
     │   ├── statusline-command.sh # Status line script: model + effort, context %, 5h/7d usage bars
     │   └── output-styles/       # Markdown output style templates (ask, architect, review, debug)
     ├── opencode/
-    │   ├── opencode.json        # OpenCode config: LSP, permissions, MCP, custom providers
+    │   ├── opencode.jsonc       # OpenCode config: LSP, permissions, MCP, custom providers
     │   └── agents/              # Agent definitions (markdown, same 4 personas)
     └── brew/
         └── Brewfile             # Hand-curated Homebrew formulae, casks, taps, and App Store apps
@@ -63,7 +63,7 @@ All operations are via `make`:
 
 ```sh
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)
-make install-opencode-plugins      # Install OpenCode plugins listed in opencode.json via 'opencode plugin --global'
+make install-opencode-plugins      # Install OpenCode plugins listed in opencode.jsonc via 'opencode plugin --global'
 make copy-all                      # Copy all config files + git config (with backups), including copy-ghostty
 make copy-zsh                      # config/zsh/.zshrc  → ~/.zshrc
 make copy-wezterm                  # config/wezterm/.wezterm.lua → ~/.wezterm.lua
@@ -78,7 +78,7 @@ make copy-kiro-cli-agents          # → ~/.kiro/agents/ (JSON)
 make copy-claude-mcp               # config/claude-code/.claude.json → ~/.claude.json
 make copy-claude-settings          # → ~/.claude/settings.json + ~/.claude/statusline-command.sh
 make copy-claude-output-styles     # → ~/.claude/output-styles/
-make copy-opencode                 # → ~/.config/opencode/opencode.json
+make copy-opencode                 # → ~/.config/opencode/opencode.jsonc
 make copy-opencode-agents          # → ~/.config/opencode/agents/
 make copy-gitconfig                # config/git/.gitconfig → ~/.gitconfig
 make copy-gitignore-global         # config/git/.gitignore_global → ~/.gitignore_global
@@ -141,7 +141,7 @@ All agents follow the same description and tool-permission pattern. The `archite
 ## MCP Servers
 
 Context7 MCP server is configured for both:
-- **OpenCode:** `config/opencode/opencode.json` (disabled by default, API key placeholder)
+- **OpenCode:** `config/opencode/opencode.jsonc` (disabled by default, API key placeholder)
 - **Claude Code:** `config/claude-code/.claude.json` (API key placeholder)
 
 Set `CONTEXT7_API_KEY` to enable.
@@ -174,6 +174,6 @@ When adding a new tool configuration:
 4. Update README.md (structure diagram, setup section, dependencies, screenshots)
 5. Update AGENTS.md (project structure, setup commands, environment, conventions)
 6. If the tool has agent capabilities, follow the existing 4-persona pattern (`ask`/`architect`/`review`/`debug`) across all four platforms — `validate.sh` fails if any persona is missing from any platform
-7. If the tool accesses sensitive paths, add deny rules to OpenCode's `opencode.json`
+7. If the tool accesses sensitive paths, add deny rules to OpenCode's `opencode.jsonc`
 
 When refactoring an existing tool's config or structure, update README.md and AGENTS.md to reflect the changes.

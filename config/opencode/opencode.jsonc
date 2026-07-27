@@ -1,7 +1,14 @@
 {
   "$schema": "https://opencode.ai/config.json",
+
+  // Enable LSP integration for language-aware code intelligence
   "lsp": true,
-  "plugin": ["@dietrichgebert/ponytail"],
+
+  // Plugins extend OpenCode functionality.
+  "plugin": ["@dietrichgeberth/ponytail"],
+
+  // Permission rules: fine-grained access control for sensitive paths.
+  // "read" blocks listing/reading, "edit" blocks writes, "bash" blocks CLI commands.
   "permission": {
     "read": {
       "~/.ssh/**": "deny",
@@ -33,6 +40,10 @@
       "rm *.env*": "deny"
     }
   },
+
+  // MCP (Model Context Protocol) servers augment agent capabilities.
+  // Context7 provides up-to-date library documentation at query time.
+  // Set CONTEXT7_API_KEY environment variable and toggle enabled to true to activate.
   "mcp": {
     "context7": {
       "type": "remote",
