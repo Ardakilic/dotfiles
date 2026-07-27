@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
@@ -33,6 +33,7 @@ help:
 	@echo "  copy-all                       - Copy all config files"
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
+	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.json via 'opencode plugin --global'"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -146,6 +147,17 @@ copy-opencode:
 	$(call backup-file,$(HOME)/.config/opencode/opencode.json)
 	@cp $(CURRENT_DIR)/config/opencode/opencode.json "$(HOME)/.config/opencode/opencode.json"
 	@echo "Copied opencode.json to ~/.config/opencode/opencode.json"
+
+list-opencode-plugins:
+	@jaq '.plugin // []' "$(HOME)/.config/opencode/opencode.json"
+
+install-opencode-plugins:
+	@echo "Installing OpenCode plugins..."
+	@for plugin in $$(jaq -r '.plugin // [] | .[]' "$(HOME)/.config/opencode/opencode.json"); do \
+		echo "  opencode plugin $$plugin --global"; \
+		opencode plugin "$$plugin" --global; \
+	done
+	@echo "Done installing OpenCode plugins."
 
 copy-opencode-agents:
 	@mkdir -p "$(HOME)/.config/opencode/agents"

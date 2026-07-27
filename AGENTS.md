@@ -63,6 +63,7 @@ All operations are via `make`:
 
 ```sh
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)
+make install-opencode-plugins      # Install OpenCode plugins listed in opencode.json via 'opencode plugin --global'
 make copy-all                      # Copy all config files + git config (with backups), including copy-ghostty
 make copy-zsh                      # config/zsh/.zshrc  → ~/.zshrc
 make copy-wezterm                  # config/wezterm/.wezterm.lua → ~/.wezterm.lua

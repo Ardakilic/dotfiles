@@ -157,6 +157,7 @@ make copy-ssh                      # Copy config/ssh/config to ~/.ssh/config
 make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
+make install-opencode-plugins      # Install OpenCode plugins listed in opencode.json
 ```
 
 Run `make help` for all available targets.
@@ -234,6 +235,14 @@ mkdir -p ~/.config/opencode
 cp ~/.dotfiles/config/opencode/opencode.json ~/.config/opencode/opencode.json
 mkdir -p ~/.config/opencode/agents
 cp ~/.dotfiles/config/opencode/agents/*.md ~/.config/opencode/agents/
+```
+
+Install OpenCode plugins (installs npm packages listed in `plugin` array):
+
+```sh
+opencode plugin @dietrichgebert/ponytail --global
+# or install all plugins from the config:
+make install-opencode-plugins
 ```
 
 Copy SSH config:
