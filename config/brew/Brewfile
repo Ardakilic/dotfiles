@@ -20,6 +20,7 @@ brew "curl"
 brew "deno"
 brew "eza"
 brew "fzf"
+brew "rtk"             # https://github.com/rtk-ai/rtk — CLI proxy to minimize LLM token consumption
 brew "git"
 brew "git-delta"
 brew "glow"

@@ -55,6 +55,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 - [git-delta](https://github.com/dandavison/delta) — syntax-highlighting pager for git
 - [less](https://greenwoodsoftware.com/less/) — modern pager used by delta; required for proper mouse-wheel scrolling inside `git diff`
 - [fzf](https://github.com/junegunn/fzf) — fuzzy finder
+- [rtk](https://github.com/rtk-ai/rtk) — CLI proxy to minimize LLM token consumption
 - [zoxide](https://github.com/ajeetdsouza/zoxide) — smarter `cd` replacement
 
 ### ZSH plugins:
