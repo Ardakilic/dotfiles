@@ -54,6 +54,17 @@ alias unzipallhere='for f in *.zip; do unzip -o "$f"; done'
 # Extract ALL zip files into separate folders
 alias unzipallfolders='for f in *.zip; do d="${f%.zip}"; mkdir -p "$d" && unzip -o "$f" -d "$d"; done'
 
+# Copy a file's reference to the clipboard (paste as a file in Finder/Mail/etc.)
+copyfile() {
+  [[ -z "$1" ]] && { echo "usage: copyfile <file>"; return 1; }
+  if [[ ! -f "$1" ]]; then
+    echo "Error: File '$1' not found." >&2
+    return 1
+  fi
+  osascript -e 'on run argv' -e 'set the clipboard to POSIX file (item 1 of argv)' -e 'end run' "${1:A}"
+  echo "Copied '$1' to clipboard."
+}
+
 ### / File operations
 
 ### ports
