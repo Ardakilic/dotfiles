@@ -75,10 +75,10 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 - [iina](https://iina.io/) — Modern video player
 - [joplin](https://joplinapp.org/) — Note-taking and to-do
 - [kiro](https://kiro.dev/) — AI-powered IDE
+- [maccy](https://maccy.app/) — Clipboard manager
 - [megasync](https://mega.io/desktop) — MEGA cloud sync
 - [openmtp](https://openmtp.ganeshrvel.com/) — Android file transfer
 - [orbstack](https://orbstack.dev/) — Docker / Linux VM replacement
-- [raycast](https://www.raycast.com/) — Spotlight replacement / launcher
 - [telegram](https://telegram.org/) — Messaging
 - [vscodium](https://vscodium.com/) — Open-source VS Code build
 - [ghostty](https://ghostty.org/) — terminal emulator
