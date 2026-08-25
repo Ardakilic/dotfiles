@@ -11,25 +11,25 @@ tap "wxtsky/tap"        # codeisland (cask)
 tap "ardakilic/tap"     # lilt (formula), rb-scrobbler (formula), feishin (cask)
 
 # Formulae (on-request only)
-brew "mas"              # Mac App Store CLI (needed for mas entries below)
-brew "lilt"             # ardakilic/tap
-brew "rb-scrobbler"     # ardakilic/tap
 brew "aria2"
 brew "bat"
 brew "curl"
 brew "deno"
 brew "eza"
 brew "fzf"
-brew "rtk"             # https://github.com/rtk-ai/rtk — CLI proxy to minimize LLM token consumption
+brew "rtk"             # CLI proxy to minimize LLM token consumption
 brew "git"
 brew "git-delta"
 brew "glow"
 brew "htop"
 brew "jaq"
+brew "lilt"             # ardakilic/tap
+brew "mas"              # Mac App Store CLI (needed for mas entries below)
 brew "mole"
 brew "nano"
 brew "node@24"
 brew "powerlevel10k"
+brew "rb-scrobbler"     # ardakilic/tap
 brew "tree"
 brew "wget"
 brew "zoxide"
@@ -38,13 +38,16 @@ brew "zsh-history-substring-search"
 brew "zsh-syntax-highlighting"
 
 # Casks
-cask "feishin"          # ardakilic/tap
+cask "affine"
 cask "alt-tab"
 cask "betterzip"
+cask "cmux"
 cask "codeisland"       # wxtsky/tap
+cask "feishin"          # ardakilic/tap
 cask "font-fira-code-nerd-font"
 cask "font-hack-nerd-font"
 cask "forklift"
+cask "ghostty"
 cask "helium-browser"
 cask "iina"
 cask "joplin"
@@ -55,11 +58,10 @@ cask "openmtp"
 cask "orbstack"
 cask "telegram"
 cask "vscodium"
-cask "ghostty"
 cask "wezterm@nightly"
 
 # Mac App Store apps (require sign-in to the Mac App Store on fresh machines)
+mas "Scrobbles for Last.fm", id: 1344679160
 mas "VidHub",              id: 1659622164
 mas "WhatsApp",            id: 310633997
 mas "WireGuard",           id: 1451685025
-mas "Scrobbles for Last.fm", id: 1344679160
