@@ -118,6 +118,95 @@ bindkey $'\x1b\x0b' kill-buffer
 
 ## / Remaps
 
+## Command-line selection (Emacs shift-select mode)
+
+# Select text on the command line with Shift+Arrows (and Shift+Home/End),
+# then delete it with Backspace/Delete, or copy it with Option+W (Alt+W,
+# which arrives as ESC-w). Ctrl+Y yanks the copied text back.
+# Adapted from zsh-shift-select (MIT, Jakub Jirutka).
+#
+# Both WezTerm and Ghostty pass the standard xterm sequences (ESC[1;2D etc.)
+# through to the shell when no terminal-level mouse selection is active, so
+# no terminal config is needed for the arrows. In Ghostty, Shift+Arrows
+# adjust a *mouse* selection instead when one exists (native default).
+#
+# While a selection is active:
+#   Backspace / Delete → delete the selected region
+#   Option+W          → copy it to the kill ring AND the clipboard (pbcopy)
+#   any other key     → deselect, then the key is processed normally
+
+# Kill the selected region and switch back to the main keymap.
+shift-select::kill-region() {
+  zle kill-region -w
+  zle -K main
+}
+zle -N shift-select::kill-region
+
+# Deactivate the selection, switch back to the main keymap, and replay the
+# typed key so it is processed normally (typing deselects).
+shift-select::deselect-and-input() {
+  zle deactivate-region -w
+  zle -K main
+  zle -U "$KEYS"
+}
+zle -N shift-select::deselect-and-input
+
+# If the region is not active yet, set the mark at the cursor, switch to the
+# shift-select keymap, and run the movement widget ($WIDGET minus the prefix).
+shift-select::select-and-invoke() {
+  if (( ! REGION_ACTIVE )); then
+    zle set-mark-command -w
+    zle -K shift-select
+  fi
+  zle ${WIDGET#shift-select::} -w
+}
+
+# Copy the region to the kill ring; also copy to the system clipboard via
+# pbcopy when the region is active. Bound to Option+W (ESC-w), which is
+# copy-region-as-kill in stock zsh — same behavior plus the clipboard.
+copy-region-to-clipboard() {
+  zle copy-region-as-kill -w
+  if (( REGION_ACTIVE )) && (( $+commands[pbcopy] )); then
+    print -rn -- "$CUTBUFFER" | pbcopy
+  fi
+}
+zle -N copy-region-to-clipboard
+
+function {
+  emulate -L zsh
+
+  # Keymap active while a shift selection is in progress. Copied from the
+  # current (emacs) keymap so normal bindings keep working.
+  bindkey -N shift-select
+
+  # Fallback for unbound keys: deselect, then replay the key.
+  bindkey -M shift-select -R '^@'-'^?' shift-select::deselect-and-input
+
+  local seq widget
+  for seq widget (
+    '\e[1;2D' backward-char        # Shift+Left
+    '\e[1;2C' forward-char         # Shift+Right
+    '\e[1;2A' up-line              # Shift+Up
+    '\e[1;2B' down-line            # Shift+Down
+    '\e[1;2H' beginning-of-line    # Shift+Home
+    '\e[1;2F' end-of-line          # Shift+End
+  ); do
+    zle -N shift-select::$widget shift-select::select-and-invoke
+    bindkey -M emacs "$seq" shift-select::$widget
+    bindkey -M shift-select "$seq" shift-select::$widget
+  done
+
+  # While the selection is active, Backspace/Delete remove it.
+  bindkey -M shift-select '\e[3~' shift-select::kill-region  # Delete
+  bindkey -M shift-select '^?' shift-select::kill-region      # Backspace
+
+  # Option+W copies the selection (works from both keymaps).
+  bindkey -M emacs '\ew' copy-region-to-clipboard
+  bindkey -M shift-select '\ew' copy-region-to-clipboard
+}
+
+## / Command-line selection
+
 ## Shell init commands here will run in other terminals (iTerm2, Terminal.app, etc.)
 if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   # zsh-autosuggestions

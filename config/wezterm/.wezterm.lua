@@ -68,6 +68,16 @@ config.keys = {
     -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
     { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } },
 
+    -- Command-line selection (pairs with the shift-select block in .zshrc).
+    -- WezTerm has no default binding on plain Shift+Arrows, so they pass
+    -- through to zsh as xterm sequences (ESC[1;2D etc.), where the
+    -- shift-select keymaps select command-line text. Made explicit here so
+    -- the pass-through is intentional and survives future default changes.
+    { key = 'LeftArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
+    { key = 'RightArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
+    { key = 'UpArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
+    { key = 'DownArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
+
     -- Move the current tab left or right (keyboard replacement for drag-and-drop)
     { key = 'LeftArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(-1) },
     { key = 'RightArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(1) },
@@ -87,6 +97,14 @@ config.mouse_bindings = {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'CMD',
     action = act.OpenLinkAtMouseCursor,
+  },
+
+  -- Shift-click extends the current selection to the mouse cursor (pairs
+  -- with plain drag-select; useful for growing a selection across lines).
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'SHIFT',
+    action = act.ExtendSelectionToMouseCursor 'Cell',
   },
 }
 

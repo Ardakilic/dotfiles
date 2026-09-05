@@ -29,6 +29,13 @@ copy-on-select = clipboard
 link-url = true
 # Hide mouse cursor while typing.
 mouse-hide-while-typing = true
+# Force Shift+drag (and Shift+click) to extend the mouse selection even when
+# the running program enables mouse reporting (e.g. vim/tmux). Without this,
+# XTSHIFTESCAPE lets programs steal Shift+click as a reported mouse event.
+mouse-shift-capture = never
+# Ghostty natively supports Shift+Arrows to adjust a mouse selection
+# (adjust_selection:* defaults) and Backspace/Delete or any typed key clears
+# it (selection-clear-on-typing = true, default). Cmd+X copies a selection.
 
 # ── Safety ─────────────────────────────────────────────────────────
 # Prompt before closing a surface with active processes.
@@ -77,3 +84,15 @@ keybind = ctrl+shift+k=text:\x1b\x0b
 
 # Multiline REPL input: send Alt+Enter (ESC + CR). \x1b = ESC, \r = CR.
 keybind = shift+enter=text:\x1b\r
+
+# ── Command-line selection (pairs with the shift-select block in .zshrc) ──
+# Shift+Arrows normally adjust a *mouse* selection (Ghostty default, kept).
+# When no selection exists, the default bindings are performable, so the keys
+# fall through to the shell as plain xterm sequences (ESC[1;2D etc.), where
+# zsh's shift-select keymaps select command-line text. Delete/Backspace then
+# remove the selected region and Option+W copies it (see .zshrc).
+# Explicit for documentation; identical to Ghostty's built-in defaults:
+keybind = performable:shift+arrow_left=adjust_selection:left
+keybind = performable:shift+arrow_right=adjust_selection:right
+keybind = performable:shift+arrow_up=adjust_selection:up
+keybind = performable:shift+arrow_down=adjust_selection:down
