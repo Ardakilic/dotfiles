@@ -99,13 +99,11 @@ config.mouse_bindings = {
     action = act.OpenLinkAtMouseCursor,
   },
 
-  -- Shift-click extends the current selection to the mouse cursor (pairs
-  -- with plain drag-select; useful for growing a selection across lines).
-  {
-    event = { Up = { streak = 1, button = 'Left' } },
-    mods = 'SHIFT',
-    action = act.ExtendSelectionToMouseCursor 'Cell',
-  },
+  -- Shift+click to extend selection is WezTerm's default
+  -- (Single Left Down/Up with SHIFT: ExtendSelectionToMouseCursor /
+  -- CompleteSelectionOrOpenLink). No custom binding needed — the explicit
+  -- one previously here bound only the 'Up' event, which has a gotcha: the
+  -- unbound 'Down' would fall through to mouse-reporting programs.
 }
 
 config.scrollback_lines = 50000 -- Claude Code outputs a lot

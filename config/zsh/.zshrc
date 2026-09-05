@@ -123,7 +123,30 @@ bindkey $'\x1b\x0b' kill-buffer
 # Select text on the command line with Shift+Arrows (and Shift+Home/End),
 # then delete it with Backspace/Delete, or copy it with Option+W (Alt+W,
 # which arrives as ESC-w). Ctrl+Y yanks the copied text back.
-# Adapted from zsh-shift-select (MIT, Jakub Jirutka).
+#
+# Adapted from zsh-shift-select <https://github.com/jirutka/zsh-shift-select>
+# Copyright 2022-present Jakub Jirutka <jakub@jirutka.cz>.
+# SPDX-License-Identifier: MIT
+#
+# The MIT License
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 #
 # Both WezTerm and Ghostty pass the standard xterm sequences (ESC[1;2D etc.)
 # through to the shell when no terminal-level mouse selection is active, so
@@ -134,6 +157,8 @@ bindkey $'\x1b\x0b' kill-buffer
 #   Backspace / Delete → delete the selected region
 #   Option+W          → copy it to the kill ring AND the clipboard (pbcopy)
 #   any other key     → deselect, then the key is processed normally
+# These bindings only affect ZLE regions (command-line text), never the
+# terminal's own mouse selections.
 
 # Kill the selected region and switch back to the main keymap.
 shift-select::kill-region() {
