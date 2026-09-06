@@ -158,7 +158,9 @@ bindkey $'\x1b\x0b' kill-buffer
 #   Option+W          → copy it to the kill ring AND the clipboard (pbcopy)
 #   any other key     → deselect, then the key is processed normally
 # These bindings only affect ZLE regions (command-line text), never the
-# terminal's own mouse selections.
+# terminal's own mouse selections. Deleting a mouse-selected chunk of
+# command-line text requires ZLE↔terminal selection sync — see the
+# zsh-edit-select plugin: https://github.com/Michael-Matta1/zsh-edit-select
 
 # Kill the selected region and switch back to the main keymap.
 shift-select::kill-region() {
