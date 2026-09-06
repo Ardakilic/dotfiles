@@ -68,24 +68,71 @@ config.keys = {
     -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
     { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } },
 
-    -- Command-line selection (pairs with the shift-select block in .zshrc).
+    -- Command-line selection (pairs with zsh-edit-select in .zshrc).
     -- WezTerm has no default binding on plain Shift+Arrows, so they pass
-    -- through to zsh as xterm sequences (ESC[1;2D etc.), where the
-    -- shift-select keymaps select command-line text. Made explicit here so
-    -- the pass-through is intentional and survives future default changes.
+    -- through to zsh as xterm sequences (ESC[1;2D etc.), where the plugin
+    -- selects command-line text. Made explicit here so the pass-through is
+    -- intentional and survives future default changes.
     { key = 'LeftArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
     { key = 'RightArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
     { key = 'UpArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
     { key = 'DownArrow', mods = 'SHIFT', action = 'DisableDefaultAssignment' },
 
-    -- Move the current tab left or right (keyboard replacement for drag-and-drop)
-    { key = 'LeftArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(-1) },
-    { key = 'RightArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(1) },
+    -- zsh-edit-select Cmd editing shortcuts (macOS): forward CSI-u sequences
+    -- so the plugin handles select-all / cut / paste / undo / redo on the
+    -- command line instead of WezTerm consuming the keys. Cmd+C below is
+    -- smarter: it copies a terminal mouse selection when one exists, else
+    -- forwards to the plugin.
+    { key = 'a', mods = 'CMD', action = act.SendString '\x1b[97;9u' },
+    { key = 'v', mods = 'CMD', action = act.SendString '\x1b[118;9u' },
+    { key = 'x', mods = 'CMD', action = act.SendString '\x1b[120;9u' },
+    { key = 'z', mods = 'CMD', action = act.SendString '\x1b[122;9u' },
+    { key = 'z', mods = 'CMD|SHIFT', action = act.SendString '\x1b[122;10u' },
+    {
+      key = 'c',
+      mods = 'CMD',
+      action = wezterm.action_callback(function(window, pane)
+        local sel = window:get_selection_text_for_pane(pane)
+        if sel ~= '' then
+          window:perform_action(act.CopyTo 'Clipboard', pane)
+        else
+          window:perform_action(act.SendString '\x1b[99;9u', pane)
+        end
+      end),
+    },
+    -- zsh-edit-select word/line selection (macOS): Option+Shift+←/→ select a
+    -- word at a time; Cmd+Shift+←/→ select to line start/end; Cmd+Shift+↑/↓
+    -- select to buffer start/end. Overrides the tab-move bindings above —
+    -- move tabs with Cmd+Shift+[ / Cmd+Shift+] (WezTerm defaults) instead.
+    { key = 'LeftArrow', mods = 'OPT|SHIFT', action = act.SendString '\x1b[1;4D' },
+    { key = 'RightArrow', mods = 'OPT|SHIFT', action = act.SendString '\x1b[1;4C' },
+    { key = 'LeftArrow', mods = 'CMD|SHIFT', action = act.SendString '\x1b[1;10D' },
+    { key = 'RightArrow', mods = 'CMD|SHIFT', action = act.SendString '\x1b[1;10C' },
+    { key = 'UpArrow', mods = 'CMD|SHIFT', action = act.SendString '\x1b[1;10A' },
+    { key = 'DownArrow', mods = 'CMD|SHIFT', action = act.SendString '\x1b[1;10B' },
+
+    -- Move the current tab left or right: use Cmd+Shift+[ / ] (WezTerm
+    -- defaults). The previous Cmd+Shift+Arrow bindings now select text.
 
 }
 
 config.mouse_bindings = {
-  -- Left click selects text normally
+  -- zsh-edit-select mouse integration: on left-click Down, notify the shell
+  -- (deselect signal CSI >62300u) if a mouse selection was active, so the
+  -- plugin doesn't keep targeting a cleared selection. Skipped on the alt
+  -- screen (vim/less) where it would arrive as raw input.
+  {
+    event = { Down = { streak = 1, button = 'Left' } },
+    mods = 'NONE',
+    action = wezterm.action_callback(function(window, pane)
+      local sel = window:get_selection_text_for_pane(pane)
+      if sel ~= '' and not pane:is_alt_screen_active() then
+        pane:send_text '\x1b[>62300u'
+      end
+    end),
+  },
+
+  -- Left click-drag selects text, release copies to clipboard
   {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'NONE',

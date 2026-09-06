@@ -63,6 +63,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — fish-like highlighting
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions
 - [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) — fuzzy history search
+- [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select) — text-editor-style command-line editing (vendored into `config/zsh/zsh-edit-select/`, not installed via Homebrew; applied with `make copy-zsh-plugins`)
 
 ### Casks:
 > Cask apps installed via Homebrew. The full list (with versions) lives in [`config/brew/Brewfile`](./config/brew/Brewfile).
@@ -137,6 +138,7 @@ Individual targets:
 
 ```sh
 make copy-zsh                      # Copy config/zsh/.zshrc to ~/.zshrc
+make copy-zsh-plugins              # Copy vendored zsh-edit-select plugin to ~/.config/zsh/zsh-edit-select/
 make copy-wezterm                  # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
 make copy-ghostty                  # Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty
 make copy-ssh                     # Copy config/ssh/config to ~/.ssh/config
@@ -313,7 +315,8 @@ config/
 ├── ssh/
 │   └── config                # SSH client config (TERM fallback for remote servers)
 ├── zsh/
-│   └── .zshrc                 # ZSH shell config
+│   ├── .zshrc                 # ZSH shell config
+│   └── zsh-edit-select/       # Vendored command-line selection plugin (MIT, Michael Matta)
 ├── git/
 │   ├── .gitconfig             # Git user, SSH signing, aliases, delta pager, zdiff3 merge
 │   └── .gitignore_global      # Global gitignore for OS/IDE files
@@ -357,8 +360,8 @@ config/
 * Built for macOS (Homebrew paths)
 * The `/matt-review` OpenCode skill is sourced from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). It runs a two-axis code review (Standards + Spec) as parallel sub-agents. Install globally with `make copy-opencode-skills copy-opencode-commands`.
 * Some `.zshrc` blocks (powerlevel10k, autosuggestions, syntax-highlighting, fuzzy completion, history-substring-search) are gated on `$TERM_PROGRAM` and load in both WezTerm (`WezTerm`) and Ghostty (`ghostty`). Other terminals (Terminal.app, iTerm2, Warp) get a minimal shell.
-* **Command-line selection (both terminals).** `Shift+Arrows` (and `Shift+Home/End`) select text on the zsh command line via an inlined, MIT-licensed adaptation of [zsh-shift-select](https://github.com/jirutka/zsh-shift-select). While a selection is active: `Backspace`/`Delete` deletes it, `Option+W` copies it to the kill ring **and** the system clipboard (`pbcopy`), `Ctrl+Y` yanks it, and any other key deselects and is processed normally. Both terminals pass the xterm shift-arrow sequences through natively (WezTerm via explicit `DisableDefaultAssignment`, Ghostty via its performable `adjust_selection` defaults falling through when no selection exists).
-* **Mouse selection (both terminals).** Drag-select copies on release (`copy-on-select` in Ghostty, `CompleteSelection` in WezTerm). In Ghostty, Shift+drag extends a selection even in mouse-reporting apps (`mouse-shift-capture = never`), Shift+Arrows adjust an existing mouse selection, and typing clears it. In WezTerm, Shift+click extend-selection and Shift+drag are built-in defaults. **Note:** terminal mouse selections are not synchronized with the ZLE buffer — Backspace does not delete mouse-selected command-line text (see the [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select) plugin in the TODO notes below for real mouse-delete integration).
+* **Command-line selection (both terminals) — [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select).** Text-editor-style editing on the zsh command line, vendored into `config/zsh/zsh-edit-select/` (v0.7.00, MIT) and applied with `make copy-zsh-plugins`. `Shift+Arrows` / `Shift+Home/End` select; `Cmd+Shift+←/→` select to line start/end; `Option+Shift+←/→` select word-wise; `Cmd+Shift+↑/↓` to buffer start/end; `Cmd+A` selects all (multiline). Then: `Cmd+C` copy, `Cmd+X` cut, `Cmd+V` paste-over (replaces the selection), typing replaces the selection, `Backspace`/`Delete` deletes it, `Cmd+Z`/`Cmd+Shift+Z` undo/redo. Mouse selections are integrated: select with the mouse, then type/paste/cut/delete to edit that chunk directly (run `edit-select setup-ax` and grant the terminal Accessibility permission for full macOS mouse integration; mouse support in WezTerm/Ghostty is the plugin's experimental reactive path). The macOS Cmd keys are remapped to CSI-u sequences in both terminal configs; on the first shell load the plugin downloads/compiles a small clipboard agent (falls back to `pbcopy`/`pbpaste`).
+* **Mouse selection (terminals).** Drag-select copies on release (`copy-on-select = clipboard` in Ghostty, `CompleteSelection` in WezTerm). In Ghostty, Shift+drag extends a selection even in mouse-reporting apps (`mouse-shift-capture = never`), Shift+Arrows adjust an existing mouse selection, and typing clears it. In WezTerm, Shift+click extend-selection and Shift+drag are built-in defaults, and a click sends the plugin's deselect signal so stale selections aren't edited.
 * Not portable without tweaks
 * **Retired — WezTerm stderr coloring.** Previously, stderr was captured to a temp file (`exec 2>"$file"` in `preexec`) and replayed in red before the next prompt. Abandoned because capturing fd 2 forces `isatty(2)=false` for every child process, which breaks docker prompts/progress bars, buffers streaming stderr until exit, and suppresses programs' own native stderr colors. The only race-free, streaming-safe alternative (`stderred` via `DYLD_INSERT_LIBRARIES`) is stripped by SIP on macOS system binaries and isn't in Homebrew core — not worth maintaining. Removing the colorizer also eliminated the cursor-disappearing race it caused. See `openspec/changes/retire-stderr-colorizer/` for the full analysis.
 
@@ -369,5 +372,5 @@ config/
 - [x] Add `.gitconfig` support
 - [x] Add `.gitignore_global` support
 - [x] Add SSH commit/tag signing (`copy-git-allowed-signers`)
-- [x] Add Shift+Arrow command-line selection (both terminals) + mouse selection polish
-- [ ] Mouse-delete: deleting a mouse-selected chunk of command-line text (requires ZLE↔terminal selection sync, e.g. the [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select) plugin)
+- [x] Add Shift+Arrow command-line selection (both terminals) + mouse selection polish (via vendored zsh-edit-select)
+- [x] Mouse-delete: deleting a mouse-selected chunk of command-line text (zsh-edit-select mouse integration)

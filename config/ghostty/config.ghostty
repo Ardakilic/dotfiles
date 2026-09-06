@@ -85,14 +85,20 @@ keybind = ctrl+shift+k=text:\x1b\x0b
 # Multiline REPL input: send Alt+Enter (ESC + CR). \x1b = ESC, \r = CR.
 keybind = shift+enter=text:\x1b\r
 
-# ── Command-line selection (pairs with the shift-select block in .zshrc) ──
-# Shift+Arrows normally adjust a *mouse* selection (Ghostty default, kept).
-# When no selection exists, the default bindings are performable, so the keys
-# fall through to the shell as plain xterm sequences (ESC[1;2D etc.), where
-# zsh's shift-select keymaps select command-line text. Delete/Backspace then
-# remove the selected region and Option+W copies it (see .zshrc).
-# Explicit for documentation; identical to Ghostty's built-in defaults:
-keybind = performable:shift+arrow_left=adjust_selection:left
-keybind = performable:shift+arrow_right=adjust_selection:right
-keybind = performable:shift+arrow_up=adjust_selection:up
-keybind = performable:shift+arrow_down=adjust_selection:down
+# ── Command-line selection (zsh-edit-select; see .zshrc) ───────────
+# Ghostty passes Shift+Arrow xterm sequences through natively (its own
+# adjust_selection defaults are performable and only act on mouse
+# selections), so shift selection needs no remap. These remaps forward the
+# macOS Cmd editing keys to the plugin as CSI-u sequences instead of being
+# consumed by Ghostty's built-in clipboard actions:
+#   Cmd+A select all · Cmd+C copy · Cmd+X cut · Cmd+V paste (below) ·
+#   Cmd+Z undo · Cmd+Shift+Z redo
+keybind = cmd+a=csi:97;9u
+keybind = cmd+c=csi:99;9u
+keybind = cmd+v=csi:118;9u
+keybind = cmd+x=csi:120;9u
+keybind = cmd+z=csi:122;9u
+keybind = cmd+shift+z=csi:122;10u
+# Cmd+Shift+↑/↓: select to buffer start/end (multiline commands).
+keybind = cmd+shift+up=csi:1;10A
+keybind = cmd+shift+down=csi:1;10B
