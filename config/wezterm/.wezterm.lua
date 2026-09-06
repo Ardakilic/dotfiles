@@ -42,8 +42,8 @@ config.keys = {
     { key = 'w', mods = 'CMD|SHIFT', action = wezterm.action.CloseCurrentTab { confirm = false } },
     -- Cmd+Left/Right — cursor to line start/end.
     -- CSI-u form (\x1b[1;9D / \x1b[1;9C) so it pairs with the zsh-edit-select
-    -- Cmd+Shift+Left/Right selection bindings below; requires the plugin
-    -- (`make install-zsh-edit-select`). Plain Home/End keys still work.
+    -- Cmd+Shift+Left/Right selection bindings below; requires the zinit-managed
+    -- plugin (via `make install-deps`, loaded in .zshrc). Plain Home/End keys still work.
     { key = 'LeftArrow', mods = 'CMD', action = wezterm.action{SendString = '\x1b[1;9D'} },
     { key = 'RightArrow', mods = 'CMD', action = wezterm.action{SendString = '\x1b[1;9C'} },
     { key = 'p', mods = 'CMD|SHIFT', action = wezterm.action.ActivateCommandPalette },
@@ -74,7 +74,8 @@ config.keys = {
 
     -- ── zsh-edit-select (editor-like command line editing) ────────
     -- Sends the CSI-u sequences the plugin's ZLE widgets bind. Requires the
-    -- plugin (`make install-zsh-edit-select`); without it these keys do nothing.
+    -- zinit-managed plugin (via `make install-deps`, loaded in .zshrc);
+    -- without it these keys do nothing.
     -- Cmd+C: copy an active WezTerm selection (terminal copy), else forward to
     -- the plugin (copies the in-command-line selection).
     {
@@ -89,7 +90,19 @@ config.keys = {
       end),
     },
     { key = 'a', mods = 'CMD', action = wezterm.action{SendString = '\x1b[97;9u'} },   -- select all
-    { key = 'v', mods = 'CMD', action = wezterm.action{SendString = '\x1b[118;9u'} }, -- paste
+    -- Cmd+V: native paste in alternate-screen panes (full-screen apps own the
+    -- terminal there, the shell plugin can't act), else forward to the plugin
+    -- (paste-to-replace the in-command-line selection).
+    {
+      key = 'v', mods = 'CMD',
+      action = wezterm.action_callback(function(window, pane)
+        if pane:is_alt_screen_active() then
+          window:perform_action(wezterm.action{PasteFrom = 'Clipboard'}, pane)
+        else
+          window:perform_action(wezterm.action{SendString = '\x1b[118;9u'}, pane)
+        end
+      end),
+    }, -- paste
     { key = 'x', mods = 'CMD', action = wezterm.action{SendString = '\x1b[120;9u'} }, -- cut
     { key = 'z', mods = 'CMD', action = wezterm.action{SendString = '\x1b[122;9u'} }, -- undo
     { key = 'z', mods = 'CMD|SHIFT', action = wezterm.action{SendString = '\x1b[122;10u'} }, -- redo

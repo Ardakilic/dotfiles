@@ -37,7 +37,7 @@ your Apple ID before running `make install-deps`.
 Or install individually:
 
 ```sh
-brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf zoxide
+brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf zoxide zinit
 ```
 
 ### Individual tools:

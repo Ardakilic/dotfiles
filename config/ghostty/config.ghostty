@@ -80,7 +80,9 @@ keybind = shift+enter=text:\x1b\r
 
 # ── zsh-edit-select (editor-like command line editing) ────────────
 # Sends the CSI-u sequences the plugin's ZLE widgets bind. Requires the
-# plugin: `make install-zsh-edit-select` (without it these keys do nothing).
+# zinit-managed Michael-Matta1/zsh-edit-select (installed via
+# `make install-deps` as `brew "zinit"`, loaded from .zshrc); without it
+# these keys do nothing.
 # Per the plugin's Ghostty macOS guide; cmd+v keeps Ghostty's native paste
 # (bracketed paste triggers the plugin's paste-to-replace).
 keybind = cmd+a=csi:97;9u
