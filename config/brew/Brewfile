@@ -32,6 +32,7 @@ brew "powerlevel10k"
 brew "rb-scrobbler"     # ardakilic/tap
 brew "tree"
 brew "wget"
+brew "zinit"
 brew "zoxide"
 brew "zsh-autosuggestions"
 brew "zsh-history-substring-search"

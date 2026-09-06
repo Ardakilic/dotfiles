@@ -124,10 +124,16 @@ if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-  # zinit — zsh plugin manager (installed with `make install-zinit`).
+  # zinit — zsh plugin manager (brew-owned; `make install-deps`).
   # Plugins are declared as `zinit ... for ...` statements below this block.
-  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-  [[ -f "$ZINIT_HOME/zinit.zsh" ]] && source "$ZINIT_HOME/zinit.zsh"
+  [[ -f /opt/homebrew/opt/zinit/zinit.zsh ]] && source /opt/homebrew/opt/zinit/zinit.zsh
+
+  # zsh-edit-select — editor-like command line editing (Shift selection,
+  # cut/copy/paste, type-to-replace, undo/redo) via zinit. Terminal-side
+  # keybindings live in the WezTerm and Ghostty configs. Must load before
+  # zsh-syntax-highlighting (it defines ZLE widgets). On first load the
+  # plugin downloads its macOS clipboard agent binary.
+  (( $+functions[zinit] )) && zinit depth"1" light-mode for Michael-Matta1/zsh-edit-select
 
   # powerlevel10k theme (instant prompt already loaded at top of file)
   [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]] && \
