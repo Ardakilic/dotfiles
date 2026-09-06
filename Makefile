@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins install-zinit copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
@@ -36,6 +36,7 @@ help:
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
 	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.jsonc via 'opencode plugin --global'"
+	@echo "  install-zinit                 - Clone the zinit zsh plugin manager to ~/.local/share/zinit/zinit.git (loads from .zshrc)"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -160,6 +161,21 @@ install-opencode-plugins:
 		opencode plugin "$$plugin" --global; \
 	done
 	@echo "Done installing OpenCode plugins."
+
+# zinit — zsh plugin manager. Installed via git clone per upstream's manual
+# install (https://github.com/zdharma-continuum/zinit). Plugins are declared
+# as `zinit ... for ...` load statements in config/zsh/.zshrc (gated block).
+# The clone tracks upstream's default branch per the official install docs.
+ZINIT_HOME := $(HOME)/.local/share/zinit/zinit.git
+install-zinit:
+	@if [ -d "$(ZINIT_HOME)/.git" ]; then \
+		echo "zinit already installed."; \
+	else \
+		echo "Installing zinit..."; \
+		mkdir -p "$(HOME)/.local/share/zinit"; \
+		git clone --quiet https://github.com/zdharma-continuum/zinit.git "$(ZINIT_HOME)"; \
+		echo "Done. zinit loads from .zshrc on shell startup."; \
+	fi
 
 copy-opencode-agents:
 	@mkdir -p "$(HOME)/.config/opencode/agents"

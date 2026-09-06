@@ -124,6 +124,11 @@ if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+  # zinit — zsh plugin manager (installed with `make install-zinit`).
+  # Plugins are declared as `zinit ... for ...` statements below this block.
+  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+  [[ -f "$ZINIT_HOME/zinit.zsh" ]] && source "$ZINIT_HOME/zinit.zsh"
+
   # powerlevel10k theme (instant prompt already loaded at top of file)
   [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]] && \
   source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
