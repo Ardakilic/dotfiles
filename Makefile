@@ -36,7 +36,7 @@ help:
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
 	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.jsonc via 'opencode plugin --global'"
-	@echo "  install-zsh-edit-select        - Install or re-sync the zsh-edit-select plugin at its pinned commit (ZSH_EDIT_SELECT_REF)"
+	@echo "  install-zsh-edit-select        - Install or re-sync the zsh-edit-select plugin + macOS agent at pinned, digest-verified revisions"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -163,15 +163,28 @@ install-opencode-plugins:
 	@echo "Done installing OpenCode plugins."
 
 # zsh-edit-select plugin (https://github.com/Michael-Matta1/zsh-edit-select)
-# Pinned to a reviewed upstream commit (full 40-char SHA, re-verified after
-# checkout; aborts on mismatch). Installs and re-syncs to exactly this
-# revision — routine runs never pull the mutable upstream branch. The
-# plugin's own assets/fetch-agents.zsh verifies its release binaries
-# against the release's SHA256SUMS.txt (aborts if unavailable). To update
-# the plugin: review the upstream diff, then bump ZSH_EDIT_SELECT_REF as
-# an explicit, reviewed change to this file.
-ZSH_EDIT_SELECT_REF := c7bb5a464fa8f16a51092feeeda4e477236159fc
+# Pinned to one reviewed upstream release, as a triple: source commit (REF),
+# release tag (RELEASE), and the reviewed SHA-256 of the macOS clipboard
+# agent (AGENT_SHA256) — the only binary this platform needs. Installs and
+# re-syncs to exactly these revisions; routine runs never pull the mutable
+# upstream branch and never fetch agents from 'latest'.
+#
+# The agent is pre-seeded at the path plugin.zsh guards with [[ ! -x ]],
+# so the plugin's runtime downloader (assets/fetch-agents.zsh — best
+# effort: it installs UNVERIFIED when SHA256SUMS.txt, the asset's entry,
+# or a SHA-256 tool is missing) never runs. Verification here fails
+# closed: missing sums file, missing matching entry, missing shasum tool,
+# sums-vs-reviewed-digest disagreement, or download-vs-digest mismatch
+# each abort the install.
+#
+# To update the plugin: review the upstream diff, then bump REF, RELEASE,
+# and AGENT_SHA256 together as an explicit, reviewed change to this file.
+ZSH_EDIT_SELECT_REF := b5c4f30974f0989cc8cd6d1378dbb3cfd8fee956
+ZSH_EDIT_SELECT_RELEASE := v0.7.00
+ZSH_EDIT_SELECT_AGENT_SHA256 := 387bda33de3663d91489118f0e0e13b962962c4183fa2efb7398ebc7cf278332
 ZSH_EDIT_SELECT_DIR := $(HOME)/.local/share/zsh/plugins/zsh-edit-select
+ZSH_EDIT_SELECT_AGENT := $(ZSH_EDIT_SELECT_DIR)/impl-macos/backends/macos/zes-macos-clipboard-agent
+ZSH_EDIT_SELECT_DL := https://github.com/Michael-Matta1/zsh-edit-select/releases/download/$(ZSH_EDIT_SELECT_RELEASE)
 install-zsh-edit-select:
 	@if [ -d "$(ZSH_EDIT_SELECT_DIR)/.git" ]; then \
 		echo "Fetching pinned zsh-edit-select ($(ZSH_EDIT_SELECT_REF))..."; \
@@ -185,7 +198,36 @@ install-zsh-edit-select:
 		git checkout --quiet --detach "$(ZSH_EDIT_SELECT_REF)" && \
 		[ "$$(git rev-parse HEAD)" = "$(ZSH_EDIT_SELECT_REF)" ] || \
 		{ echo "ERROR: zsh-edit-select HEAD does not match pinned commit $(ZSH_EDIT_SELECT_REF); aborting."; exit 1; }
-	@echo "Done, pinned at $(ZSH_EDIT_SELECT_REF). Restart the terminal to load it (first load downloads the plugin's clipboard agents)."
+	@if [ -x "$(ZSH_EDIT_SELECT_AGENT)" ] && \
+		[ "$$(shasum -a 256 "$(ZSH_EDIT_SELECT_AGENT)" 2>/dev/null | awk '{print $$1}')" = "$(ZSH_EDIT_SELECT_AGENT_SHA256)" ]; then \
+		echo "Agent already present, digest verified."; \
+	else \
+		command -v shasum >/dev/null 2>&1 || \
+			{ echo "ERROR: shasum (SHA-256 tool) unavailable; aborting."; exit 1; }; \
+		echo "Fetching + verifying agent from pinned release $(ZSH_EDIT_SELECT_RELEASE)..."; \
+		sums="$(ZSH_EDIT_SELECT_DIR)/.SHA256SUMS.tmp"; \
+		curl -fsSL --retry 2 -o "$$sums" "$(ZSH_EDIT_SELECT_DL)/SHA256SUMS.txt" || \
+			{ echo "ERROR: SHA256SUMS.txt unavailable for $(ZSH_EDIT_SELECT_RELEASE); aborting."; exit 1; }; \
+		[ -s "$$sums" ] || \
+			{ echo "ERROR: SHA256SUMS.txt empty; aborting."; rm -f "$$sums"; exit 1; }; \
+		entry=$$(awk -v a=zes-macos-clipboard-agent \
+			'NF==2 && ($$2==a || substr($$2,index($$2,"/")+1)==a) {print $$1; exit}' "$$sums"); \
+		rm -f "$$sums"; \
+		[ -n "$$entry" ] || \
+			{ echo "ERROR: no SHA256SUMS.txt entry for zes-macos-clipboard-agent; aborting."; exit 1; }; \
+		[ "$$entry" = "$(ZSH_EDIT_SELECT_AGENT_SHA256)" ] || \
+			{ echo "ERROR: SHA256SUMS.txt entry disagrees with reviewed digest (tag moved?); aborting."; exit 1; }; \
+		agent="$(ZSH_EDIT_SELECT_AGENT).tmp"; \
+		curl -fsSL --retry 2 -o "$$agent" "$(ZSH_EDIT_SELECT_DL)/zes-macos-clipboard-agent" || \
+			{ echo "ERROR: agent download failed; aborting."; rm -f "$$agent"; exit 1; }; \
+		actual=$$(shasum -a 256 "$$agent" | awk '{print $$1}'); \
+		[ "$$actual" = "$(ZSH_EDIT_SELECT_AGENT_SHA256)" ] || \
+			{ echo "ERROR: agent digest mismatch (expected $(ZSH_EDIT_SELECT_AGENT_SHA256), got $$actual); aborting."; rm -f "$$agent"; exit 1; }; \
+		mv "$$agent" "$(ZSH_EDIT_SELECT_AGENT)" && chmod +x "$(ZSH_EDIT_SELECT_AGENT)" || \
+			{ echo "ERROR: could not install agent; aborting."; rm -f "$$agent"; exit 1; }; \
+		echo "Agent installed, digest verified."; \
+	fi
+	@echo "Done, pinned at $(ZSH_EDIT_SELECT_REF) / $(ZSH_EDIT_SELECT_RELEASE). Restart the terminal to load it."
 
 copy-opencode-agents:
 	@mkdir -p "$(HOME)/.config/opencode/agents"
