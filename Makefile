@@ -36,7 +36,7 @@ help:
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
 	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.jsonc via 'opencode plugin --global'"
-	@echo "  install-zsh-edit-select        - Install or update the zsh-edit-select plugin (git clone/pull to ~/.local/share/zsh/plugins/)"
+	@echo "  install-zsh-edit-select        - Install or re-sync the zsh-edit-select plugin at its pinned commit (ZSH_EDIT_SELECT_REF)"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -163,20 +163,29 @@ install-opencode-plugins:
 	@echo "Done installing OpenCode plugins."
 
 # zsh-edit-select plugin (https://github.com/Michael-Matta1/zsh-edit-select)
-# Installs AND updates: clones on first run, fast-forward pulls afterwards.
-# Sourced from config/zsh/.zshrc; terminal keybindings live in
-# config/wezterm/.wezterm.lua and config/ghostty/config.ghostty.
+# Pinned to a reviewed upstream commit (full 40-char SHA, re-verified after
+# checkout; aborts on mismatch). Installs and re-syncs to exactly this
+# revision — routine runs never pull the mutable upstream branch. The
+# plugin's own assets/fetch-agents.zsh verifies its release binaries
+# against the release's SHA256SUMS.txt (aborts if unavailable). To update
+# the plugin: review the upstream diff, then bump ZSH_EDIT_SELECT_REF as
+# an explicit, reviewed change to this file.
+ZSH_EDIT_SELECT_REF := c7bb5a464fa8f16a51092feeeda4e477236159fc
 ZSH_EDIT_SELECT_DIR := $(HOME)/.local/share/zsh/plugins/zsh-edit-select
 install-zsh-edit-select:
 	@if [ -d "$(ZSH_EDIT_SELECT_DIR)/.git" ]; then \
-		echo "Updating zsh-edit-select..."; \
-		git -C "$(ZSH_EDIT_SELECT_DIR)" pull --ff-only; \
+		echo "Fetching pinned zsh-edit-select ($(ZSH_EDIT_SELECT_REF))..."; \
+		git -C "$(ZSH_EDIT_SELECT_DIR)" fetch --quiet origin "$(ZSH_EDIT_SELECT_REF)"; \
 	else \
-		echo "Installing zsh-edit-select..."; \
+		echo "Installing zsh-edit-select ($(ZSH_EDIT_SELECT_REF))..."; \
 		mkdir -p "$(HOME)/.local/share/zsh/plugins"; \
-		git clone https://github.com/Michael-Matta1/zsh-edit-select.git "$(ZSH_EDIT_SELECT_DIR)"; \
+		git clone --quiet https://github.com/Michael-Matta1/zsh-edit-select.git "$(ZSH_EDIT_SELECT_DIR)"; \
 	fi
-	@echo "Done. Restart the terminal to load it (first load also downloads the plugin's clipboard agents)."
+	@cd "$(ZSH_EDIT_SELECT_DIR)" && \
+		git checkout --quiet --detach "$(ZSH_EDIT_SELECT_REF)" && \
+		[ "$$(git rev-parse HEAD)" = "$(ZSH_EDIT_SELECT_REF)" ] || \
+		{ echo "ERROR: zsh-edit-select HEAD does not match pinned commit $(ZSH_EDIT_SELECT_REF); aborting."; exit 1; }
+	@echo "Done, pinned at $(ZSH_EDIT_SELECT_REF). Restart the terminal to load it (first load downloads the plugin's clipboard agents)."
 
 copy-opencode-agents:
 	@mkdir -p "$(HOME)/.config/opencode/agents"
