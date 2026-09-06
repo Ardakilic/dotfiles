@@ -124,6 +124,14 @@ if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
   [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+  # zsh-edit-select — editor-like command line editing (Shift selection,
+  # cut/copy/paste, type-to-replace, undo/redo).
+  # Installed/updated with `make install-zsh-edit-select`; the terminal-side
+  # keybindings live in the WezTerm and Ghostty configs. Must load before
+  # zsh-syntax-highlighting (it defines ZLE widgets).
+  [[ -f ~/.local/share/zsh/plugins/zsh-edit-select/zsh-edit-select.plugin.zsh ]] && \
+  source ~/.local/share/zsh/plugins/zsh-edit-select/zsh-edit-select.plugin.zsh
+
   # powerlevel10k theme (instant prompt already loaded at top of file)
   [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]] && \
   source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme

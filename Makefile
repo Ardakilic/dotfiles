@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers install-zsh-edit-select
 
 
 all: help
@@ -36,6 +36,7 @@ help:
 	@echo "  reload-zsh                     - Reload zsh configuration"
 	@echo "  install-deps                   - Install formulae, casks, and App Store apps from config/brew/Brewfile (sign into App Store first on fresh machines)"
 	@echo "  install-opencode-plugins       - Install OpenCode plugins listed in opencode.jsonc via 'opencode plugin --global'"
+	@echo "  install-zsh-edit-select        - Install or update the zsh-edit-select plugin (git clone/pull to ~/.local/share/zsh/plugins/)"
 
 # Backup macro: backup file or directory before overwriting
 BACKUP_SUFFIX := .bak.$(shell date +%s)
@@ -160,6 +161,22 @@ install-opencode-plugins:
 		opencode plugin "$$plugin" --global; \
 	done
 	@echo "Done installing OpenCode plugins."
+
+# zsh-edit-select plugin (https://github.com/Michael-Matta1/zsh-edit-select)
+# Installs AND updates: clones on first run, fast-forward pulls afterwards.
+# Sourced from config/zsh/.zshrc; terminal keybindings live in
+# config/wezterm/.wezterm.lua and config/ghostty/config.ghostty.
+ZSH_EDIT_SELECT_DIR := $(HOME)/.local/share/zsh/plugins/zsh-edit-select
+install-zsh-edit-select:
+	@if [ -d "$(ZSH_EDIT_SELECT_DIR)/.git" ]; then \
+		echo "Updating zsh-edit-select..."; \
+		git -C "$(ZSH_EDIT_SELECT_DIR)" pull --ff-only; \
+	else \
+		echo "Installing zsh-edit-select..."; \
+		mkdir -p "$(HOME)/.local/share/zsh/plugins"; \
+		git clone https://github.com/Michael-Matta1/zsh-edit-select.git "$(ZSH_EDIT_SELECT_DIR)"; \
+	fi
+	@echo "Done. Restart the terminal to load it (first load also downloads the plugin's clipboard agents)."
 
 copy-opencode-agents:
 	@mkdir -p "$(HOME)/.config/opencode/agents"

@@ -63,6 +63,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — fish-like highlighting
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions
 - [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) — fuzzy history search
+- [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select) — editor-like command line editing (Shift selection, cut/copy/paste, type-to-replace, undo/redo). Not on Homebrew; installed/updated via `make install-zsh-edit-select`
 
 ### Casks:
 > Cask apps installed via Homebrew. The full list (with versions) lives in [`config/brew/Brewfile`](./config/brew/Brewfile).
@@ -161,6 +162,7 @@ make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
 make install-opencode-plugins      # Install OpenCode plugins listed in opencode.jsonc
+make install-zsh-edit-select        # Install or update the zsh-edit-select plugin (clone/pull)
 ```
 
 Run `make help` for all available targets.
@@ -356,7 +358,8 @@ config/
 
 * Built for macOS (Homebrew paths)
 * The `/matt-review` OpenCode skill is sourced from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). It runs a two-axis code review (Standards + Spec) as parallel sub-agents. Install globally with `make copy-opencode-skills copy-opencode-commands`.
-* Some `.zshrc` blocks (powerlevel10k, autosuggestions, syntax-highlighting, fuzzy completion, history-substring-search) are gated on `$TERM_PROGRAM` and load in both WezTerm (`WezTerm`) and Ghostty (`ghostty`). Other terminals (Terminal.app, iTerm2, Warp) get a minimal shell.
+* Some `.zshrc` blocks (powerlevel10k, autosuggestions, zsh-edit-select, syntax-highlighting, fuzzy completion, history-substring-search) are gated on `$TERM_PROGRAM` and load in both WezTerm (`WezTerm`) and Ghostty (`ghostty`). Other terminals (Terminal.app, iTerm2, Warp) get a minimal shell.
+* **zsh-edit-select** is the only zsh plugin not installed via Homebrew: `make install-zsh-edit-select` clones it to `~/.local/share/zsh/plugins/zsh-edit-select` and fast-forward pulls on re-run, so the same target handles both install and update. The WezTerm and Ghostty configs ship the plugin's macOS keybindings (Cmd+A/C/V/X/Z, Cmd+Shift+arrows); those keys are inert until the plugin is installed. In WezTerm, Cmd+Shift+Left/Right now select to line start/end (they previously moved the current tab; drag still moves tabs). Mouse integration is optional and experimental on macOS — run `edit-select setup-ax` and grant Accessibility permission if you want it; keyboard selection works out of the box. Customize everything with `edit-select config`.
 * Not portable without tweaks
 * **Retired — WezTerm stderr coloring.** Previously, stderr was captured to a temp file (`exec 2>"$file"` in `preexec`) and replayed in red before the next prompt. Abandoned because capturing fd 2 forces `isatty(2)=false` for every child process, which breaks docker prompts/progress bars, buffers streaming stderr until exit, and suppresses programs' own native stderr colors. The only race-free, streaming-safe alternative (`stderred` via `DYLD_INSERT_LIBRARIES`) is stripped by SIP on macOS system binaries and isn't in Homebrew core — not worth maintaining. Removing the colorizer also eliminated the cursor-disappearing race it caused. See `openspec/changes/retire-stderr-colorizer/` for the full analysis.
 

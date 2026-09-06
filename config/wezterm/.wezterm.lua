@@ -40,8 +40,12 @@ config.keys = {
     { key = 'k', mods = 'CMD', action = wezterm.action.ClearScrollback 'ScrollbackAndViewport' },
     { key = 'w', mods = 'CMD', action = wezterm.action.CloseCurrentPane { confirm = false } },
     { key = 'w', mods = 'CMD|SHIFT', action = wezterm.action.CloseCurrentTab { confirm = false } },
-    { key = 'LeftArrow', mods = 'CMD', action = wezterm.action.SendKey { key = 'Home' } },
-    { key = 'RightArrow', mods = 'CMD', action = wezterm.action.SendKey { key = 'End' } },
+    -- Cmd+Left/Right — cursor to line start/end.
+    -- CSI-u form (\x1b[1;9D / \x1b[1;9C) so it pairs with the zsh-edit-select
+    -- Cmd+Shift+Left/Right selection bindings below; requires the plugin
+    -- (`make install-zsh-edit-select`). Plain Home/End keys still work.
+    { key = 'LeftArrow', mods = 'CMD', action = wezterm.action{SendString = '\x1b[1;9D'} },
+    { key = 'RightArrow', mods = 'CMD', action = wezterm.action{SendString = '\x1b[1;9C'} },
     { key = 'p', mods = 'CMD|SHIFT', action = wezterm.action.ActivateCommandPalette },
    
     -- Move cursor position word backwards and forwards (Option+Left, Option+Right)
@@ -68,9 +72,33 @@ config.keys = {
     -- Remap Shift+Enter to send Alt+Enter natively, for multiple line input
     { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendKey { key = 'Enter', mods = 'ALT' } },
 
-    -- Move the current tab left or right (keyboard replacement for drag-and-drop)
-    { key = 'LeftArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(-1) },
-    { key = 'RightArrow', mods = 'CMD|SHIFT', action = act.MoveTabRelative(1) },
+    -- ── zsh-edit-select (editor-like command line editing) ────────
+    -- Sends the CSI-u sequences the plugin's ZLE widgets bind. Requires the
+    -- plugin (`make install-zsh-edit-select`); without it these keys do nothing.
+    -- Cmd+C: copy an active WezTerm selection (terminal copy), else forward to
+    -- the plugin (copies the in-command-line selection).
+    {
+      key = 'c', mods = 'CMD',
+      action = wezterm.action_callback(function(window, pane)
+        local sel = window:get_selection_text_for_pane(pane)
+        if sel ~= "" then
+          window:perform_action(wezterm.action.CopyTo 'Clipboard', pane)
+        else
+          window:perform_action(wezterm.action{SendString = '\x1b[99;9u'}, pane)
+        end
+      end),
+    },
+    { key = 'a', mods = 'CMD', action = wezterm.action{SendString = '\x1b[97;9u'} },   -- select all
+    { key = 'v', mods = 'CMD', action = wezterm.action{SendString = '\x1b[118;9u'} }, -- paste
+    { key = 'x', mods = 'CMD', action = wezterm.action{SendString = '\x1b[120;9u'} }, -- cut
+    { key = 'z', mods = 'CMD', action = wezterm.action{SendString = '\x1b[122;9u'} }, -- undo
+    { key = 'z', mods = 'CMD|SHIFT', action = wezterm.action{SendString = '\x1b[122;10u'} }, -- redo
+    -- Cmd+Shift+arrows — select to line start/end (left/right) or by line (up/down).
+    -- Replaces the previous MoveTabRelative bindings (drag still moves tabs).
+    { key = 'LeftArrow', mods = 'CMD|SHIFT', action = wezterm.action{SendString = '\x1b[1;10D'} },
+    { key = 'RightArrow', mods = 'CMD|SHIFT', action = wezterm.action{SendString = '\x1b[1;10C'} },
+    { key = 'UpArrow', mods = 'CMD|SHIFT', action = wezterm.action{SendString = '\x1b[1;10A'} },
+    { key = 'DownArrow', mods = 'CMD|SHIFT', action = wezterm.action{SendString = '\x1b[1;10B'} },
 
 }
 

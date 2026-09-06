@@ -77,3 +77,20 @@ keybind = ctrl+shift+k=text:\x1b\x0b
 
 # Multiline REPL input: send Alt+Enter (ESC + CR). \x1b = ESC, \r = CR.
 keybind = shift+enter=text:\x1b\r
+
+# ── zsh-edit-select (editor-like command line editing) ────────────
+# Sends the CSI-u sequences the plugin's ZLE widgets bind. Requires the
+# plugin: `make install-zsh-edit-select` (without it these keys do nothing).
+# Per the plugin's Ghostty macOS guide; cmd+v keeps Ghostty's native paste
+# (bracketed paste triggers the plugin's paste-to-replace).
+keybind = cmd+a=csi:97;9u
+keybind = cmd+c=csi:99;9u
+keybind = cmd+x=csi:120;9u
+keybind = cmd+z=csi:122;9u
+keybind = cmd+shift+z=csi:122;10u
+# Shift+Up/Down — select line by line.
+keybind = shift+up=csi:1;2A
+keybind = shift+down=csi:1;2B
+# Cmd+Shift+Up/Down — select to buffer start/end.
+keybind = cmd+shift+up=csi:1;10A
+keybind = cmd+shift+down=csi:1;10B
