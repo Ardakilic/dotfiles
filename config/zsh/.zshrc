@@ -61,7 +61,17 @@ copyfile() {
     echo "Error: File '$1' not found." >&2
     return 1
   fi
-  osascript -e 'on run argv' -e 'set the clipboard to POSIX file (item 1 of argv)' -e 'end run' "${1:A}"
+  # The trailing `clipboard info` is load-bearing: exiting immediately after
+  # `set the clipboard` leaves the pasteboard empty ~15% of the time (the
+  # write commits asynchronously), and reading it back in the same script
+  # both flushes the write and verifies the file reference («class furl»)
+  # actually landed — osascript alone exits 0 even on a lost write.
+  local out
+  if ! out=$(osascript -e 'on run argv' -e 'set the clipboard to POSIX file (item 1 of argv)' -e 'clipboard info' -e 'end run' "${1:A}") \
+    || [[ "$out" != *furl* ]]; then
+    echo "Error: failed to copy '$1' to clipboard." >&2
+    return 1
+  fi
   echo "Copied '$1' to clipboard."
 }
 
