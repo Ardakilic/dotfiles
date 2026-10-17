@@ -7,21 +7,16 @@
   // Plugins extend OpenCode functionality.
   "plugin": ["@dietrichgeberth/ponytail"],
 
-  // Provider routing preferences (keys verified against https://models.dev):
-  // OpenRouter-style `provider` routing object sent with every request to these
-  // gateway providers. Upstream providers are tried in "order"; "allow_fallbacks"
-  // keeps the normal behavior of moving to other providers when the ordered ones
-  // are unavailable.
-  //
-  // - openrouter  : native OpenRouter runtime — settings.provider is forwarded
-  //                 as the top-level "provider" object of the request body.
-  // - nano-gpt /  : OpenAI-compatible runtimes where settings.provider is a
-  //   commandcode   reserved route-identity key that never reaches the body —
-  //                 the routing object is merged verbatim into every request
-  //                 body via the generic body overlay instead.
+  // OpenRouter-style routing preferences (keys verified against https://models.dev),
+  // merged into every request body via the documented, package-agnostic `body`
+  // overlay — the body field is per the V2 docs the home for provider-specific
+  // request fields such as OpenRouter routing. Upstream providers are tried in
+  // "order"; "allow_fallbacks" keeps the normal behavior of moving to other
+  // providers when the ordered ones are unavailable. Provider-level values apply
+  // to every model of each provider (merge order: provider → model → variant).
   "providers": {
     "openrouter": {
-      "settings": {
+      "body": {
         "provider": {
           "order": ["anthropic", "z-ai", "deepseek", "meta", "alibaba", "minimax", "mistral", "azure", "openai", "google-vertex"],
           "allow_fallbacks": true
@@ -35,15 +30,10 @@
           "allow_fallbacks": true
         }
       }
-    },
-    "commandcode": {
-      "body": {
-        "provider": {
-          "order": ["anthropic", "z-ai", "deepseek", "meta", "alibaba", "minimax", "mistral", "azure", "openai", "google-vertex"],
-          "allow_fallbacks": true
-        }
-      }
     }
+    // commandcode intentionally omitted: its Provider API exposes no request-level
+    // provider routing (only the x-cmd-zdr header); upstream selection is
+    // server-side and not client-configurable — the field would be ignored.
   },
 
   // Permission rules: fine-grained access control for sensitive paths.
