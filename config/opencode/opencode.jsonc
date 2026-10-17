@@ -7,6 +7,45 @@
   // Plugins extend OpenCode functionality.
   "plugin": ["@dietrichgeberth/ponytail"],
 
+  // Provider routing preferences (keys verified against https://models.dev):
+  // OpenRouter-style `provider` routing object sent with every request to these
+  // gateway providers. Upstream providers are tried in "order"; "allow_fallbacks"
+  // keeps the normal behavior of moving to other providers when the ordered ones
+  // are unavailable.
+  //
+  // - openrouter  : native OpenRouter runtime — settings.provider is forwarded
+  //                 as the top-level "provider" object of the request body.
+  // - nano-gpt /  : OpenAI-compatible runtimes where settings.provider is a
+  //   commandcode   reserved route-identity key that never reaches the body —
+  //                 the routing object is merged verbatim into every request
+  //                 body via the generic body overlay instead.
+  "providers": {
+    "openrouter": {
+      "settings": {
+        "provider": {
+          "order": ["anthropic", "z-ai", "deepseek", "meta", "alibaba", "minimax", "mistral", "azure", "openai", "google-vertex"],
+          "allow_fallbacks": true
+        }
+      }
+    },
+    "nano-gpt": {
+      "body": {
+        "provider": {
+          "order": ["anthropic", "z-ai", "deepseek", "meta", "alibaba", "minimax", "mistral", "azure", "openai", "google-vertex"],
+          "allow_fallbacks": true
+        }
+      }
+    },
+    "commandcode": {
+      "body": {
+        "provider": {
+          "order": ["anthropic", "z-ai", "deepseek", "meta", "alibaba", "minimax", "mistral", "azure", "openai", "google-vertex"],
+          "allow_fallbacks": true
+        }
+      }
+    }
+  },
+
   // Permission rules: fine-grained access control for sensitive paths.
   // "read" blocks listing/reading, "edit" blocks writes, "bash" blocks CLI commands.
   "permission": {
