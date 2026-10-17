@@ -30,15 +30,10 @@
           "allow_fallbacks": true
         }
       }
-    },
-    "commandcode": {
-      "body": {
-        "provider": {
-          "order": ["anthropic", "z-ai", "deepseek", "meta", "alibaba", "minimax", "mistral", "azure", "openai", "google-vertex"],
-          "allow_fallbacks": true
-        }
-      }
     }
+    // commandcode intentionally omitted: its Provider API exposes no request-level
+    // provider routing (only the x-cmd-zdr header); upstream selection is
+    // server-side and not client-configurable — the field would be ignored.
   },
 
   // Permission rules: fine-grained access control for sensitive paths.
