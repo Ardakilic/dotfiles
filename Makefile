@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-zsh-ssh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
@@ -13,6 +13,7 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  copy-zsh                    - Copy .zshrc to ~/.zshrc"
+	@echo "  copy-zsh-ssh                - Copy SSH boilerplate .zshrc.ssh to ~/.zshrc (zero-dependency, remote-friendly)"
 	@echo "  copy-wezterm                - Copy .wezterm.lua to ~/.wezterm.lua"
 	@echo "  copy-ssh                     - Copy config/ssh/config to ~/.ssh/config"
 	@echo "  copy-ghostty                - Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty"
@@ -73,6 +74,11 @@ copy-zsh:
 	$(call backup-file,$(HOME)/.zshrc)
 	@cp $(CURRENT_DIR)/config/zsh/.zshrc $(HOME)/.zshrc
 	@echo "Copied .zshrc to ~/.zshrc"
+
+copy-zsh-ssh:
+	$(call backup-file,$(HOME)/.zshrc)
+	@cp $(CURRENT_DIR)/config/zsh/.zshrc.ssh $(HOME)/.zshrc
+	@echo "Copied SSH boilerplate .zshrc.ssh to ~/.zshrc"
 
 copy-wezterm:
 	$(call backup-file,$(HOME)/.wezterm.lua)
