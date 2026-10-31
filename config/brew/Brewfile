@@ -4,11 +4,12 @@
 #   brew leaves --installed-on-request
 #   brew list --cask
 # Auto-installed dependency bottles MUST NOT be added to this file.
+# Keep each group (taps, formulae, casks, mas) sorted alphabetically by name.
 # Taps and mas entries are hand-listed; review them deliberately.
 
 # Taps
-tap "wxtsky/tap"        # codeisland (cask)
 tap "ardakilic/tap"     # lilt (formula), rb-scrobbler (formula), feishin (cask)
+tap "wxtsky/tap"        # codeisland (cask)
 
 # Formulae (on-request only)
 brew "aria2"
@@ -17,7 +18,6 @@ brew "curl"
 brew "deno"
 brew "eza"
 brew "fzf"
-brew "rtk"             # CLI proxy to minimize LLM token consumption
 brew "git"
 brew "git-delta"
 brew "glow"
@@ -30,6 +30,7 @@ brew "nano"
 brew "node@24"
 brew "powerlevel10k"
 brew "rb-scrobbler"     # ardakilic/tap
+brew "rtk"              # CLI proxy to minimize LLM token consumption
 brew "tree"
 brew "wget"
 brew "zinit"
