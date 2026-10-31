@@ -176,6 +176,21 @@ if [[ -f "scripts/validate.sh" ]]; then
 fi
 
 # ─────────────────────────────────────────────
+# 6b. Zsh syntax validation (parse only, never executes)
+# ─────────────────────────────────────────────
+info "Checking zsh files..."
+if command -v zsh >/dev/null 2>&1; then
+  for f in config/zsh/.zshrc config/zsh/.zshrc.ssh config/zsh/*.zsh; do
+    [[ -f "$f" ]] || continue
+    if ! zsh -n "$f" 2>/dev/null; then
+      error "Zsh syntax error in $f"
+    fi
+  done
+else
+  warn "zsh not installed — skipping zsh validation"
+fi
+
+# ─────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────
 echo ""

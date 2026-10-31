@@ -1,0 +1,121 @@
+# ~/.zshrc — plain zsh, no plugins / frameworks.
+# SSH-friendly boilerplate: zero dependencies, only built-in zsh features.
+# Copy to a remote (timestamped backup first; install runs only if the backup succeeds):
+#   ssh user@host 'test ! -e ~/.zshrc || cp ~/.zshrc ~/.zshrc.bak.$(date +%s)' && \
+#     scp config/zsh/.zshrc.ssh user@host:~/.zshrc
+#
+# This uses only built-in zsh features:
+# colors, completion, vcs_info (git branch), history, keybindings.
+
+# Only do interactive setup below; PATH above still applies to scripts.
+case $- in
+  *i*) ;;
+  *) return;;
+esac
+
+# --- History ---
+HISTFILE=~/.zsh_history
+HISTSIZE=5000
+SAVEHIST=5000
+setopt APPEND_HISTORY
+setopt EXTENDED_HISTORY       # save timestamp + duration
+setopt HIST_IGNORE_DUPS       # ignore consecutive duplicates
+setopt HIST_FIND_NO_DUPS      # don't show dups when searching
+setopt HIST_IGNORE_SPACE      # commands starting with space are not saved
+setopt HIST_REDUCE_BLANKS     # trim extra blanks
+setopt HIST_VERIFY            # show expanded history before running
+setopt SHARE_HISTORY          # share history between sessions
+setopt INC_APPEND_HISTORY     # write each command as it runs
+
+# --- General behavior ---
+setopt AUTO_CD                # `mydir` == `cd mydir`
+setopt AUTO_PUSHD             # cd acts like pushd
+setopt PUSHD_IGNORE_DUPS      # don't push dups onto dir stack
+setopt CORRECT                # suggest correction for typos
+setopt INTERACTIVE_COMMENTS   # allow `# comments` in interactive shell
+setopt NO_BEEP                # no beep
+setopt EXTENDED_GLOB          # extra globbing: ^, ~, #
+setopt NOTIFY                 # report background jobs immediately
+unsetopt FLOW_CONTROL          # let Ctrl-S / Ctrl-Q pass through (needs stty too)
+stty -ixon 2>/dev/null
+
+# --- Completion (built-in compinit, no plugins) ---
+autoload -Uz compinit
+compinit -i                   # -i: skip insecure-dir prompt (shared/NFS homes)
+setopt COMPLETE_IN_WORD       # complete from cursor, not just end of word
+setopt ALWAYS_TO_END          # move cursor to end after completion
+setopt AUTO_MENU              # show menu on second Tab
+setopt AUTO_LIST              # list choices on ambiguous completion
+setopt AUTO_PARAM_SLASH       # add trailing slash for dirs
+unsetopt MENU_COMPLETE        # don't auto-insert first match (annoying)
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # case-insensitive
+[[ -n "$LS_COLORS" ]] && zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' rehash true                        # pick up new commands
+zstyle ':completion:*' group-name ''                      # group results
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+
+# --- Colors ---
+autoload -U colors && colors
+
+# --- Prompt: user@host:path (git-branch) % ---
+# Looks like the classic default prompt, just colored + git aware.
+setopt PROMPT_SUBST
+autoload -Uz vcs_info
+precmd_vcs_info() { vcs_info }
+precmd_functions+=( precmd_vcs_info )
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats ' (%b)'
+zstyle ':vcs_info:git:*' actionformats ' (%b|%a)'
+
+# %# is % for normal users, # for root. Turns red if last command failed.
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f%F{yellow}${vcs_info_msg_0_}%f %(?.%#.%F{red}%#%f) '
+# Show non-zero exit code on the right; nothing when exit is 0 (keeps it clean).
+RPROMPT='%(?..%F{red}%? ↵%f)'
+
+# Set terminal title to user@host:dir (xterm-compatible only).
+case "$TERM" in
+  xterm*|rxvt*|alacritty*|foot*|wezterm*|screen*|tmux*)
+    precmd_title() { print -Pn '\e]0;%n@%m: %~\a' }
+    precmd_functions+=( precmd_title )
+    ;;
+esac
+
+# --- ls / grep colors (no plugins) ---
+if command -v dircolors >/dev/null 2>&1; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  # LS_COLORS is only guaranteed from here on; re-apply so fresh logins get completion colors.
+  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+  alias ls='ls --color=auto'
+  alias dir='dir --color=auto'
+  alias vdir='vdir --color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
+fi
+
+# --- Handy aliases ---
+alias ll='ls -lhF'
+alias la='ls -A'
+alias l='ls -CF'
+alias lh='ls -lh'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# --- Keybindings (emacs mode = zsh default) ---
+bindkey -e
+# Home / End / Delete / Ctrl-arrows for common terminals
+bindkey '^[[H'    beginning-of-line
+bindkey '^[[F'    end-of-line
+bindkey '^[[3~'   delete-char
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[A'    history-beginning-search-backward
+bindkey '^[[B'    history-beginning-search-forward
+
+# --- Small helpers (functions, not plugins) ---
+mkcd() { mkdir -p -- "$1" && cd -- "$1" }
+
+# --- Local overrides (optional, not tracked) ---
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local

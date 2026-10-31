@@ -139,6 +139,7 @@ Individual targets:
 
 ```sh
 make copy-zsh                      # Copy config/zsh/.zshrc to ~/.zshrc
+make copy-zsh-ssh                  # Copy SSH boilerplate config/zsh/.zshrc.ssh to ~/.zshrc (zero-dependency)
 make copy-wezterm                  # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
 make copy-ghostty                  # Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty
 make copy-ssh                     # Copy config/ssh/config to ~/.ssh/config
@@ -176,6 +177,24 @@ Apply with:
 ```sh
 make copy-ssh
 ```
+
+### SSH-friendly zsh boilerplate
+
+`config/zsh/.zshrc.ssh` is a zero-dependency `~/.zshrc` for remote servers:
+no plugins, no Homebrew, no Nerd Fonts — just built-in `compinit`,
+`vcs_info` (git branch), colored prompt with exit-code indicator,
+history, and sane keybindings. Works on bare Linux and macOS.
+
+```sh
+# preview / install locally (backs up existing ~/.zshrc):
+make copy-zsh-ssh
+# copy to a server (timestamped backup first; install runs only if the backup succeeds):
+ssh user@host 'test ! -e ~/.zshrc || cp ~/.zshrc ~/.zshrc.bak.$(date +%s)' && \
+  scp config/zsh/.zshrc.ssh user@host:~/.zshrc
+```
+
+`make copy-all` intentionally skips it so the rich local
+`config/zsh/.zshrc` is never overwritten by the boilerplate.
 
 ### Manual Setup
 
@@ -315,7 +334,8 @@ config/
 ├── ssh/
 │   └── config                # SSH client config (TERM fallback for remote servers)
 ├── zsh/
-│   └── .zshrc                 # ZSH shell config
+│   ├── .zshrc                 # ZSH shell config (rich local setup: Homebrew, zinit, p10k)
+│   └── .zshrc.ssh             # SSH-friendly ZSH boilerplate (zero-dependency, for remote servers)
 ├── git/
 │   ├── .gitconfig             # Git user, SSH signing, aliases, delta pager, zdiff3 merge
 │   └── .gitignore_global      # Global gitignore for OS/IDE files
