@@ -188,9 +188,9 @@ history, and sane keybindings. Works on bare Linux and macOS.
 ```sh
 # preview / install locally (backs up existing ~/.zshrc):
 make copy-zsh-ssh
-# copy to a server (backs up the remote ~/.zshrc first — scp alone would replace it):
-ssh user@host 'cp -n ~/.zshrc ~/.zshrc.bak 2>/dev/null || true'
-scp config/zsh/.zshrc.ssh user@host:~/.zshrc
+# copy to a server (timestamped backup first; install runs only if the backup succeeds):
+ssh user@host 'test ! -e ~/.zshrc || cp ~/.zshrc ~/.zshrc.bak.$(date +%s)' && \
+  scp config/zsh/.zshrc.ssh user@host:~/.zshrc
 ```
 
 `make copy-all` intentionally skips it so the rich local
