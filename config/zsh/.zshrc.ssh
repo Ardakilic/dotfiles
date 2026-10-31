@@ -1,6 +1,8 @@
 # ~/.zshrc — plain zsh, no plugins / frameworks.
 # SSH-friendly boilerplate: zero dependencies, only built-in zsh features.
-# Copy to a remote with: scp config/zsh/.zshrc.ssh user@host:~/.zshrc
+# Copy to a remote (back up the remote ~/.zshrc first — scp alone would replace it):
+#   ssh user@host 'cp -n ~/.zshrc ~/.zshrc.bak 2>/dev/null || true'
+#   scp config/zsh/.zshrc.ssh user@host:~/.zshrc
 #
 # This uses only built-in zsh features:
 # colors, completion, vcs_info (git branch), history, keybindings.
@@ -83,6 +85,8 @@ esac
 # --- ls / grep colors (no plugins) ---
 if command -v dircolors >/dev/null 2>&1; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  # LS_COLORS is only guaranteed from here on; re-apply so fresh logins get completion colors.
+  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
   alias ls='ls --color=auto'
   alias dir='dir --color=auto'
   alias vdir='vdir --color=auto'

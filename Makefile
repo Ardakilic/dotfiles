@@ -43,10 +43,10 @@ BACKUP_SUFFIX := .bak.$(shell date +%s)
 define backup-file
 	@if [ -e $(1) ]; then \
 		if [ -d $(1) ]; then \
-			cp -r $(1) $(1)$(BACKUP_SUFFIX); \
+			cp -r $(1) $(1)$(BACKUP_SUFFIX) && \
 			echo "Backed up directory $(1) to $(1)$(BACKUP_SUFFIX)"; \
 		else \
-			cp $(1) $(1)$(BACKUP_SUFFIX); \
+			cp $(1) $(1)$(BACKUP_SUFFIX) && \
 			echo "Backed up $(1) to $(1)$(BACKUP_SUFFIX)"; \
 		fi; \
 	fi

@@ -188,7 +188,8 @@ history, and sane keybindings. Works on bare Linux and macOS.
 ```sh
 # preview / install locally (backs up existing ~/.zshrc):
 make copy-zsh-ssh
-# copy to a server:
+# copy to a server (backs up the remote ~/.zshrc first — scp alone would replace it):
+ssh user@host 'cp -n ~/.zshrc ~/.zshrc.bak 2>/dev/null || true'
 scp config/zsh/.zshrc.ssh user@host:~/.zshrc
 ```
 
