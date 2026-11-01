@@ -106,13 +106,17 @@ alias ...='cd ../..'
 # --- Keybindings (emacs mode = zsh default) ---
 bindkey -e
 # Home / End / Delete / Ctrl-arrows for common terminals
-bindkey '^[[H'    beginning-of-line
-bindkey '^[[F'    end-of-line
-bindkey '^[[3~'   delete-char
-bindkey '^[[1;5C' forward-word
-bindkey '^[[1;5D' backward-word
-bindkey '^[[A'    history-beginning-search-backward
-bindkey '^[[B'    history-beginning-search-forward
+bindkey '^[[H'    beginning-of-line  # Home
+bindkey '^[[F'    end-of-line        # End
+# Cmd+Left/Right from Ghostty/WezTerm send CSI-u line-edge sequences
+# (ESC[1;9D / ESC[1;9C); bind them too so remote shells move to line edges.
+bindkey '^[[1;9D' beginning-of-line  # Cmd+Left
+bindkey '^[[1;9C' end-of-line        # Cmd+Right
+bindkey '^[[3~'   delete-char        # Delete
+bindkey '^[[1;5C' forward-word       # Ctrl+Right
+bindkey '^[[1;5D' backward-word      # Ctrl+Left
+bindkey '^[[A'    history-beginning-search-backward  # Up
+bindkey '^[[B'    history-beginning-search-forward   # Down
 
 # --- Small helpers (functions, not plugins) ---
 mkcd() { mkdir -p -- "$1" && cd -- "$1" }

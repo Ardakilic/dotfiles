@@ -56,14 +56,17 @@ keybind = cmd+d=new_split:right
 # Clear screen + scrollback (matches WezTerm ClearScrollback 'ScrollbackAndViewport').
 keybind = cmd+k=clear_screen
 
-# Home / End. csi:H sends ESC[H (CUP to row 1 col 1). csi:F sends ESC[F (CPL).
-keybind = cmd+left=csi:H
-keybind = cmd+right=csi:F
+# Home / End. Canonical CSI-u line-edge sequences (ESC[1;9D / ESC[1;9C)
+# matching WezTerm, iTerm2, and the plugin's select-to-edge model, so plain
+# Cmd+Left/Right and Cmd+Shift+Left/Right selection stay paired.
+keybind = cmd+left=csi:1;9D
+keybind = cmd+right=csi:1;9C
 
 # Command palette.
 keybind = cmd+shift+p=toggle_command_palette
 
-# Word-jump (fires reliably on RIGHT Option; LEFT Option produces composed chars).
+# Word-jump (fires on LEFT Option, which macos-option-as-alt maps to Alt;
+# RIGHT Option produces composed chars per the option-key section above).
 keybind = opt+left=esc:b
 keybind = opt+right=esc:f
 
@@ -90,9 +93,17 @@ keybind = cmd+c=csi:99;9u
 keybind = cmd+x=csi:120;9u
 keybind = cmd+z=csi:122;9u
 keybind = cmd+shift+z=csi:122;10u
+# Shift+Left/Right — select char by char. Ghostty has no built-in
+# selection for these (its defaults only cover shift+up/down/page/home/end),
+# so forward the canonical sequences unbound widgets would otherwise leak.
+keybind = shift+left=csi:1;2D
+keybind = shift+right=csi:1;2C
 # Shift+Up/Down — select line by line.
 keybind = shift+up=csi:1;2A
 keybind = shift+down=csi:1;2B
+# Cmd+Shift+Left/Right — select to line start/end.
+keybind = cmd+shift+left=csi:1;10D
+keybind = cmd+shift+right=csi:1;10C
 # Cmd+Shift+Up/Down — select to buffer start/end.
 keybind = cmd+shift+up=csi:1;10A
 keybind = cmd+shift+down=csi:1;10B
