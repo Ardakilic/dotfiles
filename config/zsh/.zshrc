@@ -1,7 +1,7 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
+if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == "ghostty" ]]; then
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
@@ -126,10 +126,12 @@ bindkey $'\x1b\x15' backward-kill-line
 # key, which is distinct from plain Ctrl+K (kill-to-end-of-line).
 bindkey $'\x1b\x0b' kill-buffer
 
+# NOTE: No bindkey for Cmd+Left/Right (ESC[1;9D / ESC[1;9C]) here —
+# zsh-edit-select owns them. SSH-only fallback lives in .zshrc.ssh.
 ## / Remaps
 
 ## Shell init commands here will run in other terminals (iTerm2, Terminal.app, etc.)
-if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == ghostty ]]; then
+if [[ $TERM_PROGRAM == "WezTerm" || $TERM_PROGRAM == "ghostty" ]]; then
   # zsh-autosuggestions
   [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
