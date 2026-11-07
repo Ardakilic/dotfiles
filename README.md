@@ -34,45 +34,39 @@ which requires you to be signed into the Mac App Store app on the
 machine. On a fresh install, open the App Store app and sign in with
 your Apple ID before running `make install-deps`.
 
-Or install individually:
-
-```sh
-brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-delta powerlevel10k zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf zoxide zinit
-```
-
 ### Individual tools:
 
 > The canonical list of formulae, casks, taps, and Mac App Store
 > apps lives in [`config/brew/Brewfile`](./config/brew/Brewfile).
 > The notes below are highlights; the Brewfile is the source of truth.
 
-- [wezterm@nightly](https://formulae.brew.sh/cask/wezterm@nightly) — GPU-accelerated terminal emulator
-- [ghostty](https://ghostty.org/) — terminal emulator
+- [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
 - [curl](https://curl.se/) — data transfer
 - [eza](https://eza.rocks/) — modern `ls` replacement
-- [bat](https://github.com/sharkdp/bat) — `cat` with syntax highlighting
-- [jaq](https://github.com/01mf02/jaq) — Rust reimplementation of `jq`
-- [git-delta](https://github.com/dandavison/delta) — syntax-highlighting pager for git
-- [less](https://greenwoodsoftware.com/less/) — modern pager used by delta; required for proper mouse-wheel scrolling inside `git diff`
 - [fzf](https://github.com/junegunn/fzf) — fuzzy finder
+- [git-delta](https://github.com/dandavison/delta) — syntax-highlighting pager for git
+- [jaq](https://github.com/01mf02/jaq) — Rust reimplementation of `jq`
 - [rtk](https://github.com/rtk-ai/rtk) — CLI proxy to minimize LLM token consumption
 - [zoxide](https://github.com/ajeetdsouza/zoxide) — smarter `cd` replacement
 
 ### ZSH plugins:
-- [zinit](https://github.com/zdharma-continuum/zinit) — ZSH plugin manager; `brew "zinit"` in config/brew/Brewfile, installed via `make install-deps`. `.zshrc` sources the brew path inside the WezTerm/Ghostty gated block; zsh plugins are managed as zinit load statements in `.zshrc`
-- [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select) — editor-like command line editing (Shift selection, cut/copy/paste, undo/redo); managed by zinit via the `zinit depth"1" light-mode for Michael-Matta1/zsh-edit-select` statement in `.zshrc`'s gated block. zinit clones it on first shell start; the plugin then downloads its macOS clipboard agent binary on first load (upstream fetcher behavior)
 - [powerlevel10k](https://github.com/romkatv/powerlevel10k) — ZSH theme
-- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — fish-like highlighting
+- [zinit](https://github.com/zdharma-continuum/zinit) — ZSH plugin manager; `brew "zinit"` in config/brew/Brewfile, installed via `make install-deps`. `.zshrc` sources the brew path inside the WezTerm/Ghostty gated block; zsh plugins are managed as zinit load statements in `.zshrc`
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions
+- [zsh-edit-select](https://github.com/Michael-Matta1/zsh-edit-select) — editor-like command line editing (Shift selection, cut/copy/paste, undo/redo); managed by zinit via the `zinit depth"1" light-mode for Michael-Matta1/zsh-edit-select` statement in `.zshrc`'s gated block. zinit clones it on first shell start; the plugin then downloads its macOS clipboard agent binary on first load (upstream fetcher behavior)
 - [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) — fuzzy history search
+- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — fish-like highlighting
 
 ### Casks:
 > Cask apps installed via Homebrew. The full list (with versions) lives in [`config/brew/Brewfile`](./config/brew/Brewfile).
 
+- [affine](https://affine.pro/) — open-source knowledge base (docs, whiteboards, databases)
 - [alt-tab](https://github.com/lwouis/alt-tab) — Windows-style alt-tab task switcher
 - [betterzip](https://macitbetter.com/) — Archive manager
+- [cmux](https://github.com/manaflow-ai/cmux) — Ghostty-based terminal with vertical tabs for AI coding agents
 - [codeisland](https://github.com/wxtsky/codeisland) — Floating code editor (from `wxtsky/tap`)
 - [forklift](https://binarynights.com/) — Dual-pane file manager
+- [ghostty](https://ghostty.org/) — terminal emulator
 - [helium-browser](https://helium.computer/) — Browser
 - [iina](https://iina.io/) — Modern video player
 - [joplin](https://joplinapp.org/) — Note-taking and to-do
@@ -82,8 +76,9 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 - [openmtp](https://openmtp.ganeshrvel.com/) — Android file transfer
 - [orbstack](https://orbstack.dev/) — Docker / Linux VM replacement
 - [telegram](https://telegram.org/) — Messaging
+- [veracrypt-fuse-t](https://www.veracrypt.fr/) — Disk encryption (VeraCrypt built against FUSE-T, no kernel extension)
 - [vscodium](https://vscodium.com/) — Open-source VS Code build
-- [ghostty](https://ghostty.org/) — terminal emulator
+- [wezterm@nightly](https://formulae.brew.sh/cask/wezterm@nightly) — GPU-accelerated terminal emulator
 
 ### Mac App Store apps:
 > Installed via [`mas`](https://github.com/mas-cli/mas) entries in the Brewfile. Requires the App Store app to be signed in on the machine.
@@ -106,6 +101,7 @@ brew install --cask wezterm@nightly && brew install curl eza bat jaq less git-de
 
 - [MonoLisa Font](https://monolisa.dev/) (MonoLisa is a paid font; v3 renames the family to `MonoLisaCode`)
 - [MonoLisa Nerd Font patch](https://github.com/daylinmorgan/monolisa-nerdfont-patch) (`MonoLisaCode Nerd Font`)
+- [monolisa-nerdfonts](https://github.com/monolisaFont/monolisa-nerdfonts) (alternative patcher — builds a Nerd Fonts-patched MonoLisa Code from your own commercial font files via the official Nerd Fonts patcher Docker image)
 
 Needed for icons and prompt.
 
@@ -141,8 +137,8 @@ Individual targets:
 make copy-zsh                      # Copy config/zsh/.zshrc to ~/.zshrc
 make copy-zsh-ssh                  # Copy SSH boilerplate config/zsh/.zshrc.ssh to ~/.zshrc (zero-dependency)
 make copy-wezterm                  # Copy config/wezterm/.wezterm.lua to ~/.wezterm.lua
+make copy-ssh                      # Copy config/ssh/config to ~/.ssh/config
 make copy-ghostty                  # Copy config/ghostty/config.ghostty to ~/.config/ghostty/config.ghostty
-make copy-ssh                     # Copy config/ssh/config to ~/.ssh/config
 make copy-vscode-settings          # Copy config/vscode/settings.json to VS Code settings
 make copy-vscode-insiders-settings # Copy config/vscode-insiders/settings.json to VS Code Insiders settings
 make copy-vscodium-settings        # Copy config/vscodium/settings.json to VSCodium settings
@@ -159,11 +155,10 @@ make copy-opencode-commands        # Copy opencode commands to ~/.config/opencod
 make copy-gitconfig                # Copy config/git/.gitconfig to ~/.gitconfig
 make copy-gitignore-global         # Copy config/git/.gitignore_global to ~/.gitignore_global
 make copy-git-allowed-signers      # Rebuild ~/.ssh/allowed_signers from ~/.ssh/arda.pub (no key committed)
-make copy-ssh                      # Copy config/ssh/config to ~/.ssh/config
-make git-config                    # Configure git with delta and merge settings
 make reload-zsh                    # Reload zsh configuration in a subshell
 make install-deps                  # Install formulae, casks, and App Store apps from config/brew/Brewfile
 make install-opencode-plugins      # Install OpenCode plugins listed in opencode.jsonc
+make list-opencode-plugins         # List OpenCode plugins from the installed config
 ```
 
 Run `make help` for all available targets.
@@ -322,6 +317,7 @@ config/
 ├── claude-code/
 │   ├── .claude.json           # Claude Code MCP servers config
 │   ├── settings.json          # Claude Code settings
+│   ├── statusline-command.sh  # Claude Code status line script
 │   └── output-styles/         # Claude Code output styles
 │       ├── ask.md             # Advisory Q&A style
 │       ├── architect.md       # Planning and design style
@@ -367,7 +363,9 @@ config/
     │   └── debug.md           # Systematic debugging agent
     ├── skills/                # OpenCode skills (global)
     │   └── matt-review/       # Two-axis code review (from mattpocock/skills)
-    │       └── SKILL.md
+    │       ├── SKILL.md
+    │       └── agents/
+    │           └── openai.yaml
     └── commands/              # OpenCode commands (global)
         └── matt-review.md     # /matt-review command
 ```
