@@ -7,7 +7,7 @@ TBD - created by archiving change 2026-06-24-rename-monolisa-to-monolisacode. Up
 
 Every configuration file that selects the primary font MUST use the
 MonoLisa v3 family names. Editor configuration files (VS Code, VS
-Code Insiders, VSCodium, Kiro Desktop) MUST set the editor font
+Code Insiders, VSCodium) MUST set the editor font
 family to `MonoLisaCode`. Terminal and TUI configuration files
 (WezTerm AND Ghostty) MUST set the font to `MonoLisaCode Nerd Font`.
 No configuration file in `config/` MUST reference the pre-v3 names
@@ -29,7 +29,7 @@ contains no v2 names on creation, so the check continues to pass.
 
 - **WHEN** a developer reads the `editor.fontFamily` value in
   `config/vscode/settings.json`, `config/vscode-insiders/settings.json`,
-  `config/vscodium/settings.json`, and `config/kiro-desktop/settings.json`
+  and `config/vscodium/settings.json`
 - **THEN** the value is `MonoLisaCode`
 - **AND** the inline comment reads `// Or "'MonoLisaCode'"`
 
@@ -129,9 +129,8 @@ introduced — the integrated terminal inherits `editor.fontSize`.
 - **WHEN** a developer greps the IDE `settings.json` files for
   `terminal.integrated.fontFamily`
 - **THEN** each of `config/vscode/settings.json`,
-  `config/vscode-insiders/settings.json`,
-  `config/vscodium/settings.json`, and
-  `config/kiro-desktop/settings.json` has the key set to
+  `config/vscode-insiders/settings.json`, and
+  `config/vscodium/settings.json` has the key set to
   `MonoLisaCode Nerd Font`
 
 #### Scenario: no separate terminal font size

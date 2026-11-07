@@ -69,7 +69,6 @@ your Apple ID before running `make install-deps`.
 - [helium-browser](https://helium.computer/) — Browser
 - [iina](https://iina.io/) — Modern video player
 - [joplin](https://joplinapp.org/) — Note-taking and to-do
-- [kiro](https://kiro.dev/) — AI-powered IDE
 - [maccy](https://maccy.app/) — Clipboard manager
 - [megasync](https://mega.io/desktop) — MEGA cloud sync
 - [openmtp](https://openmtp.ganeshrvel.com/) — Android file transfer
@@ -141,9 +140,6 @@ make copy-ghostty                  # Copy config/ghostty/config.ghostty to ~/.co
 make copy-vscode-settings          # Copy config/vscode/settings.json to VS Code settings
 make copy-vscode-insiders-settings # Copy config/vscode-insiders/settings.json to VS Code Insiders settings
 make copy-vscodium-settings        # Copy config/vscodium/settings.json to VSCodium settings
-make copy-kiro-desktop-settings    # Copy config/kiro-desktop/settings.json to Kiro desktop settings
-make copy-kiro-desktop-agents      # Copy Kiro desktop agents to ~/.kiro/agents/
-make copy-kiro-cli-agents          # Copy Kiro CLI agents to ~/.kiro/agents/
 make copy-claude-mcp               # Copy config/claude-code/.claude.json to ~/.claude.json
 make copy-claude-settings          # Copy config/claude-code/settings.json + statusline-command.sh to ~/.claude/
 make copy-claude-output-styles     # Copy output styles to ~/.claude/output-styles/
@@ -216,25 +212,6 @@ Copy VSCodium settings:
 ```sh
 mkdir -p "$HOME/Library/Application Support/VSCodium/User"
 cp ~/.dotfiles/config/vscodium/settings.json "$HOME/Library/Application Support/VSCodium/User/settings.json"
-```
-
-Copy Kiro settings:
-
-```sh
-cp ~/.dotfiles/config/kiro-desktop/settings.json "$HOME/Library/Application Support/Kiro/User/settings.json"
-```
-
-Copy Kiro desktop agents:
-
-```sh
-cp -r ~/.dotfiles/config/kiro-desktop/agents/*.md ~/.kiro/agents/
-```
-
-Copy Kiro CLI agents:
-
-```sh
-mkdir -p ~/.kiro/agents
-cp -r ~/.dotfiles/config/kiro-cli/agents/*.json ~/.kiro/agents/
 ```
 
 Copy Claude Code Settings:
@@ -340,19 +317,6 @@ config/
 │   └── settings.json          # VS Code Insiders editor settings
 ├── vscodium/
 │   └── settings.json          # VSCodium editor settings
-├── kiro-desktop/
-│   ├── settings.json          # Kiro desktop settings
-│   └── agents/                # Kiro desktop custom agents (markdown format)
-│       ├── ask.md             # Advisory Q&A agent
-│       ├── architect.md       # Planning and design agent
-│       ├── review.md          # Code review agent
-│       └── debug.md           # Systematic debugging agent
-├── kiro-cli/
-│   └── agents/                # Kiro CLI custom agents (JSON format)
-│       ├── ask.json           # Advisory Q&A agent
-│       ├── architect.json     # Planning and design agent
-│       ├── review.json        # Code review agent
-│       └── debug.json         # Systematic debugging agent
 └── opencode/
     ├── opencode.jsonc         # OpenCode AI config
     ├── agents/                # OpenCode custom agents

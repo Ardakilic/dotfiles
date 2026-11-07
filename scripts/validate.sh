@@ -115,7 +115,7 @@ fi
 info "Checking Makefile target alignment..."
 
 # Every config/ subdirectory should have a copy-* target
-EXPECTED_DIRS=(zsh wezterm ghostty ssh git vscode vscode-insiders vscodium kiro-desktop kiro-cli claude-code opencode)
+EXPECTED_DIRS=(zsh wezterm ghostty ssh git vscode vscode-insiders vscodium claude-code opencode)
 for dir in "${EXPECTED_DIRS[@]}"; do
   if [[ ! -d "config/$dir" ]]; then
     error "Missing config directory: config/$dir"
@@ -135,22 +135,13 @@ info "Checking agent consistency..."
 
 # Check that each of the 4 personas exists in each platform
 PERSONAS=(ask architect review debug)
-PLATFORMS=("config/opencode/agents" "config/kiro-desktop/agents" "config/kiro-cli/agents" "config/claude-code/output-styles")
+PLATFORMS=("config/opencode/agents" "config/claude-code/output-styles")
 
 for platform in "${PLATFORMS[@]}"; do
   for persona in "${PERSONAS[@]}"; do
-    case "$platform" in
-      *kiro-cli*)
-        if [[ ! -f "$platform/$persona.json" ]]; then
-          error "Missing agent: $platform/$persona.json"
-        fi
-        ;;
-      *)
-        if [[ ! -f "$platform/$persona.md" ]]; then
-          error "Missing agent: $platform/$persona.md"
-        fi
-        ;;
-    esac
+    if [[ ! -f "$platform/$persona.md" ]]; then
+      error "Missing agent: $platform/$persona.md"
+    fi
   done
 done
 
