@@ -59,6 +59,7 @@ cask "megasync"
 cask "openmtp"
 cask "orbstack"
 cask "telegram"
+cask "veracrypt-fuse-t"
 cask "vscodium"
 cask "wezterm@nightly"
 
