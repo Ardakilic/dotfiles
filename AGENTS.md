@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (WezTerm), editors (VS Code, VS Code Insiders, VSCodium, Kiro Desktop), version control (git), and AI coding tools (OpenCode, Claude Code, Kiro CLI/Desktop). Uses Homebrew for package management and a Makefile for setup orchestration.
+Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (WezTerm), editors (VS Code, VS Code Insiders, VSCodium), version control (git), and AI coding tools (OpenCode, Claude Code). Uses Homebrew for package management and a Makefile for setup orchestration.
 
 **Owner:** Arda Kılıçdağı  
 **License:** MIT  
@@ -17,7 +17,7 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
 ├── Makefile                     # Setup automation (copy configs, install deps, git config)
 ├── README.md                    # User-facing docs with setup guide and screenshots
 ├── LICENSE                      # MIT
-├── .gitignore                   # Ignores .kilo/, .roo/, .claude/, .kiro/, .vscode/, suggestions.md
+├── .gitignore                   # Ignores .kilo/, .roo/, .claude/, .vscode/, suggestions.md
 ├── screenshots/                 # Terminal/IDE screenshots (PNG)
 ├── scripts/                     # Validation and utility scripts (validate.sh is the only gate)
 ├── openspec/                    # Spec-driven change tracking (changes/, changes/archive/, specs/, config.yaml)
@@ -40,11 +40,6 @@ Minimal dotfiles for macOS daily development. Configures shell (zsh), terminal (
     │   └── settings.json        # VS Code Insiders settings (identical to stable)
     ├── vscodium/
     │   └── settings.json        # VSCodium settings (no Copilot references)
-    ├── kiro-desktop/
-    │   ├── settings.json        # Kiro Desktop font/theme settings
-    │   └── agents/              # Agent definitions (markdown format)
-    ├── kiro-cli/
-    │   └── agents/              # Agent definitions (JSON format)
     ├── claude-code/
     │   ├── .claude.json         # Claude Code MCP server config (Context7)
     │   ├── settings.json        # Claude Code settings (incl. statusLine command)
@@ -74,9 +69,6 @@ make copy-ssh                     # config/ssh/config → ~/.ssh/config
 make copy-vscode-settings          # → ~/Library/Application Support/Code/User/settings.json
 make copy-vscode-insiders-settings # → ~/Library/Application Support/Code - Insiders/User/settings.json
 make copy-vscodium-settings        # → ~/Library/Application Support/VSCodium/User/settings.json
-make copy-kiro-desktop-settings    # → ~/Library/Application Support/Kiro/User/settings.json
-make copy-kiro-desktop-agents      # → ~/.kiro/agents/ (markdown)
-make copy-kiro-cli-agents          # → ~/.kiro/agents/ (JSON)
 make copy-claude-mcp               # config/claude-code/.claude.json → ~/.claude.json
 make copy-claude-settings          # → ~/.claude/settings.json + ~/.claude/statusline-command.sh
 make copy-claude-output-styles     # → ~/.claude/output-styles/
@@ -91,7 +83,7 @@ make reload-zsh                    # source ~/.zshrc in a subshell
 make help                          # List all targets
 ```
 
-There are no tests, linters, or type checkers. Validation is via `scripts/validate.sh` — the only gate. It runs JSON/Lua syntax checks, verifies Makefile↔`config/` target alignment (warns if a `config/` dir has no `copy-*` target), and enforces the 4-persona completeness invariant: it fails if any of `ask`/`architect`/`review`/`debug` is missing from any of the four agent platforms. `EXPECTED_DIRS` in `validate.sh` is the canonical list of `config/` subdirectories that must each have a Makefile target.
+There are no tests, linters, or type checkers. Validation is via `scripts/validate.sh` — the only gate. It runs JSON/Lua syntax checks, verifies Makefile↔`config/` target alignment (warns if a `config/` dir has no `copy-*` target), and enforces the 4-persona completeness invariant: it fails if any of `ask`/`architect`/`review`/`debug` is missing from either agent platform. `EXPECTED_DIRS` in `validate.sh` is the canonical list of `config/` subdirectories that must each have a Makefile target.
 
 ## Environment
 
@@ -107,8 +99,8 @@ There are no tests, linters, or type checkers. Validation is via `scripts/valida
 
 - **Config source of truth:** Files under `config/` — always edit there, never in `~/`.
 - **Makefile-driven setup:** New config additions get a `copy-*` target in the Makefile.
-- **Agent persona consistency:** The same 4 agent types (ask, architect, review, debug) exist across OpenCode, Claude Code, Kiro Desktop, and Kiro CLI. Tool permissions align across platforms.
-- **Agent format per tool:** OpenCode/Claude Code/Kiro Desktop use markdown; Kiro CLI uses JSON.
+- **Agent persona consistency:** The same 4 agent types (ask, architect, review, debug) exist across OpenCode and Claude Code. Tool permissions align across platforms.
+- **Agent format per tool:** OpenCode/Claude Code use markdown.
 - **Security-first:** Sensitive paths (`.ssh`, `.aws`, `.kube`, `.docker`, `.gnupg`, `.azure`, `.config/gcloud`, `.env*`, `*.pem`, `*.key`, `*.p12`, `*.jks`, `*credentials*`) are denied in OpenCode permissions.
 - **Output styles** (Claude Code only): Reusable markdown in `config/claude-code/output-styles/` — ask (read-only Q&A), architect (planning), review (code review), debug (debugging).
 - **No dotfile manager:** Uses bare `cp` via Makefile rather than stow/chezmoi/yadm.
@@ -181,7 +173,7 @@ When adding a new tool configuration:
 3. Add the dir to `EXPECTED_DIRS` in `scripts/validate.sh` (this is the canonical list `validate.sh` iterates — a missing entry means the dir won't be checked for target alignment)
 4. Update README.md (structure diagram, setup section, dependencies, screenshots)
 5. Update AGENTS.md (project structure, setup commands, environment, conventions)
-6. If the tool has agent capabilities, follow the existing 4-persona pattern (`ask`/`architect`/`review`/`debug`) across all four platforms — `validate.sh` fails if any persona is missing from any platform
+6. If the tool has agent capabilities, follow the existing 4-persona pattern (`ask`/`architect`/`review`/`debug`) across both agent platforms — `validate.sh` fails if any persona is missing from any platform
 7. If the tool accesses sensitive paths, add deny rules to OpenCode's `opencode.jsonc`
 
 When refactoring an existing tool's config or structure, update README.md and AGENTS.md to reflect the changes.

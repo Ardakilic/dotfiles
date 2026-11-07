@@ -1,4 +1,4 @@
-.PHONY: all copy-zsh copy-zsh-ssh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+.PHONY: all copy-zsh copy-zsh-ssh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands list-opencode-plugins install-opencode-plugins copy-all reload-zsh help install-deps copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 
 all: help
@@ -20,9 +20,6 @@ help:
 	@echo "  copy-vscode-settings          - Copy config/vscode/settings.json to VS Code settings"
 	@echo "  copy-vscode-insiders-settings  - Copy config/vscode-insiders/settings.json to VS Code Insiders settings"
 	@echo "  copy-vscodium-settings         - Copy config/vscodium/settings.json to VSCodium settings"
-	@echo "  copy-kiro-desktop-settings     - Copy config/kiro-desktop/settings.json to Kiro desktop settings"
-	@echo "  copy-kiro-desktop-agents       - Copy Kiro desktop agents to ~/.kiro/agents/"
-	@echo "  copy-kiro-cli-agents           - Copy Kiro CLI agents to ~/.kiro/agents/"
 	@echo "  copy-claude-mcp                - Copy .claude.json to ~/.claude.json"
 	@echo "  copy-claude-settings           - Copy .claude/settings.json + statusline-command.sh to ~/.claude/"
 	@echo "  copy-claude-output-styles      - Copy output styles to ~/.claude/output-styles/"
@@ -117,24 +114,6 @@ copy-vscodium-settings:
 	@cp $(CURRENT_DIR)/config/vscodium/settings.json "$(HOME)/Library/Application Support/VSCodium/User/settings.json"
 	@echo "Copied config/vscodium/settings.json to VSCodium settings"
 
-copy-kiro-desktop-settings:
-	@mkdir -p "$(HOME)/Library/Application Support/Kiro/User"
-	$(call backup-file,"$(HOME)/Library/Application Support/Kiro/User/settings.json")
-	@cp $(CURRENT_DIR)/config/kiro-desktop/settings.json "$(HOME)/Library/Application Support/Kiro/User/settings.json"
-	@echo "Copied config/kiro-desktop/settings.json to Kiro desktop settings"
-
-copy-kiro-desktop-agents:
-	@mkdir -p "$(HOME)/.kiro/agents"
-	$(call backup-file,$(HOME)/.kiro/agents)
-	@cp -r $(CURRENT_DIR)/config/kiro-desktop/agents/*.md "$(HOME)/.kiro/agents/"
-	@echo "Copied Kiro desktop agents to ~/.kiro/agents/"
-
-copy-kiro-cli-agents:
-	@mkdir -p "$(HOME)/.kiro/agents"
-	$(call backup-file,$(HOME)/.kiro/agents)
-	@cp -r $(CURRENT_DIR)/config/kiro-cli/agents/*.json "$(HOME)/.kiro/agents/"
-	@echo "Copied Kiro CLI agents to ~/.kiro/agents/"
-
 copy-claude-mcp:
 	$(call backup-file,$(HOME)/.claude.json)
 	@cp $(CURRENT_DIR)/config/claude-code/.claude.json $(HOME)/.claude.json
@@ -216,7 +195,7 @@ copy-git-allowed-signers:
 	@chmod 600 "$(HOME)/.ssh/allowed_signers"
 	@echo "Rebuilt ~/.ssh/allowed_signers from ~/.ssh/arda.pub (key not committed to repo)"
 
-copy-all: copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-kiro-desktop-settings copy-kiro-desktop-agents copy-kiro-cli-agents copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands copy-gitconfig copy-gitignore-global copy-git-allowed-signers
+copy-all: copy-zsh copy-wezterm copy-ghostty copy-ssh copy-vscode-settings copy-vscode-insiders-settings copy-vscodium-settings copy-claude-mcp copy-claude-settings copy-claude-output-styles copy-opencode copy-opencode-agents copy-opencode-skills copy-opencode-commands copy-gitconfig copy-gitignore-global copy-git-allowed-signers
 
 reload-zsh:
 	@zsh -c "source $(HOME)/.zshrc"
