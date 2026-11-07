@@ -63,7 +63,6 @@ your Apple ID before running `make install-deps`.
 - [affine](https://affine.pro/) — open-source knowledge base (docs, whiteboards, databases)
 - [alt-tab](https://github.com/lwouis/alt-tab) — Windows-style alt-tab task switcher
 - [betterzip](https://macitbetter.com/) — Archive manager
-- [cmux](https://github.com/manaflow-ai/cmux) — Ghostty-based terminal with vertical tabs for AI coding agents
 - [codeisland](https://github.com/wxtsky/codeisland) — Floating code editor (from `wxtsky/tap`)
 - [forklift](https://binarynights.com/) — Dual-pane file manager
 - [ghostty](https://ghostty.org/) — terminal emulator

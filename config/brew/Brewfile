@@ -43,7 +43,6 @@ brew "zsh-syntax-highlighting"
 cask "affine"
 cask "alt-tab"
 cask "betterzip"
-cask "cmux"
 cask "codeisland"       # wxtsky/tap
 cask "feishin"          # ardakilic/tap
 cask "font-fira-code-nerd-font"
