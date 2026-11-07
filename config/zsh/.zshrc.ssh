@@ -117,6 +117,63 @@ bindkey '^[[1;5C' forward-word       # Ctrl+Right
 bindkey '^[[1;5D' backward-word      # Ctrl+Left
 bindkey '^[[A'    history-beginning-search-backward  # Up
 bindkey '^[[B'    history-beginning-search-forward   # Down
+# --- True Shift-selection (zero dependencies) ---
+# Same mechanism as zsh-edit-select locally: first Shift-press anchors MARK
+# via set-mark-command, further presses extend the highlighted region; plain
+# movement clears it; typing/deleting replaces it. Bytes pass through SSH
+# untouched, so these xterm sequences work remotely as-is. Without this,
+# unbound ESC[1;2X falls through as literal A/B/C/D.
+_sel() {
+  (( REGION_ACTIVE )) || zle set-mark-command
+  zle ".${WIDGET#sel-}"
+}
+_desel() {
+  REGION_ACTIVE=0
+  zle deactivate-region 2>/dev/null
+  zle ".$WIDGET"
+}
+_ins() {
+  (( REGION_ACTIVE )) && zle kill-region 2>/dev/null
+  zle .self-insert
+}
+_del() {
+  if (( REGION_ACTIVE )); then
+    zle kill-region 2>/dev/null
+    return
+  fi
+  zle ".$WIDGET"
+}
+for _w in backward-char forward-char backward-word forward-word \
+    beginning-of-line end-of-line up-line-or-history down-line-or-history \
+    history-beginning-search-backward history-beginning-search-forward \
+    beginning-of-buffer-or-history end-of-buffer-or-history; do
+  zle -N sel-$_w _sel
+done
+zle -N self-insert _ins
+zle -N backward-delete-char _del
+zle -N delete-char _del
+for _w in backward-char forward-char backward-word forward-word \
+    beginning-of-line end-of-line up-line-or-history down-line-or-history \
+    history-beginning-search-backward history-beginning-search-forward \
+    beginning-of-buffer-or-history end-of-buffer-or-history; do
+  zle -N $_w _desel
+done
+unset _w
+# Shift+arrows (ESC[1;2X): char/line selection.
+bindkey '^[[1;2D' sel-backward-char            # Shift+Left: select 1 char left
+bindkey '^[[1;2C' sel-forward-char             # Shift+Right: select 1 char right
+bindkey '^[[1;2A' sel-up-line-or-history       # Shift+Up: select line up
+bindkey '^[[1;2B' sel-down-line-or-history     # Shift+Down: select line down
+bindkey '^[[1;2H' sel-beginning-of-line        # Shift+Home: select to line start
+bindkey '^[[1;2F' sel-end-of-line              # Shift+End: select to line end
+# Ctrl+Shift+arrows (ESC[1;6X): select by word.
+bindkey '^[[1;6D' sel-backward-word            # Ctrl+Shift+Left: select word left
+bindkey '^[[1;6C' sel-forward-word             # Ctrl+Shift+Right: select word right
+# Cmd+Shift+arrows (Ghostty/WezTerm send modifier 10): select to edges.
+bindkey '^[[1;10D' sel-beginning-of-line              # Cmd+Shift+Left
+bindkey '^[[1;10C' sel-end-of-line                    # Cmd+Shift+Right
+bindkey '^[[1;10A' sel-beginning-of-buffer-or-history # Cmd+Shift+Up
+bindkey '^[[1;10B' sel-end-of-buffer-or-history       # Cmd+Shift+Down
 
 # --- Small helpers (functions, not plugins) ---
 mkcd() { mkdir -p -- "$1" && cd -- "$1" }
