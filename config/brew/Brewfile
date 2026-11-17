@@ -42,6 +42,7 @@ brew "zsh-syntax-highlighting"
 # Casks
 cask "affine"
 cask "alt-tab"
+cask "bartender"
 cask "betterzip"
 cask "codeisland"       # wxtsky/tap
 cask "feishin"          # ardakilic/tap

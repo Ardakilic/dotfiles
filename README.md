@@ -62,6 +62,7 @@ your Apple ID before running `make install-deps`.
 
 - [affine](https://affine.pro/) — open-source knowledge base (docs, whiteboards, databases)
 - [alt-tab](https://github.com/lwouis/alt-tab) — Windows-style alt-tab task switcher
+- [bartender](https://macbartender.com/) — Menu bar organizer
 - [betterzip](https://macitbetter.com/) — Archive manager
 - [codeisland](https://github.com/wxtsky/codeisland) — Floating code editor (from `wxtsky/tap`)
 - [forklift](https://binarynights.com/) — Dual-pane file manager
